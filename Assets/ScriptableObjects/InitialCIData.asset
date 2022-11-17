@@ -1,0 +1,510 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4845bcc077d813b40b2c6588eed5705a, type: 3}
+  m_Name: InitialCIData
+  m_EditorClassIdentifier: 
+  data:
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 1
+  - exercise: 1
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 2
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 3
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 4
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 5
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 6
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 7
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 1
+  - exercise: 7
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 7
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 3
+  - exercise: 7
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 17
+      misses: 1
+      successes: 8
+  - exercise: 0
+    attempts:
+    - time: 15
+      misses: 1
+      successes: 10
+  - exercise: 0
+    attempts:
+    - time: 32
+      misses: 1
+      successes: 9
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 18
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 27
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 15
+      misses: 1
+      successes: 7
+  - exercise: 0
+    attempts:
+    - time: 60
+      misses: 1
+      successes: 7
+  - exercise: 0
+    attempts:
+    - time: 29
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 16
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 8
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 13
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 3
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 9
+      misses: 1
+      successes: 4
+  - exercise: 0
+    attempts:
+    - time: 10
+      misses: 1
+      successes: 5
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 11
+      misses: 1
+      successes: 6
+  - exercise: 0
+    attempts:
+    - time: 13
+      misses: 1
+      successes: 7
+  - exercise: 0
+    attempts:
+    - time: 14
+      misses: 1
+      successes: 8
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 20
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 30
+      misses: 3
+      successes: 10
+  - exercise: 0
+    attempts:
+    - time: 12
+      misses: 1
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 20
+      misses: 2
+      successes: 1
+  - exercise: 0
+    attempts:
+    - time: 0
+      misses: 1
+      successes: 0
+  - exercise: 0
+    attempts:
+    - time: 0
+      misses: 1
+      successes: 0
+  - exercise: 0
+    attempts:
+    - time: 0
+      misses: 1
+      successes: 0
+  - exercise: 0
+    attempts:
+    - time: 0
+      misses: 1
+      successes: 0

@@ -1,0 +1,86 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+
+public enum Levels { SUGARLAND, LEXLAND, HOMELAND};
+public class GameManager : MonoBehaviour
+{
+    [SerializeField] public GameObject player;
+    public static GameManager Instance { get { return _instance; } }
+    private static GameManager _instance;
+
+    public UnityEvent teleportEvent;
+    public GameObject scavengerObjects;
+    public SceneLoader sceneLoader;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        transform.parent = null;
+        if (scavengerObjects)
+            DontDestroyOnLoad(scavengerObjects);
+        DontDestroyOnLoad(gameObject);
+
+        // Each scene has its own modules. Wait until all are loaded before matching modules up to their respective interactibles.
+        ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
+        if (moduleMapper)
+        {
+            moduleMapper.MapModules();
+        }
+        // Enable the gotos so the module mapper can find them. Disable after mapping
+        UIManager.Instance.gotoMenu.gameObject.SetActive(false);
+
+        moduleMapper.interactables[moduleMapper.interactables.Length - 1].interactEvent.AddListener(sceneLoader.LoadHouseInterior);
+        moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
+        moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo = new UnityEvent();
+        moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo.AddListener(sceneLoader.LoadHouseInterior);
+
+        // load the downloaded images into the exercises
+        StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
+        StorageManager.Instance.StartContentDownload();
+    }
+
+    public void TeleportPlayer(Vector3 location)
+    {
+        IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
+        if (intro != null)
+        {
+            intro.Interrupt();
+        }
+
+        StartCoroutine(TeleportRoutine(location));
+    }
+
+    private IEnumerator TeleportRoutine(Vector3 location)
+    {
+        TankController.Instance.DisableMovement();
+        yield return new WaitForEndOfFrame();
+        player.transform.position = location;
+        yield return new WaitForEndOfFrame();
+        //TankController.Instance.EnableMovement();
+        if (teleportEvent != null) teleportEvent.Invoke();
+    }
+
+    // need function for handling when a new level is loaded. map the modules to the newly found interactables
+    public void LevelLoaded(int level)
+    {
+        // 
+    }
+
+    public void Quit()
+    {
+        //Application.Quit();
+        SceneLoader.Instance.LoadMainMenu();
+    }
+}
