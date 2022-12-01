@@ -312,9 +312,9 @@ namespace UMA.CharacterSystem
 			//In Unity 2018.3+ this asset may be being inspected in its own Prefab scene (rather than via customizer).
 			//If that is the case we need to get the path differently
 #if UNITY_2018_3_OR_NEWER
-			var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(this.gameObject);
+			/*var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(this.gameObject);
 			if (prefabStage != null)
-				DCBPath = prefabStage.prefabAssetPath;
+				DCBPath = prefabStage.prefabAssetPath;*/
 #endif
 			if (string.IsNullOrEmpty(DCBPath))
 			{
@@ -405,8 +405,8 @@ namespace UMA.CharacterSystem
 
 #if UNITY_2018_3_OR_NEWER
 			//If this happenned in a prefab stage (rather than via customizer) it wont save the prefab with the added converterController so
-			if (prefabStage != null)
-				PrefabUtility.SaveAsPrefabAsset(this.gameObject, newDCBPath);
+			//if (prefabStage != null)
+				//PrefabUtility.SaveAsPrefabAsset(this.gameObject, newDCBPath);
 #endif
 
 			EditorUtility.SetDirty(this.gameObject);
@@ -429,7 +429,7 @@ namespace UMA.CharacterSystem
 			//In Unity 2018.3+ this asset may be being inspected in its own Prefab scene (rather than via customizer).
 			//If that is the case 'this' will be a clone rather than the object that is actually assigned to Races/Slots, so...
 #if UNITY_2018_3_OR_NEWER
-			var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(this.gameObject);
+			/*var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(this.gameObject);
 			if (prefabStage != null)
 			{
 				var origGO = (GameObject)AssetDatabase.LoadAssetAtPath(prefabStage.prefabAssetPath, typeof(GameObject));
@@ -437,7 +437,7 @@ namespace UMA.CharacterSystem
 				{
 					original = origGO.GetComponent<DynamicDNAConverterBehaviour>();
 				}
-			}
+			}*/
 #endif
 			if (original == null)
 			{

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PortraitExercise : DragExercise
 {
     public GameObject dragPrefab, snapPrefab;
-    private string[] familyMembers;
+    public string[] familyMembers;
     // flying panel is drag spawn
     // snap panel is snap spawn 
     protected override void OnValidate()
@@ -16,7 +16,8 @@ public class PortraitExercise : DragExercise
 
     public void Initialize(string[] names)
     {
-        familyMembers = names;
+        if (names != null)
+            familyMembers = names;
         leftImages = new RawImage[names.Length];
         flyingImages = new RawImage[names.Length];
         snapButtons = new Snap[names.Length];

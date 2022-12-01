@@ -123,7 +123,7 @@ TextureImporter:
       213: 8508771332071116440
     second: brain_anim_39
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -144,6 +144,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -182,6 +183,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -221,6 +223,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1084,6 +1098,47 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      brain_anim_30: 3630814045892533339
+      brain_anim_31: 6109542865720801346
+      brain_anim_18: 6729433662586031368
+      brain_anim_20: 7049088886192141310
+      brain_anim_6: 6061972832240110405
+      brain_anim_8: 4184275460146605149
+      brain_anim_5: 9194962697762882705
+      brain_anim_35: 3221708845027644990
+      brain_anim_12: 8641157269911585555
+      brain_anim_15: -3353749590750070384
+      brain_anim_0: 2593997940237062574
+      brain_anim_26: -8437762379940152833
+      brain_anim_7: -4050925638781328159
+      brain_anim_13: 8810556234189845153
+      brain_anim_22: 8074678003700870877
+      brain_anim_2: -7630088205284969850
+      brain_anim_3: 925928212549683398
+      brain_anim_25: -8704906296855308543
+      brain_anim_16: -7097960988317087257
+      brain_anim_14: 1437364243161907092
+      brain_anim_10: 2212889756199588788
+      brain_anim_34: -1279621962156046483
+      brain_anim_1: 4351258434486232909
+      brain_anim_19: -1141385055749115732
+      brain_anim_24: 2999009115093340825
+      brain_anim_33: -3678361616406366543
+      brain_anim_38: 5050466496125172033
+      brain_anim_9: 7782379577467642227
+      brain_anim_29: -6817997830540555794
+      brain_anim_28: -8567773507298304949
+      brain_anim_17: -1043307192262667789
+      brain_anim_23: -8631554795889369313
+      brain_anim_11: 2754352966849428590
+      brain_anim_4: -498637690712187272
+      brain_anim_21: -8259270525757337877
+      brain_anim_32: -5283065742139307279
+      brain_anim_27: 5902182765668963455
+      brain_anim_36: 1945896243487932496
+      brain_anim_39: 8508771332071116440
+      brain_anim_37: -3683836263160749386
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
