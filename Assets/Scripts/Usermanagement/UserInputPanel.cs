@@ -10,6 +10,7 @@ public enum InputStatus { VALID, INVALID, ENABLED, DISABLED }   // GREEN, RED, B
 public class UserInputPanel : MonoBehaviour
 {
     public Button submitButton;
+    public Button registerButton;
     [System.NonSerialized] public UnityEvent<Dictionary<string, string>> submitAction;
     [SerializeField] private UserInputOption[] userInputOptions;
     public Color[] statusColors;
@@ -71,6 +72,7 @@ public class UserInputPanel : MonoBehaviour
 
     protected void OnSubmit()
     {
+        PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
         Dictionary<string, string> userOptions = new Dictionary<string, string>();
         for (int i = 0; i < userInputOptions.Length; i++)
         {
@@ -85,6 +87,7 @@ public class UserInputPanel : MonoBehaviour
         submitButton.image.color = statusColors[(int)InputStatus.INVALID];
         submitButton.GetComponentInChildren<Text>().text = message;
         Debug.Log("Fail with message: " + message);
+        registerButton.gameObject.SetActive(true);
         Invoke("Reset", 2f);
     }
 
