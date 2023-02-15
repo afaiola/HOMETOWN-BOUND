@@ -73,6 +73,7 @@ public class UIManager : MonoBehaviour
 
     public void Pause()
     {
+        pauseMenu.GetComponent<MusicManager>();
         pauseMenu.SetActive(true);
         paused = true;
         //menu.SetActive(true);
@@ -86,7 +87,7 @@ public class UIManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
         Time.timeScale = 0;
         pauseMenu.GetComponentInChildren<Text>().text = "Paused";
     }
@@ -132,7 +133,7 @@ public class UIManager : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;  
     }
-    
+
     // only needed for webgl
     public void PromptGameWindowFocus()
     {
@@ -151,7 +152,7 @@ public class UIManager : MonoBehaviour
 
     public void CloseEyes()
     {
-        StartCoroutine(Blink(0, Screen.height/2));
+        StartCoroutine(Blink(0, Screen.height / 2));
     }
 
     public void OpenEyes()
