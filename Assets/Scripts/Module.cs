@@ -70,6 +70,7 @@ public class Module : MonoBehaviour
             StartCoroutine(Wrap());
             Profiler.Instance.UpdateUserProfile();
             SavePatientData.Instance.UploadPatientData();
+            StaticEvent.moduleEnded();
         }
         else
         {
@@ -83,6 +84,7 @@ public class Module : MonoBehaviour
             ScoreCalculator.instance.StartActivity(exercises[current].exerciseID);
             Menu.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
         }
+        
         //Cursor.visible = true;
         //Cursor.lockState = CursorLockMode.Confined;
     }

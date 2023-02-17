@@ -75,7 +75,7 @@ public class SecurityCode : MonoBehaviour
         submitText.color = Color.green;
 
         yield return new WaitForSecondsRealtime(1f);
-
+        StaticEvent.moduleEnded();
         if (onSuccess != null)
             onSuccess.Invoke();
 
