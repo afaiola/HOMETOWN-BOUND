@@ -156,8 +156,8 @@ public class UserAccountManager : MonoBehaviour
         // TODO: protect from retreiving invalid keys
         string email = userOptions[k_email];
         string password = userOptions[k_pass];
-        string username = userOptions[k_user];
-        int ci = int.Parse(userOptions[k_ci]);
+        string username = email;
+        int ci = 0;
         int skin = int.Parse(userOptions[k_skin]);
 
         string message = "";
@@ -174,7 +174,7 @@ public class UserAccountManager : MonoBehaviour
             Dictionary<string, object> user = doc.ToDictionary();
             if (user.ContainsValue(username))
             {
-                message = $"Username already exists!";
+                message = $"email already in use!";
                 success = false;
             }
         }
