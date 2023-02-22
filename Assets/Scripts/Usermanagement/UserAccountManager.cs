@@ -67,7 +67,7 @@ public class UserAccountManager : MonoBehaviour
     {
         // TODO: protect from retreiving invalid keys
         string email = userOptions[k_email];    // check if this is a username instead
-        string username = email;   // retreive the username from firestore if not provided 
+        string username = userOptions[k_user];   // retreive the username from firestore if not provided 
         string password = userOptions[k_pass];
 
         var db = FirebaseFirestore.DefaultInstance;
