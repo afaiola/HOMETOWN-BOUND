@@ -1199,6 +1199,7 @@ MonoBehaviour:
   helper: {fileID: 0}
   helpTexts: []
   statusImage: {fileID: 0}
+  errorfieldname: Password
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns: []
@@ -3166,7 +3167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &710902622
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3184,10 +3185,10 @@ RectTransform:
   m_Father: {fileID: 498149999}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 60}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 305.79773, y: -380}
+  m_SizeDelta: {x: 511.59546, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &710902623
 MonoBehaviour:
@@ -3232,6 +3233,7 @@ MonoBehaviour:
   helpTexts:
   - {fileID: 1241163524}
   statusImage: {fileID: 0}
+  errorfieldname: 
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns: []
@@ -3545,6 +3547,7 @@ MonoBehaviour:
   - {fileID: 645857465}
   - {fileID: 1022556441}
   statusImage: {fileID: 0}
+  errorfieldname: Name
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns: []
@@ -5119,6 +5122,7 @@ MonoBehaviour:
   helpTexts:
   - {fileID: 180467594}
   statusImage: {fileID: 0}
+  errorfieldname: Email
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns:
@@ -5834,7 +5838,7 @@ PrefabInstance:
     - target: {fileID: 1297959611246878865, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_text
-      value: Username
+      value: First Name
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878865, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
@@ -6041,6 +6045,7 @@ MonoBehaviour:
   helper: {fileID: 0}
   helpTexts: []
   statusImage: {fileID: 0}
+  errorfieldname: Email
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns: []
@@ -6311,7 +6316,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1009260625}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.7281615
+  m_Size: 0.82636166
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6846,6 +6851,7 @@ MonoBehaviour:
   helpTexts:
   - {fileID: 2026325770}
   statusImage: {fileID: 0}
+  errorfieldname: Confirmation Password
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns:
@@ -6946,7 +6952,7 @@ PrefabInstance:
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
@@ -6956,12 +6962,12 @@ PrefabInstance:
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 511.59546
       objectReference: {fileID: 0}
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
@@ -7006,12 +7012,12 @@ PrefabInstance:
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 255.79773
       objectReference: {fileID: 0}
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -37.5
       objectReference: {fileID: 0}
     - target: {fileID: 3550596507039424724, guid: b70a0d4e683c84847974b6ddea172fea,
         type: 3}
@@ -7799,6 +7805,7 @@ MonoBehaviour:
   - {fileID: 1441476335}
   - {fileID: 978748299}
   statusImage: {fileID: 0}
+  errorfieldname: Password
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns:
@@ -8144,6 +8151,7 @@ MonoBehaviour:
   helpTexts:
   - {fileID: 696802602}
   statusImage: {fileID: 0}
+  errorfieldname: Confirmation Email
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   patterns:
@@ -8768,7 +8776,7 @@ PrefabInstance:
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
@@ -8778,12 +8786,12 @@ PrefabInstance:
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 511.59546
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
@@ -8828,12 +8836,12 @@ PrefabInstance:
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 255.79773
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1297959611246878864, guid: 14a9e06947ddf416ab7c504ac90e5545,
         type: 3}
@@ -9677,6 +9685,7 @@ MonoBehaviour:
   helper: {fileID: 0}
   helpTexts: []
   statusImage: {fileID: 0}
+  errorfieldname: Skin Tone
   validIcon: {fileID: 0}
   invalidIcon: {fileID: 0}
   buttons:
@@ -13048,14 +13057,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   submitButton: {fileID: 2026197122}
-  registerButton: {fileID: 0}
+  registerButton: {fileID: 2026197122}
   userInputOptions:
   - {fileID: 1003726184}
   - {fileID: 1392396669}
   - {fileID: 856892635}
   - {fileID: 1347765434}
   - {fileID: 1225522866}
-  - {fileID: 710902624}
   - {fileID: 1581269042}
   statusColors:
   - {r: 0.39607847, g: 0.73333335, b: 0.41960788, a: 1}
