@@ -91,10 +91,26 @@ public class Exercise : MonoBehaviour
 
     protected virtual IEnumerator Wait(int duration, Action after)
     {
+        DeactivateButtons();
         yield return new WaitForSeconds(.5f);
         GetComponent<AudioSource>().Play();
         yield return new WaitForSeconds(.5f);
         after();
+        ActivateButtons();
+    }
+
+    private void ActivateButtons()
+    {
+        foreach(ModuleButton mb in buttons){
+            mb.ActivateButton();
+        }
+    }
+
+    private void DeactivateButtons()
+    {
+         foreach(ModuleButton mb in buttons){
+            mb.DeactivateButton();
+        }
     }
 
     /// <summary>

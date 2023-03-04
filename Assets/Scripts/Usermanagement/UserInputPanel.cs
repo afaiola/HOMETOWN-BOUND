@@ -73,13 +73,26 @@ public class UserInputPanel : MonoBehaviour
     protected void OnSubmit()
     {
         PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
-        Dictionary<string, string> userOptions = new Dictionary<string, string>();
-        for (int i = 0; i < userInputOptions.Length; i++)
+        bool valid = true;
+        foreach (UserInputOption u in userInputOptions)
         {
-            userOptions.Add(userInputOptions[i].optionName, userInputOptions[i].GetValue());
+            if (u.GetValue() == "")
+            {
+                valid = false;
+                SubmitFail("Please enter your " + u.errorfieldname);
+                break;
+            }
         }
-        submitButton.interactable = false;
-        submitAction.Invoke(userOptions);
+        if (valid)
+        {
+            Dictionary<string, string> userOptions = new Dictionary<string, string>();
+            for (int i = 0; i < userInputOptions.Length; i++)
+            {
+                userOptions.Add(userInputOptions[i].optionName, userInputOptions[i].GetValue());
+            }
+            submitButton.interactable = false;
+            submitAction.Invoke(userOptions);
+        }
     }
 
     public void SubmitFail(string message)
@@ -87,7 +100,10 @@ public class UserInputPanel : MonoBehaviour
         submitButton.image.color = statusColors[(int)InputStatus.INVALID];
         submitButton.GetComponentInChildren<Text>().text = message;
         Debug.Log("Fail with message: " + message);
-        registerButton.gameObject.SetActive(true);
+        if (registerButton != null)
+        {
+            registerButton.gameObject.SetActive(true);
+        }
         Invoke("Reset", 2f);
     }
 

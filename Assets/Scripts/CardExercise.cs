@@ -82,9 +82,9 @@ public class CardExercise : Exercise
             var cf = mb.GetComponent<CardFlipper>();
             cf.GetComponent<FlyAround>().speed = Random.Range(minSpeed, maxSpeed);
             cf.GetComponent<FlyAround>().pattern = flyPattern;
-            cf.GetComponent<FlyAround>().SetDestination();
+            cf.GetComponent<FlyAround>().SetDestination(null);
             cf.minTime = minFlipTime;
-            cf.maxTime = maxFlipTime;
+            cf.maxTime = maxFlipTime; 
             cf.timeActive = timeActive;
             cf.face.texture = images[i];
             int backColor = Random.Range(0, cardColors.Count);

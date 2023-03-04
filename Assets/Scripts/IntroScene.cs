@@ -46,8 +46,10 @@ public class IntroScene : MonoBehaviour
         UIManager.Instance.inCutscene = true;
         UIManager.Instance.OpenEyes();
         yield return new WaitForSecondsRealtime(1f);
+        StaticEvent.ActivateSpeechBubble();
         TankController.Instance.DisableMovement();
         TankController.Instance.enabled = false;
+        
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 
         dr.GetComponent<Animator>().SetBool("Talking", true);
@@ -55,6 +57,7 @@ public class IntroScene : MonoBehaviour
         yield return new WaitForSecondsRealtime(source.clip.length);
 
         dr.GetComponent<Animator>().SetBool("Talking", false);
+        StaticEvent.DeactivateSpeechBubble();
         UIManager.Instance.CloseEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 

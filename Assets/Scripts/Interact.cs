@@ -30,6 +30,7 @@ public class Interact : MonoBehaviour/*, IPointerEnterHandler, IPointerExitHandl
     {
         GetComponent<AudioSource>().Play();
         correspondingModule.Play();
+        StaticEvent.moduleStarted();
         gameObject.SetActive(false);
     }
 
