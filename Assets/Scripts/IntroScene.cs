@@ -57,6 +57,7 @@ public class IntroScene : MonoBehaviour
         yield return new WaitForSecondsRealtime(source.clip.length);
 
         dr.GetComponent<Animator>().SetBool("Talking", false);
+        StaticEvent.DeactivateSpeechBubble();
         UIManager.Instance.CloseEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 
@@ -75,7 +76,6 @@ public class IntroScene : MonoBehaviour
         TankController.Instance.transform.position = start.position;
         TankController.Instance.transform.rotation = start.rotation;
         UIManager.Instance.inCutscene = false;
-        StaticEvent.DeactivateSpeechBubble();
         //UIManager.Instance.canPause = true;
         UIManager.Instance.PromptGameWindowFocus();
         Menu.Instance.UpdateModuleName("Leave the hospital.");
