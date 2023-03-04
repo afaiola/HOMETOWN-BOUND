@@ -21,7 +21,7 @@ public class FlyAround : MonoBehaviour
     private float angleInc;
     private float direction;
     RectTransform[] snaps;
-    Vector3[] corners = new Vector3[4];
+    Vector3[] spawnPoints = new Vector3[8];
     public int cornerIndex = 0;
 
     void Awake()
@@ -30,7 +30,7 @@ public class FlyAround : MonoBehaviour
         parent = transform.parent.GetComponent<RectTransform>();
         FillCornerArray();
         // //GetComponent<RectTransform>().position = GetRandomCorner();
-        Vector3 corner = GetCorner();
+        Vector3 corner = GetPosition();
         self.localPosition = corner;
 
         // origin = self.localPosition;
@@ -40,13 +40,17 @@ public class FlyAround : MonoBehaviour
 
     private void FillCornerArray()
     {
-        corners[0] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); //top left
-        corners[1] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); // top right
-        corners[2] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), -parent.rect.height / 2 + (self.rect.height), 0); // bottom left
-        corners[3] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), -parent.rect.height /2 + (self.rect.height), 0); //bottom right
+        spawnPoints[0] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); //top left
+        spawnPoints[4] = new Vector3(0, parent.rect.height / 2 - (self.rect.height / 2), 0); // top centre
+        spawnPoints[1] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); // top right
+        spawnPoints[2] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), -parent.rect.height / 2 + (self.rect.height), 0); // bottom left
+        spawnPoints[5] = new Vector3(0, -parent.rect.height / 2 + (self.rect.height / 2), 0); // bottom centre
+        spawnPoints[3] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), -parent.rect.height / 2 + (self.rect.height), 0); //bottom right
+        spawnPoints[6] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), 0, 0); //mid right
+        spawnPoints[7] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), 0, 0); //mid left
     }
 
-    private Vector3 GetCorner()
+    private Vector3 GetPosition()
     {
         int res = 0;
         if (Regex.Match(gameObject.name, @"\d+").Success)
@@ -56,7 +60,7 @@ public class FlyAround : MonoBehaviour
         int ctr = 0;
         for (int i = 0; i < res; i++)
         {
-            if (ctr < corners.Length)
+            if (ctr < spawnPoints.Length)
             {
                 ctr++;
             }
@@ -65,7 +69,7 @@ public class FlyAround : MonoBehaviour
                 ctr = 0;
             }
         }
-        return corners[ctr];
+        return spawnPoints[ctr];
     }
     private IEnumerator Disable()
     {
@@ -141,14 +145,14 @@ public class FlyAround : MonoBehaviour
         if (firstUpdate)
         {
             firstUpdate = false;
-            self.localPosition = GetCorner();
+            self.localPosition = GetPosition();
             origin = self.localPosition;
             SetDestination(MoveToFarCorner());
         }
-        if (IsWithinDeadZone(self, snaps))
-        {
-            Bounce();
-        }
+        // if (IsWithinDeadZone(self, snaps))
+        // {
+        //     Bounce();
+        // }
         // // If out of bounds, reset
         if (isOutOfBounds())
         {
@@ -185,7 +189,7 @@ public class FlyAround : MonoBehaviour
         }
         else
         {
-            SetDestination(GetCorner());
+            SetDestination(GetPosition());
         }
     }
 
@@ -194,7 +198,7 @@ public class FlyAround : MonoBehaviour
         Vector3 retVec = new Vector3();
         float prevDist = 0;
 
-        foreach (Vector3 v in corners)
+        foreach (Vector3 v in spawnPoints)
         {
             float dist = Vector3.Distance(v, self.localPosition);
             if (dist > prevDist)
