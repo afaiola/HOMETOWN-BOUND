@@ -1330,6 +1330,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: M2Ex02
       objectReference: {fileID: 0}
+    - target: {fileID: 808633913542071362, guid: 9c87a6eb81819a9479edbb5536ab41c5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 808633913542071363, guid: 9c87a6eb81819a9479edbb5536ab41c5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1626,6 +1631,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: M2Ex04
       objectReference: {fileID: 0}
+    - target: {fileID: 5129759268754724177, guid: 51f2671d5a783b945898d7841946d8e7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5129759268754724183, guid: 51f2671d5a783b945898d7841946d8e7,
         type: 3}
       propertyPath: score
@@ -1767,6 +1777,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: M2Ex03
       objectReference: {fileID: 0}
+    - target: {fileID: 4269479467724040915, guid: 95d3e54961dccf3418b0bf26bea05555,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4269479467724040917, guid: 95d3e54961dccf3418b0bf26bea05555,
         type: 3}
       propertyPath: score
@@ -1786,7 +1801,7 @@ PrefabInstance:
         type: 3}
       propertyPath: images.Array.data[0]
       value: 
-      objectReference: {fileID: 2800000, guid: 7289f33e4c81e614a99359288d5b4051, type: 3}
+      objectReference: {fileID: 2800000, guid: f571b7a40e0b53644bd6311335b065e0, type: 3}
     - target: {fileID: 4269479467724040917, guid: 95d3e54961dccf3418b0bf26bea05555,
         type: 3}
       propertyPath: images.Array.data[1]
@@ -1806,7 +1821,7 @@ PrefabInstance:
         type: 3}
       propertyPath: images.Array.data[4]
       value: 
-      objectReference: {fileID: 2800000, guid: 7289f33e4c81e614a99359288d5b4051, type: 3}
+      objectReference: {fileID: 2800000, guid: f571b7a40e0b53644bd6311335b065e0, type: 3}
     - target: {fileID: 4269479467724040917, guid: 95d3e54961dccf3418b0bf26bea05555,
         type: 3}
       propertyPath: images.Array.data[5]
@@ -1826,7 +1841,7 @@ PrefabInstance:
         type: 3}
       propertyPath: images.Array.data[8]
       value: 
-      objectReference: {fileID: 2800000, guid: 72005dacced30ec47af87739b2004748, type: 3}
+      objectReference: {fileID: 2800000, guid: 8ff66825ccc38324f8d1c423f9932d36, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95d3e54961dccf3418b0bf26bea05555, type: 3}
 --- !u!114 &480856261050063695 stripped
