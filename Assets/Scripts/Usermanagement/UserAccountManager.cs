@@ -119,7 +119,7 @@ public class UserAccountManager : MonoBehaviour
                     if (user.ContainsKey(k_last_login)) lastLogin = DateTime.Parse(user[k_last_login].ToString());
                     if (user.ContainsKey(k_days_played)) login_ct = int.Parse(user[k_days_played].ToString());
 
-                    Profiler.Instance.UserSignedIn(uname, ci, skin, login_ct, playTime, startDate, lastLogin, consecDays);
+                    Profiler.Instance.UserSignedIn(email, ci, skin, login_ct, playTime, startDate, lastLogin, consecDays, uname);
                     signInPanel.gameObject.SetActive(false);
                     registerPanel.gameObject.SetActive(false);
                     loadingBar.SetActive(true);
@@ -200,17 +200,18 @@ public class UserAccountManager : MonoBehaviour
             var userRef = db.Collection(k_user_collection).Document(email);
             Dictionary<string, object> user = new Dictionary<string, object>
             {
-                { k_user, username },
+                { k_email, email },
                 { k_ci,  ci },
                 { k_skin, skin },
                 { k_login_ct, 1 },
                 { k_play_time, 0 },
                 { k_start_date, shortDate },
                 { k_last_login, shortDate },
-                { k_days_played, 0 }
+                { k_days_played, 0 },
+                { k_user, username }
             };
             userRef.SetAsync(user);
-            Profiler.Instance.UserSignedIn(username, ci, skin, 0, 0, date, date, 0);
+            Profiler.Instance.UserSignedIn(email, ci, skin, 0, 0, date, date, 0, username);
 
             //loginSuccessEvent.Invoke();
             registerPanel.gameObject.SetActive(false);
