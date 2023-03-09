@@ -20,8 +20,8 @@ public class TouchControls : MonoBehaviour
     {
         if (TankController.Instance)
         {
-            TankController.Instance.MoveCharacter(moveVal);
-            TankController.Instance.RotateCharacter(lookVal);
+            TankController.Instance.MoveCharacterForwardBack(moveVal);
+            TankController.Instance.RotateCharacterLeftRight(lookVal);
         }
     }
 

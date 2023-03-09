@@ -71,12 +71,12 @@ public class TankController : MonoBehaviour
         }
 
         //var y = Input.GetAxis("Mouse Y");
-        RotateCharacter(Input.GetAxis("Mouse X"));
-        MoveCharacter(Input.GetAxis("Mouse ScrollWheel") * 10f);
-        MoveCharacter(Input.GetAxis("Mouse Y"));
+        RotateCharacterUpDown(Input.GetAxis("Mouse Y"));
+        MoveCharacterForwardBack(Input.GetAxis("Mouse ScrollWheel") * 10f);
+        RotateCharacterLeftRight(Input.GetAxis("Mouse X"));
 
-        MoveCharacter(Input.GetAxis("Vertical") * 0.5f);
-        RotateCharacter(Input.GetAxisRaw("Horizontal") * 0.35f);
+        MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.5f);
+        MoveCharacterLeftRight(Input.GetAxisRaw("Horizontal") * 0.35f);
 
         /*var movDir = transform.forward * Input.GetAxis("Mouse ScrollWheel") * speed * 10;
         if (movDir == Vector3.zero)
@@ -97,17 +97,43 @@ public class TankController : MonoBehaviour
         */
     }
 
-    public void RotateCharacter(float value)
+    public void RotateCharacterLeftRight(float value)
     {
         if (value == 0) return;
         transform.Rotate(0, value * turnSpeed * Time.deltaTime, 0);
+        
+    }
+    public void RotateCharacterUpDown(float value)
+    {
+        if (value == 0) return;
+        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
+        cam.transform.Rotate(-value * turnSpeed * Time.deltaTime, 0, 0);
     }
 
-    public void MoveCharacter(float value)
+    public void MoveCharacterForwardBack(float value)
     {
         if (value == 0) return;
         timeSinceLastMove = Time.time;
         var movDir = transform.forward * value * speed;
+        if (movDir == Vector3.zero) return;
+
+        var animation = handAnimations.First();
+        if (!handAnimations.Any(z => z.isPlaying))
+        {
+            animation.Play();
+            handAnimations.Reverse();
+        }
+
+        // moves the character in horizontal direction
+        controller.Move(movDir * Time.deltaTime - Vector3.up * 0.1f);
+
+        ProgressStepCycle(speed, value);
+    }
+    public void MoveCharacterLeftRight(float value)
+    {
+        if (value == 0) return;
+        timeSinceLastMove = Time.time;
+        var movDir = transform.right * value * speed;
         if (movDir == Vector3.zero) return;
 
         var animation = handAnimations.First();
