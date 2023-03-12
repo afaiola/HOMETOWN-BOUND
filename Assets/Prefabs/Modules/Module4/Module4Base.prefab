@@ -345,7 +345,7 @@ RectTransform:
   m_GameObject: {fileID: 3437913906823869009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.8, z: 1}
   m_Children:
   - {fileID: 3437913906493999148}
   - {fileID: 3437913906079437501}
@@ -556,6 +556,7 @@ MonoBehaviour:
   moduleButton: {fileID: 0}
   buttons: []
   leftObject: {fileID: 0}
+  nameOfObject: 
   leftImage: {fileID: 0}
   images:
   - {fileID: 2800000, guid: 87d0e17f9e5dd7e45ba844071680f4c5, type: 3}
