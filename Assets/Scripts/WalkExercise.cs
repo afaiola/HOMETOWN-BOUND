@@ -39,6 +39,7 @@ public class WalkExercise : Exercise
 
     public void EnterArea()
     {
+        // TODO: force to look straight ahead
         StartCoroutine(MoveToPos());
     }
 

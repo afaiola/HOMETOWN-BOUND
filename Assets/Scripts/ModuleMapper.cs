@@ -87,7 +87,7 @@ public class ModuleMapper : MonoBehaviour
             {
                 contentDetails = content_map[content.pictureName].ToString();
             }
-
+            
             if (content == StorageManager.Instance.portraitContent)
             {
                 PortraitExercise portraitExercise = exercise as PortraitExercise;

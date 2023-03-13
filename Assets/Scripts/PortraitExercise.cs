@@ -7,6 +7,8 @@ public class PortraitExercise : DragExercise
 {
     public GameObject dragPrefab, snapPrefab;
     public string[] familyMembers;
+
+    private bool initialized;
     // flying panel is drag spawn
     // snap panel is snap spawn 
     protected override void OnValidate()
@@ -16,28 +18,31 @@ public class PortraitExercise : DragExercise
 
     public void Initialize(string[] names)
     {
+        if (initialized) return;
+        initialized = true;
         if (names != null)
-            familyMembers = names;
-        leftImages = new RawImage[names.Length];
-        flyingImages = new RawImage[names.Length];
-        snapButtons = new Snap[names.Length];
+            if (names.Length > 0)
+                familyMembers = names;
+        leftImages = new RawImage[familyMembers.Length];
+        flyingImages = new RawImage[familyMembers.Length];
+        snapButtons = new Snap[familyMembers.Length];
 
         Rect rect = flyingPanel.GetComponent<RectTransform>().rect;
-        float separationDist = rect.width / names.Length;
+        float separationDist = rect.width / familyMembers.Length;
         List<string> namesRemaining = new List<string>();
-        for (int i = 0; i < names.Length; i++) namesRemaining.Add(names[i]);
+        for (int i = 0; i < familyMembers.Length; i++) namesRemaining.Add(familyMembers[i]);
         // spawn the flying images and snaps
-        for (int i = 0; i < names.Length; i++)
+        for (int i = 0; i < familyMembers.Length; i++)
         {
             RawImage flyer = Instantiate(dragPrefab, flyingPanel.transform).GetComponent<RawImage>();
             string randName = namesRemaining[Random.Range(0, namesRemaining.Count)];
             namesRemaining.Remove(randName);
             flyer.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = randName;
-            flyer.GetComponent<RectTransform>().anchoredPosition = new Vector2((i-names.Length/2) * separationDist, rect.height / 2f);
+            flyer.GetComponent<RectTransform>().anchoredPosition = new Vector2((i- familyMembers.Length/2) * separationDist, rect.height / 2f);
 
             Snap snap = Instantiate(snapPrefab, snapPanel.transform).GetComponent<Snap>();
-            snap.GetComponent<RectTransform>().anchoredPosition = new Vector2((i-names.Length / 2) * separationDist, -rect.height / 2f);
-            snap.tmpText.text = names[i]; // be sure the text is not visible
+            snap.GetComponent<RectTransform>().anchoredPosition = new Vector2((i- familyMembers.Length / 2) * separationDist, -rect.height / 2f);
+            snap.tmpText.text = familyMembers[i]; // be sure the text is not visible
             snap.tmpText.gameObject.SetActive(false);
             snap.rightTexture = flyer.texture as Texture2D;
 
@@ -48,6 +53,7 @@ public class PortraitExercise : DragExercise
 
     public override void Arrange()
     {
+        if (!initialized) Initialize(null);
         if (familyMembers.Length == 0)
         {
             Success();
