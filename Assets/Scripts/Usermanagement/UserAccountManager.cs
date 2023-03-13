@@ -21,7 +21,7 @@ public class UserAccountManager : MonoBehaviour
     private string k_pass = "password";
 
     // dict keys
-    private string k_user = "username";
+    private string k_user = "firstname";
     private string k_ci = "ci";
     private string k_skin = "skin";
     private string k_login_ct = "timesLoggedIn";
