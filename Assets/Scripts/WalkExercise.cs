@@ -39,21 +39,31 @@ public class WalkExercise : Exercise
 
     public void EnterArea()
     {
+        // TODO: force to look straight ahead
         StartCoroutine(MoveToPos());
     }
 
     private IEnumerator MoveToPos()
     {
         TankController.Instance.DisableMovement();
+        Transform camTransform = TankController.Instance.gameObject.GetComponentInChildren<Camera>().transform;
         float dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
         float angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
+        float pitch = camTransform.localEulerAngles.x;
         while (dist > 0.1f || Mathf.Abs(angle) > 0.1f)
         {
-            TankController.Instance.transform.position = Vector3.MoveTowards(TankController.Instance.transform.position, zone.transform.position, 1f*Time.deltaTime);
+            TankController.Instance.transform.position = Vector3.MoveTowards(TankController.Instance.transform.position, zone.transform.position, 1f * Time.deltaTime);
             dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
 
-            TankController.Instance.transform.rotation = Quaternion.RotateTowards(TankController.Instance.transform.rotation, zone.transform.rotation, 25f*Time.deltaTime);
+            TankController.Instance.transform.rotation = Quaternion.RotateTowards(TankController.Instance.transform.rotation, zone.transform.rotation, 25f * Time.deltaTime);
             angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
+
+            pitch = camTransform.localEulerAngles.x;
+            if (Mathf.Abs(pitch) < 0.1f)
+            { 
+                float direction = pitch < 0 ? -0.5f : 0.5f;
+                TankController.Instance.RotateCharacterUpDown(direction);
+            }
 
             yield return new WaitForEndOfFrame();
         }

@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-    [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource))]
 public class Greet : MonoBehaviour
 {
     [SerializeField] AudioClip clip;
     [SerializeField] Transform player;
     [SerializeField] LookAt look;
-    [SerializeField]AudioSource source;
-    [SerializeField]Animator animator;
+    [SerializeField] AudioSource source;
+    [SerializeField] Animator animator;
+    public bool canWave = true;
 
     // Start is called before the first frame update
     void Start()
     {
+        StaticEvent.moduleStart.AddListener(ToggleCanWave);
+        StaticEvent.moduleEnd.AddListener(ToggleCanWave);
         player = GameObject.FindGameObjectWithTag("Player").transform;
         source = GetComponent<AudioSource>();
         animator = GetComponentInParent<Animator>();
@@ -23,15 +26,18 @@ public class Greet : MonoBehaviour
     // Update is called once per frame
     public void OnMouseUp()
     {
-        if (player.GetComponent<TankController>().enabled)
+        if (canWave)
         {
-            StartCoroutine(Wave());
-            if (look)
-                StartCoroutine(Wave2());
+            if (player.GetComponent<TankController>().enabled)
+            {
+                StartCoroutine(Wave());
+                if (look)
+                    StartCoroutine(Wave2());
+            }
         }
     }
 
-    
+
     bool waving;
     public IEnumerator Wave2()
     {
@@ -65,5 +71,9 @@ public class Greet : MonoBehaviour
             animator.SetBool("isWaving", false);
             animator.SetBool("isWalking", true);
         }
+    }
+
+    private void ToggleCanWave(){
+        canWave = !canWave;
     }
 }

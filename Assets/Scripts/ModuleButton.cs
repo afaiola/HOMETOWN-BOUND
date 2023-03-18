@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -21,14 +22,14 @@ public class ModuleButton:MonoBehaviour
 
     public void Reset()
     {
-        GetComponent<Button>().interactable = true;
+        ActivateButton();
         overlay.enabled = false;
     }
 
     public void Set(Exercise module, Texture2D texture, bool correct)
     {
         overlay.enabled = false;
-        GetComponent<Button>().interactable = true;
+        ActivateButton();
         this.exercise = module;
         image.texture = texture;
         this.correct = correct;
@@ -48,7 +49,7 @@ public class ModuleButton:MonoBehaviour
         if (!exercise.Select(this)) return;
 
         var audioSource = GetComponent<AudioSource>();
-        GetComponent<Button>().interactable = false;
+        DeactivateButton();
         if (correct)
         {
             audioSource.clip = rightClip;
@@ -63,5 +64,19 @@ public class ModuleButton:MonoBehaviour
         }
 
         overlay.enabled = true;
+    }
+
+    internal void DeactivateButton()
+    {
+        if(GetComponent<Button>() != null){
+            GetComponent<Button>().interactable = false;
+        }
+    }
+
+    internal void ActivateButton()
+    {
+        if(GetComponent<Button>() != null){
+            GetComponent<Button>().interactable = true;
+        }
     }
 }

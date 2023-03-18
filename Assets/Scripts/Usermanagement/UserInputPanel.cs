@@ -10,6 +10,7 @@ public enum InputStatus { VALID, INVALID, ENABLED, DISABLED }   // GREEN, RED, B
 public class UserInputPanel : MonoBehaviour
 {
     public Button submitButton;
+    public Button registerButton;
     [System.NonSerialized] public UnityEvent<Dictionary<string, string>> submitAction;
     [SerializeField] private UserInputOption[] userInputOptions;
     public Color[] statusColors;
@@ -71,13 +72,27 @@ public class UserInputPanel : MonoBehaviour
 
     protected void OnSubmit()
     {
-        Dictionary<string, string> userOptions = new Dictionary<string, string>();
-        for (int i = 0; i < userInputOptions.Length; i++)
+        PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
+        bool valid = true;
+        foreach (UserInputOption u in userInputOptions)
         {
-            userOptions.Add(userInputOptions[i].optionName, userInputOptions[i].GetValue());
+            if (u.GetValue() == "")
+            {
+                valid = false;
+                SubmitFail("Please enter your " + u.errorfieldname);
+                break;
+            }
         }
-        submitButton.interactable = false;
-        submitAction.Invoke(userOptions);
+        if (valid)
+        {
+            Dictionary<string, string> userOptions = new Dictionary<string, string>();
+            for (int i = 0; i < userInputOptions.Length; i++)
+            {
+                userOptions.Add(userInputOptions[i].optionName, userInputOptions[i].GetValue());
+            }
+            submitButton.interactable = false;
+            submitAction.Invoke(userOptions);
+        }
     }
 
     public void SubmitFail(string message)
@@ -85,6 +100,10 @@ public class UserInputPanel : MonoBehaviour
         submitButton.image.color = statusColors[(int)InputStatus.INVALID];
         submitButton.GetComponentInChildren<Text>().text = message;
         Debug.Log("Fail with message: " + message);
+        if (registerButton != null)
+        {
+            registerButton.gameObject.SetActive(true);
+        }
         Invoke("Reset", 2f);
     }
 

@@ -12,6 +12,7 @@ public class UserInputOption : MonoBehaviour
     public GameObject helper;   // shows when current option is highlighted
     public Text[] helpTexts;    // various texts on the helper object to give detailed info on the inputs
     public Image statusImage;    // shows if current input is valid or not  // may not need these
+    public string errorfieldname;
     [SerializeField] private Sprite validIcon, invalidIcon;
 
     [System.NonSerialized] public UnityEvent inputChanged;

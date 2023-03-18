@@ -67,6 +67,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &65459536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +374,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &161019119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,6 +606,8 @@ MonoBehaviour:
   rightTexture: {fileID: 2800000, guid: 41f64bfd6081fa647922a233da2d1cf2, type: 3}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &2611572012219538338
 AudioSource:
   m_ObjectHideFlags: 0
@@ -827,6 +831,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &343615719
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1017,6 +1023,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &374458142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1215,6 +1222,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &380641076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1554,6 +1562,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &566797200
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1777,6 +1787,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &607820873
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2216,6 +2228,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &1109260447
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2406,6 +2420,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &1173988092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2637,6 +2652,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &1228837805
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3051,6 +3068,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &1650425591
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3241,6 +3260,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &1780573908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3472,6 +3492,8 @@ MonoBehaviour:
   rightTexture: {fileID: 0}
   wrongTexture: {fileID: 0}
   checking: 1
+  stringCmp: 0
+  tmpText: {fileID: 0}
 --- !u!82 &1845976891
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3662,6 +3684,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &1891837771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3860,6 +3883,7 @@ MonoBehaviour:
   speed: 0
   destination: {x: 0, y: 0, z: 0}
   pattern: 0
+  cornerIndex: 0
 --- !u!114 &1953584533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4970,6 +4994,7 @@ MonoBehaviour:
   moduleButton: {fileID: 0}
   buttons: []
   leftObject: {fileID: 0}
+  nameOfObject: 
   leftImage: {fileID: 0}
   images:
   - {fileID: 2800000, guid: 41f64bfd6081fa647922a233da2d1cf2, type: 3}

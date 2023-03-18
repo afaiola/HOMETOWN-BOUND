@@ -12,6 +12,7 @@ public class Profiler : MonoBehaviour
     public struct Profile
     {
         public string username;
+        public string displayName;
         public int ciLevel;
         public int skin_id;
         public int timesLoggedIn;
@@ -21,7 +22,7 @@ public class Profiler : MonoBehaviour
         public int consecutiveDays;
         // TODO: possibly add a key to allow user to update the firebase
 
-        public Profile(string _name, int _ci, int _skin, int login_ct, double _playTime, DateTime _start, DateTime _lastLogin, int _consecDays)
+        public Profile(string _name, int _ci, int _skin, int login_ct, double _playTime, DateTime _start, DateTime _lastLogin, int _consecDays, string firstName)
         {
             username = _name;
             ciLevel = _ci;
@@ -31,6 +32,7 @@ public class Profiler : MonoBehaviour
             startDate = _start;
             lastLoginDate = _lastLogin;
             consecutiveDays = _consecDays;
+            displayName = firstName;
         }
     }
 
@@ -55,7 +57,7 @@ public class Profiler : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void UserSignedIn(string _username, int _ci, int _skin, int login_ct, double playTime, DateTime startDate, DateTime lastLogin, int consecDays)
+    public void UserSignedIn(string _username, int _ci, int _skin, int login_ct, double playTime, DateTime startDate, DateTime lastLogin, int consecDays, string firstName)
     {
         login_ct++;
         DateTime date = DateTime.Now;
@@ -65,7 +67,7 @@ public class Profiler : MonoBehaviour
         else if (timeDiff.TotalDays > 1)
             consecDays = 0;
         lastLogin = date;
-        currentUser = new Profile(_username, _ci, _skin, login_ct, playTime, startDate, lastLogin, consecDays);
+        currentUser = new Profile(_username, _ci, _skin, login_ct, playTime, startDate, lastLogin, consecDays, firstName);
         Debug.Log($"{_username}: signed in");
     }
 
@@ -81,7 +83,8 @@ public class Profiler : MonoBehaviour
         var userRef = db.Collection("users").Document(auth.CurrentUser.Email);
         Dictionary<string, object> user = new Dictionary<string, object>
             {
-                { "username", currentUser.username },
+                { "email", currentUser.username },
+                { "username", currentUser.displayName },
                 { "ci",  currentUser.ciLevel },
                 { "skin", currentUser.skin_id },
                 { "timesLoggedIn", currentUser.timesLoggedIn },
