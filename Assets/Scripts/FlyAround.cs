@@ -9,9 +9,9 @@ public class FlyAround : MonoBehaviour
     private bool firstUpdate = true;
     [SerializeField] RectTransform parent;
     [SerializeField] RectTransform self;
-    Vector3 origin;
+    Vector2 origin;
     public float speed;
-    [SerializeField] Vector3 destination;
+    private Vector2 destination;
 
     public enum FlyPattern { RANDOM, CIRCLES, ORTHOGONAL };
     //[System.NonSerialized] 
@@ -21,36 +21,47 @@ public class FlyAround : MonoBehaviour
     private float angleInc;
     private float direction;
     RectTransform[] snaps;
-    Vector3[] spawnPoints = new Vector3[8];
+    Vector2[] spawnPoints = new Vector2[8];
     public int cornerIndex = 0;
 
-    void Awake()
+    private float b_height, b_width, p_height, p_width;
+
+
+    void OnEnable()
     {
         self = GetComponent<RectTransform>();
+        // forces to center
+        self.anchorMin = new Vector2(0.5f, 0.5f);
+        self.anchorMax = new Vector2(0.5f, 0.5f);
         parent = transform.parent.GetComponent<RectTransform>();
-        FillCornerArray();
-        // //GetComponent<RectTransform>().position = GetRandomCorner();
-        Vector3 corner = GetPosition();
-        self.localPosition = corner;
 
-        // origin = self.localPosition;
         snaps = GetActiveSnaps(parent.parent);
-
     }
 
     private void FillCornerArray()
     {
-        spawnPoints[0] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); //top left
-        spawnPoints[4] = new Vector3(0, parent.rect.height / 2 - (self.rect.height / 2), 0); // top centre
-        spawnPoints[1] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), parent.rect.height / 2 - (self.rect.height / 2), 0); // top right
-        spawnPoints[2] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), -parent.rect.height / 2 + (self.rect.height), 0); // bottom left
-        spawnPoints[5] = new Vector3(0, -parent.rect.height / 2 + (self.rect.height / 2), 0); // bottom centre
-        spawnPoints[3] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), -parent.rect.height / 2 + (self.rect.height), 0); //bottom right
-        spawnPoints[6] = new Vector3(parent.rect.width / 2 - (self.rect.width / 2), 0, 0); //mid right
-        spawnPoints[7] = new Vector3(-parent.rect.width / 2 + (self.rect.width / 2), 0, 0); //mid left
+        b_width = self.rect.width / 2f;
+        b_height = self.rect.height / 2f;
+        p_width = parent.rect.width / 2f;
+        p_height = parent.rect.height / 2f;
+        float left = b_width - p_width;
+        float middle = 0;
+        float right = p_width - b_width;
+        float bottom = b_height - p_height;
+        float center = 0;
+        float top = p_height - b_height;
+
+        spawnPoints[0] = new Vector2(left, top); //top left
+        spawnPoints[4] = new Vector2(middle, top); // top middle
+        spawnPoints[1] = new Vector2(right, top); // top right
+        spawnPoints[2] = new Vector2(left, bottom); // bottom left
+        spawnPoints[5] = new Vector2(middle, bottom); // bottom middle
+        spawnPoints[3] = new Vector2(right, bottom); //bottom right
+        spawnPoints[6] = new Vector2(right, center); //center right
+        spawnPoints[7] = new Vector2(left, center); //center left
     }
 
-    private Vector3 GetPosition()
+    private Vector2 GetPosition()
     {
         int res = 0;
         if (Regex.Match(gameObject.name, @"\d+").Success)
@@ -78,31 +89,33 @@ public class FlyAround : MonoBehaviour
 
     }
 
-    public void SetDestination(Vector3? dest)
+    public void SetDestination(Vector2? dest)
     {
         if (dest != null)
         {
-            destination = (Vector3)dest;
+            destination = (Vector2)dest;
         }
         else
         {
+            if (b_width == 0) return;   // dimensions not yet initialized
             // CARDS ARE ANCHORED TO TOP LEFT
-            var x = Random.Range(-parent.rect.width / 2f, parent.rect.width / 2f);
-            var y = Random.Range(-parent.rect.height / 2f, parent.rect.height / 2f);
+            var x = Random.Range(b_width - p_width, p_width - b_width);
+            var y = Random.Range(b_height - p_height, p_height - b_height);
             //Debug.Log(name + " pos: " + x + ", " + y);
             if (pattern == FlyPattern.CIRCLES)
             {
                 if (radius == -1)
                 {
-                    // set up the card.
-                    radius = Random.Range(10f, 25f);
-                    origin = new Vector3(); // new Vector3(Random.Range(-25f, 25f), Random.Range(-25f, 25f), 0f);
-                    Vector3 dir = transform.localPosition - origin;
+                    radius = Random.Range(b_width/2f, p_width)/2f;
+                    //radius = Mathf.Clamp(radius, 0, parent.rect.height/2f - y - self.rect.height/2f);
+
+                    //origin = new Vector2(); // new Vector3(Random.Range(-25f, 25f), Random.Range(-25f, 25f), 0f);
+                    Vector2 dir = self.anchoredPosition - origin;
                     angle = Vector3.SignedAngle(transform.right, dir, Vector3.right);
                     if (transform.localPosition.y < 0) angle *= -1f;
                     if (angle < 0f) angle = 360f + angle;
                     angle = angle * Mathf.PI / 180f;
-                    origin = transform.localPosition - new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0f);
+                    origin = self.anchoredPosition - new Vector2(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius);
 
                     direction = Random.Range(-1f, 1f);
                     if (direction < 0) direction = -1f;
@@ -110,13 +123,20 @@ public class FlyAround : MonoBehaviour
 
                     angleInc = Mathf.PI * 5f / 180f;
                 }
+                if (Vector2.Distance(self.anchoredPosition, origin) <= radius + 1f) // dont start orbiting unless within range
+                {
+                    angle += angleInc * direction;
+                    if (angle > 2f * Mathf.PI) angle = 0;
+                    if (angle < 0) angle = 2f * Mathf.PI;
 
-                angle += angleInc * direction;
-                if (angle > 2f * Mathf.PI) angle = 0;
-                if (angle < 0) angle = 2f * Mathf.PI;
-
-                x = radius * Mathf.Cos(angle) + origin.x;
-                y = radius * Mathf.Sin(angle) + origin.y;
+                    x = radius * Mathf.Cos(angle) + origin.x;
+                    y = radius * Mathf.Sin(angle) + origin.y;
+                }
+                else
+                {
+                    x = origin.x;
+                    y = origin.y;
+                }
             }
             else if (pattern == FlyPattern.ORTHOGONAL)
             {
@@ -129,13 +149,10 @@ public class FlyAround : MonoBehaviour
                     y = transform.localPosition.y;
                 }
             }
-            destination = new Vector3(x, y, 0);
-            if (name == "Card")
-            {
-                //Debug.DrawLine(destination, origin, Color.red, 5f);
-                //Debug.Log("angle: " + angle);
-                //Debug.Log(name + " dest: " + x + ", " + y);
-            }
+
+            x = Mathf.Clamp(x, b_width - p_width, p_width - b_width);
+            y = Mathf.Clamp(y, b_height - p_height, p_height - b_height);
+            destination = new Vector2(x, y);
         }
     }
 
@@ -144,17 +161,24 @@ public class FlyAround : MonoBehaviour
     {
         if (firstUpdate)
         {
+            FillCornerArray();
+            Vector2 corner = GetPosition();
+            self.anchoredPosition = corner;
+            //SetDestination(null);
             firstUpdate = false;
-            self.localPosition = GetPosition();
-            origin = self.localPosition;
-            SetDestination(MoveToFarCorner());
+            origin = self.anchoredPosition;
+            if (pattern == FlyPattern.CIRCLES)
+            {
+                // go to center
+                float x = Random.Range(-p_width/2f, p_width/2f);
+                float y = Random.Range(-p_height / 2f, p_height / 2f);
+                origin = new Vector2(x, y);
+                SetDestination(origin);
+            }
         }
-        // if (IsWithinDeadZone(self, snaps))
-        // {
-        //     Bounce();
-        // }
+
         // // If out of bounds, reset
-        if (isOutOfBounds())
+        /*if (isOutOfBounds())
         {
             SetDestination(MoveToFarCorner());    // if out of range go to furthest corner
             Debug.Log(name + " out of bounds!");
@@ -165,12 +189,10 @@ public class FlyAround : MonoBehaviour
                 SetDestination(null);
             }
 
-        }
-        if (Vector3.Distance(self.localPosition, destination) > 1f)
+        }*/
+        if (Vector3.Distance(self.anchoredPosition, destination) > 1f)
         {
-            self.localPosition = Vector3.MoveTowards(self.localPosition, destination, Time.deltaTime * speed * 10f);
-            //transform.localPosition = Vector3.Lerp(transform.localPosition, destination, time);
-            //time += (speed * Time.deltaTime) / Vector3.Distance(transform.localPosition, destination);
+            self.anchoredPosition = Vector3.MoveTowards(self.anchoredPosition, destination, Time.deltaTime * speed * 10f);
         }
         else
         {
@@ -178,19 +200,7 @@ public class FlyAround : MonoBehaviour
             //origin = transform.position;
             time = 0;
         }
-        Debug.Log(name + " is at position " + transform.localPosition);
-    }
-
-    private void Bounce()
-    {
-        if (destination != Vector3.zero)
-        {
-            SetDestination(new Vector3(-destination.x, -destination.y, 0));
-        }
-        else
-        {
-            SetDestination(GetPosition());
-        }
+       // Debug.Log(name + " is at position " + transform.anchoredPosition);
     }
 
     private Vector3 MoveToFarCorner()
@@ -209,12 +219,14 @@ public class FlyAround : MonoBehaviour
         }
         return retVec;
     }
+
     private bool isOutOfBounds()
     {
-        return (self.localPosition.x > parent.rect.width / 2 ||
-            self.localPosition.x < -parent.rect.width / 2 ||
-            self.localPosition.y > parent.rect.height / 2 ||
-            self.localPosition.y < -parent.rect.height / 2);
+        Debug.Log($"{name} OUT OF BOUNDS");
+        return (self.anchoredPosition.x > parent.rect.width / 2 ||
+            self.anchoredPosition.x < -parent.rect.width / 2 ||
+            self.anchoredPosition.y > parent.rect.height / 2 ||
+            self.anchoredPosition.y < -parent.rect.height / 2);
     }
 
     private RectTransform[] GetActiveSnaps(Transform ancestor)
@@ -237,30 +249,5 @@ public class FlyAround : MonoBehaviour
             }
         }
         return (retSnaps.ToArray());
-    }
-
-    private bool IsWithinDeadZone(RectTransform local, RectTransform[] snaps)
-    {
-        Vector3 loc = local.localPosition;
-        Dictionary<RectTransform, bool> retval = new Dictionary<RectTransform, bool>();
-        foreach (RectTransform snap in snaps)
-        {
-            bool overlapping = true;
-            Vector3 snapTopLeft = snap.transform.localPosition;
-            Vector3 snapBottomRight = new Vector3(snap.localPosition.x + snap.rect.width, snap.localPosition.y - snap.rect.height, 0);
-
-            if (loc.y < snapBottomRight.y || // is transform is below the snap
-            loc.y - local.rect.height > snapTopLeft.y)       //if transform is above the snap
-            {
-                overlapping = false;
-            }
-            if (loc.x > snapBottomRight.x || // transform is on the right of the snap
-                loc.x + snap.rect.width < snapTopLeft.x) // if transform is on the left of the snap
-            {
-                overlapping = false;
-            }
-            retval.Add(snap, overlapping);
-        }
-        return retval.ContainsValue(true);
     }
 }
