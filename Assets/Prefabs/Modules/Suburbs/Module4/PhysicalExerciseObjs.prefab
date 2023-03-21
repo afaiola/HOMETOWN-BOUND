@@ -987,10 +987,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 6571984241077723695}
-  - {fileID: 6571984240211674030}
-  - {fileID: 6571984241121368501}
   - {fileID: 6571984240559415993}
+  - {fileID: 6571984241077723695}
+  - {fileID: 6571984241121368501}
+  - {fileID: 6571984240211674030}
   m_Father: {fileID: 6571984240808366632}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -1106,7 +1106,7 @@ GameObject:
   - component: {fileID: 6571984240211674029}
   - component: {fileID: 6571984240211674028}
   m_Layer: 0
-  m_Name: Frame (1)
+  m_Name: Frame_U
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1124,7 +1124,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 1.5, z: 0.1}
   m_Children: []
   m_Father: {fileID: 6571984239648041260}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6571984240211674029
 MeshFilter:
@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 6571984240559415940}
   - component: {fileID: 6571984240559415943}
   m_Layer: 0
-  m_Name: Frame (3)
+  m_Name: Frame_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1205,7 +1205,7 @@ Transform:
   m_LocalScale: {x: 1.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 6571984239648041260}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6571984240559415940
 MeshFilter:
@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 6571984241077723690}
   - component: {fileID: 6571984241077723693}
   m_Layer: 0
-  m_Name: Frame
+  m_Name: Frame_D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1319,7 +1319,7 @@ Transform:
   m_LocalScale: {x: 0.1, y: 1.5, z: 0.1}
   m_Children: []
   m_Father: {fileID: 6571984239648041260}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6571984241077723690
 MeshFilter:
@@ -1382,7 +1382,7 @@ GameObject:
   - component: {fileID: 6571984241121368496}
   - component: {fileID: 6571984241121368499}
   m_Layer: 0
-  m_Name: Frame (2)
+  m_Name: Frame_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

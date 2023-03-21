@@ -69,8 +69,8 @@ public class TVExercise : Exercise
         upButton.onClick.AddListener(IncreaseChannel);
         downButton.onClick.AddListener(DecreaseChannel);
         enterButton.onClick.AddListener(EnterSelection);
-        useClips = SystemInfo.operatingSystem.Contains("Mac");
-        
+        //useClips = SystemInfo.operatingSystem.Contains("Mac");
+        useClips = true;
         if (useClips) tv.clip = tvStatic;
         else tv.url = System.IO.Path.Combine(Application.streamingAssetsPath, "TV-static.ogv");
         tv.Play();
