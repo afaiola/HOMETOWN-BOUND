@@ -118,6 +118,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canMove: 0
+  maxAngle: 60
+  playerCam: {fileID: 1417065742833775872}
   speed: 30
   turnSpeed: 300
   m_FootstepSounds:
@@ -125,6 +127,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8bc94ec6ed537e743b481638bdcd503d, type: 3}
   - {fileID: 8300000, guid: 5a9383dda6cabc047b7a297602e93eb4, type: 3}
   - {fileID: 8300000, guid: e9714160ce34f2b4ab63ff8c27bd68e1, type: 3}
+  afkTime: 60
   m_StepInterval: 100
   skinColors:
   - {fileID: 2100000, guid: 73a5d575bec22f94e9b717c892ad44c5, type: 2}
