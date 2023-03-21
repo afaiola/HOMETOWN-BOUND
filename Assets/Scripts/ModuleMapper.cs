@@ -98,8 +98,9 @@ public class ModuleMapper : MonoBehaviour
                 {
                     names[i] = char.ToUpper(names[i][0]) + names[i].Substring(1);
                 }
-                portraitExercise.Initialize(names);
+                
                 portraitExercise.leftObject.texture = content.image;
+                portraitExercise.Initialize(names);
             }
             else
             {

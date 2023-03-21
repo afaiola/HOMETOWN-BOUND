@@ -12,6 +12,7 @@ public class TankController : MonoBehaviour
     public bool canMove;
     public float maxAngle = 60;
     private UnityEngine.CharacterController controller;
+    public Camera playerCam;
 
     public float speed = 15;
     public float turnSpeed = 180;
@@ -109,12 +110,10 @@ public class TankController : MonoBehaviour
         if (value == 0) return;
         value = -value * turnSpeed * Time.deltaTime;
         value = Mathf.Clamp(value, -60f, 60f);
-        GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
         Quaternion yQuat = Quaternion.AngleAxis(value, Vector3.right);
-        Quaternion temp = cam.transform.localRotation * yQuat;
+        Quaternion temp = playerCam.transform.localRotation * yQuat;
         if (Quaternion.Angle(Quaternion.identity, temp) < maxAngle)
-            cam.transform.localRotation = temp;
-        //cam.transform.Rotate(value , 0, 0);
+            playerCam.transform.localRotation = temp;
     }
 
     public void MoveCharacterForwardBack(float value)

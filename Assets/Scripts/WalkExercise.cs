@@ -46,11 +46,11 @@ public class WalkExercise : Exercise
     private IEnumerator MoveToPos()
     {
         TankController.Instance.DisableMovement();
-        Transform camTransform = TankController.Instance.gameObject.GetComponentInChildren<Camera>().transform;
+        Transform camTransform = TankController.Instance.playerCam.transform;
         float dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
         float angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
         float pitch = camTransform.localEulerAngles.x;
-        while (dist > 0.1f || Mathf.Abs(angle) > 0.1f)
+        while (dist > 0.1f || Mathf.Abs(angle) > 0.1f || Mathf.Abs(pitch) > 0.1f)
         {
             TankController.Instance.transform.position = Vector3.MoveTowards(TankController.Instance.transform.position, zone.transform.position, 1f * Time.deltaTime);
             dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
@@ -59,9 +59,9 @@ public class WalkExercise : Exercise
             angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
 
             pitch = camTransform.localEulerAngles.x;
-            if (Mathf.Abs(pitch) < 0.1f)
+            if (Mathf.Abs(pitch) > 0.1f)
             { 
-                float direction = pitch < 0 ? -0.5f : 0.5f;
+                float direction = pitch > 0 ? -0.005f : 0.005f;
                 TankController.Instance.RotateCharacterUpDown(direction);
             }
 

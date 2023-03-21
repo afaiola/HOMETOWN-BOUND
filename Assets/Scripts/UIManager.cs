@@ -177,6 +177,7 @@ public class UIManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        TankController.Instance.playerCam.transform.localRotation = new Quaternion();   // reset view
         topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, goal);
         bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, goal);
     }

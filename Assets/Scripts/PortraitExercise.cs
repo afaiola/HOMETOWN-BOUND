@@ -7,6 +7,9 @@ public class PortraitExercise : DragExercise
 {
     public GameObject dragPrefab, snapPrefab;
     public string[] familyMembers;
+    public bool splitRows = true;
+    public bool physicalFrame = false;
+    public GameObject pictureFrame;
 
     private bool initialized;
     // flying panel is drag spawn
@@ -16,32 +19,87 @@ public class PortraitExercise : DragExercise
 
     }
 
+    private void Start()
+    {
+    }
+
     public void Initialize(string[] names)
     {
         if (initialized) return;
         initialized = true;
         if (names != null)
+        {
             if (names.Length > 0)
+            {
                 familyMembers = names;
+                splitRows = false;
+                physicalFrame = true;
+            }
+        }
+
+        AspectRatioFitter portraitFitter = leftObject.GetComponent<AspectRatioFitter>();
+        float portraitWidth = leftObject.texture.width;
+        float portraitHeight = leftObject.texture.height;
+        float portraitRatio = portraitWidth / portraitHeight;
+        portraitFitter.aspectRatio = portraitRatio;
+
+        RectTransform snapRect = snapPanel.GetComponent<RectTransform>();
+        Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio + 25, snapRect.rect.height);
+
+        pictureFrame.SetActive(physicalFrame);
+        if (physicalFrame)
+        {
+            // top and bottom always correct
+            float frameWidth = 0.05f + portraitRatio / 2f;
+            pictureFrame.transform.GetChild(0).localPosition = new Vector3(0, -frameWidth, 0);
+            pictureFrame.transform.GetChild(2).localPosition = new Vector3(0, frameWidth, 0);
+        }
+        else
+        {
+            adjustedSize *= 0.8f;
+            //adjustedSize = new Vector2((adjustedSize.x - 25f) * 0.75f, adjustedSize.y * 0.75f);  // cut out the frame 
+        }
+
+        snapRect.sizeDelta = adjustedSize;
+
         leftImages = new RawImage[familyMembers.Length];
         flyingImages = new RawImage[familyMembers.Length];
         snapButtons = new Snap[familyMembers.Length];
 
-        Rect rect = flyingPanel.GetComponent<RectTransform>().rect;
-        float separationDist = rect.width / familyMembers.Length;
+        Rect rect = snapPanel.GetComponent<RectTransform>().rect;
+        float separationDist = adjustedSize.x / familyMembers.Length; 
+        if (splitRows) separationDist *= 2f;
+
         List<string> namesRemaining = new List<string>();
         for (int i = 0; i < familyMembers.Length; i++) namesRemaining.Add(familyMembers[i]);
+
         // spawn the flying images and snaps
         for (int i = 0; i < familyMembers.Length; i++)
         {
             RawImage flyer = Instantiate(dragPrefab, flyingPanel.transform).GetComponent<RawImage>();
             string randName = namesRemaining[Random.Range(0, namesRemaining.Count)];
             namesRemaining.Remove(randName);
+
+            float x = i - familyMembers.Length / 2;
+            float y = rect.height / 2f;
+            if (splitRows && x >= 0)
+            {
+                x -= familyMembers.Length / 2; 
+                y *= -1f;
+            }
+            x *= separationDist;
+            if (splitRows) x += adjustedSize.x / 2f;    // increased separation dist causes objects to be too far left
+
+            // if row of names too congested, stagger odd numbered labels
+            if (separationDist < flyer.rectTransform.rect.width)
+                if (i % 2 == 1)
+                    y -= flyer.rectTransform.rect.height;
+
             flyer.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = randName;
-            flyer.GetComponent<RectTransform>().anchoredPosition = new Vector2((i- familyMembers.Length/2) * separationDist, rect.height / 2f);
+            flyer.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y/2f);    // y/2f to put the flyers more in the center
 
             Snap snap = Instantiate(snapPrefab, snapPanel.transform).GetComponent<Snap>();
-            snap.GetComponent<RectTransform>().anchoredPosition = new Vector2((i- familyMembers.Length / 2) * separationDist, -rect.height / 2f);
+            snap.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
             snap.tmpText.text = familyMembers[i]; // be sure the text is not visible
             snap.tmpText.gameObject.SetActive(false);
             snap.rightTexture = flyer.texture as Texture2D;
