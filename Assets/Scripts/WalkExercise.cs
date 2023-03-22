@@ -50,7 +50,7 @@ public class WalkExercise : Exercise
         float dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
         float angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
         float pitch = camTransform.localEulerAngles.x;
-        while (dist > 0.1f || Mathf.Abs(angle) > 0.1f || Mathf.Abs(pitch) > 0.1f)
+        while (dist > 0.1f || Mathf.Abs(angle) > 0.1f)
         {
             TankController.Instance.transform.position = Vector3.MoveTowards(TankController.Instance.transform.position, zone.transform.position, 1f * Time.deltaTime);
             dist = Vector3.Distance(TankController.Instance.transform.position, zone.transform.position);
@@ -58,10 +58,13 @@ public class WalkExercise : Exercise
             TankController.Instance.transform.rotation = Quaternion.RotateTowards(TankController.Instance.transform.rotation, zone.transform.rotation, 25f * Time.deltaTime);
             angle = Quaternion.Angle(TankController.Instance.transform.rotation, zone.transform.rotation);
 
-            pitch = camTransform.localEulerAngles.x;
-            if (Mathf.Abs(pitch) > 0.1f)
-            { 
-                float direction = pitch > 0 ? -0.005f : 0.005f;
+            pitch = 180f - camTransform.localEulerAngles.x;
+            if (Mathf.Abs(pitch) < 179f)
+            {
+                float direction = pitch < 0 ? -0.1f : 0.1f;
+                Debug.Log($"pitch: {pitch} dir: {direction}");
+
+                //camTransform.localEulerAngles = new Vector3(pitch - (direction), 0, 0);
                 TankController.Instance.RotateCharacterUpDown(direction);
             }
 

@@ -180,8 +180,11 @@ public class TVExercise : Exercise
                 
             }
         }
-        try { tv.url = url; }
-        catch { Debug.Log("Invalid URL: " + url); }
+        if (!useClips)
+        {
+            try { tv.url = url; }
+            catch { Debug.Log("Invalid URL: " + url); }
+        }
         StartCoroutine(PlayVideo());
     }
 
