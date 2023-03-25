@@ -4,22 +4,30 @@ using UnityEngine;
 
 public class SpeechBubble : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] TMPro.TextMeshProUGUI messageText;
+    public string defaultMessage;
+
+    private void Start()
     {
-        StaticEvent.showSpeechBubble.AddListener(ActivateBubble);
-        StaticEvent.hideSpeechBubble.AddListener(DeactivateBubble);
+        gameObject.SetActive(false);
     }
 
-    void ActivateBubble(){
-        foreach(Transform child in transform){
-            if (child.gameObject.name == "Text"){
-                child.GetComponent<TMPro.TextMeshProUGUI>().text = child.GetComponent<TMPro.TextMeshProUGUI>().text.Replace("{name}", Profiler.Instance.currentUser.displayName);
-            }
-            child.gameObject.SetActive(true);
-        }
+    public void Show()
+    {
+        gameObject.SetActive(true);
+        messageText.text = defaultMessage;
+        Invoke("Close", 5f);
     }
-    void DeactivateBubble(){
-        Destroy(this.gameObject);
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
     }
+
+    public void ShowText(string message)
+    {
+        gameObject.SetActive(true);
+        messageText.text = message;
+    }
+
 }
