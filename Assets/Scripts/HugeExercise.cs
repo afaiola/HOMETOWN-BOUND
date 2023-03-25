@@ -60,7 +60,13 @@ public class HugeExercise : Exercise
                 leftImages[i].texture = images[rndList[i]];
 
         }
-
+        string leftString = "";
+        for (int i = 0; i < leftTexts.Length; i++)
+        {
+            leftString += leftTexts[i].text;
+        }
+        if (leftString.Contains("FAG"))
+            leftTexts[1].text = "B";
         int[] objCounts = new int[leftImages.Length];
         // Add random buttons
         for (int i = 0; i < size; i++)
