@@ -69,6 +69,7 @@ public class Profiler : MonoBehaviour
         lastLogin = date;
         currentUser = new Profile(_username, _ci, _skin, login_ct, playTime, startDate, lastLogin, consecDays, firstName);
         Debug.Log($"{_username}: signed in");
+        UpdateUserProfile();
     }
 
     public Profile GetActiveProfile()

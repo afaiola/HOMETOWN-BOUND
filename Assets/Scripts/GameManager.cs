@@ -48,7 +48,34 @@ public class GameManager : MonoBehaviour
 
         // load the downloaded images into the exercises
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
+        StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
+
         StorageManager.Instance.StartContentDownload();
+
+        IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
+        
+        intro.PlayCutscene(Profiler.Instance.currentUser.timesLoggedIn > 1);
+    }
+
+    private void LoadModule()
+    {
+        IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
+        int lastModulePlayed = SavePatientData.Instance.LastModulePlayed();
+        if (lastModulePlayed == 0)
+        {
+            intro.SetDialogue(true);
+            return;
+        }
+        ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
+        if (!intro.skipped) // cutscene is still running
+        {
+            intro.onComplete = new UnityEvent();
+            intro.onComplete.AddListener(moduleMapper.gotos[lastModulePlayed].Go);
+        }
+        else
+        {
+            moduleMapper.gotos[lastModulePlayed].Go();
+        }
     }
 
     public void TeleportPlayer(Vector3 location)
@@ -56,7 +83,8 @@ public class GameManager : MonoBehaviour
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
         if (intro != null)
         {
-            intro.Interrupt();
+            if (!intro.skipped)
+                intro.Interrupt();
         }
 
         StartCoroutine(TeleportRoutine(location));

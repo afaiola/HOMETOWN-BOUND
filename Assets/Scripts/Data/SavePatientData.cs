@@ -372,7 +372,12 @@ public class SavePatientData : MonoBehaviour
         }
         if (!found)
         {
-            // add new row
+            // add all new rows
+            int dataCt = patientData.Count;
+            for (int i = dataCt; i < exerciseNum; i++)
+            {
+                patientData.Add(new PatientDataEntry(i));
+            }
             PatientDataEntry entry = new PatientDataEntry(exerciseNum);
             entry.attempts[0].time = time;
             entry.attempts[0].successes = successes;
@@ -461,6 +466,37 @@ public class SavePatientData : MonoBehaviour
     public void UploadPatientData()
     {
         StorageManager.Instance.StartCSVUpload(patientDataFile);
+    }
+
+    public int LastModulePlayed()
+    {
+        int lastExercise = LastExercisePlayed();
+        int mod = Mathf.FloorToInt(lastExercise / 7);
+        return mod;
+    }
+
+    public int LastExercisePlayed()
+    {
+        int[] lastPlayed = new int[3];  // last exercise played on each attempt
+        if (patientData == null)
+            patientData = Load(patientDataFile);
+        for (int i = 0; i < patientData.Count; i++)
+        {
+            for (int j = 0; j < patientData[i].attempts.Length; j++)
+            {
+                if (patientData[i].attempts[j].time != 0)
+                {
+                    lastPlayed[j] = patientData[i].exercise + 1;    // +1 accounts for leaving the hospital
+                }
+            }
+        }
+        int maxExerciseID = 7 * 5 * 2 + 7 * 3 + 4 + 1;
+        for (int i = 0; i < lastPlayed.Length; i++)
+        {
+            if (lastPlayed[i] < maxExerciseID)
+                return lastPlayed[i];
+        }
+        return 0;
     }
 
     private static void PlatformSafeMessage(string message)

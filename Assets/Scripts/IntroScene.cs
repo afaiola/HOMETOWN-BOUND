@@ -2,18 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(AudioSource))]
 public class IntroScene : MonoBehaviour
 {
     [SerializeField] GameObject dr,nurse;
     [SerializeField] AudioSource source;
+    [SerializeField] AudioClip introClip, continuePlayingClip;
+    [SerializeField] SpeechBubble speechBubble;
     [SerializeField] float blinkSpeed;
     [SerializeField] Transform start;
     [SerializeField] GameObject guy;
     public GameObject point2;
     public bool skipped;
     private IEnumerator activeCoroutine;
+
+    public UnityEvent onComplete;
+    private string nextActionMessage = "Leave the hospital.";
 
     private void OnValidate()
     {
@@ -23,8 +29,7 @@ public class IntroScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        activeCoroutine = Cutscene();   
-        StartCoroutine(activeCoroutine);
+        
     }
 
     void FixedUpdate()
@@ -38,6 +43,32 @@ public class IntroScene : MonoBehaviour
         {
             source.Stop();
         }
+    }
+
+    public void SetDialogue(bool firstTime)
+    {
+        string name = Profiler.Instance.currentUser.displayName;
+        if (name != "") name = $", {name}";
+        string subtitles = $"How are we doing today{name}? Everything looks good. Feel free to get up, get dressed, and go home from the hospital.";
+        
+        source.clip = introClip;
+        nextActionMessage = "Leave the hospital.";
+        if (!firstTime)
+        {
+            source.clip = continuePlayingClip;
+            nextActionMessage = "Loading Checkpoint...";
+            subtitles = $"How are we doing today{name}? Everything looks good. Let's pick up where we left off.";
+        }
+
+        if (speechBubble)
+            speechBubble.ShowText(subtitles);
+    }
+
+    public void PlayCutscene(bool firstTime)
+    {
+        SetDialogue(firstTime); 
+        activeCoroutine = Cutscene();
+        StartCoroutine(activeCoroutine);
     }
 
     private IEnumerator Cutscene()
@@ -67,6 +98,10 @@ public class IntroScene : MonoBehaviour
         dr.SetActive(false);
         nurse.SetActive(false);
         yield return new WaitForSecondsRealtime(1f);
+        speechBubble.Close();
+        skipped = true;
+        if (onComplete != null)
+            onComplete.Invoke();
 
         UIManager.Instance.OpenEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
@@ -78,7 +113,9 @@ public class IntroScene : MonoBehaviour
         UIManager.Instance.inCutscene = false;
         //UIManager.Instance.canPause = true;
         UIManager.Instance.PromptGameWindowFocus();
-        Menu.Instance.UpdateModuleName("Leave the hospital.");
+        Menu.Instance.UpdateModuleName(nextActionMessage);
+        // TODO: turn off the speech bubble
+        
     }
 
     public void Interrupt()
@@ -91,9 +128,16 @@ public class IntroScene : MonoBehaviour
         }
         TankController.Instance.transform.position = point2.transform.position;
         TankController.Instance.EnableMovement();
+        speechBubble.Close();
+        skipped = true;
+        if (onComplete != null)
+            onComplete.Invoke();
+
         UIManager.Instance.OpenEyes();
         UIManager.Instance.inCutscene = false;
         //UIManager.Instance.canPause = true;
-        Menu.Instance.UpdateModuleName("Leave the hospital.");
+        Menu.Instance.UpdateModuleName(nextActionMessage);
+        // TODO: turn off the speech bubble 
+        
     }
 }

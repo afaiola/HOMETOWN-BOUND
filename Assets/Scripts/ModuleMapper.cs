@@ -129,9 +129,11 @@ public class ModuleMapper : MonoBehaviour
             int mod = Mathf.FloorToInt(content.exerciseID / 7);
             int ex = content.exerciseID % 7;
             Exercise exercise = modules[mod].exercises[ex];
+            exercise.customContent = true;
             int optionSelected = int.Parse(content_map[content.pictureName].ToString());
             content.details = optionSelected.ToString();
-            
+            exercise.nameOfObject = $"your favorite {content.pictureName}";
+
             if (content.pictureName == "program")
             {
                 TVExercise tv = exercise as TVExercise;

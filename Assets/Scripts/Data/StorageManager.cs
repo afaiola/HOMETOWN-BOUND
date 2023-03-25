@@ -112,7 +112,7 @@ public class StorageManager : MonoBehaviour
             cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
             yield return cd.coroutine;
             byte[] result = (byte[])cd.result;
-            Debug.Log($"{content.pictureName} size: {result.Length}");
+            //Debug.Log($"{content.pictureName} size: {result.Length}");
             if (result.Length < 16)
             {
                 content.valid = false;
@@ -125,7 +125,7 @@ public class StorageManager : MonoBehaviour
             float downloadPercent = 10000f * (float)filesDownloaded / (float)totalFiles / 100f;
             //Debug.Log($"Download progress: {downloadPercent}%");
         }
-        Debug.Log("download complete");
+        Debug.Log("extern data download complete");
         contentDownloadedEvent.Invoke();
     }
 
