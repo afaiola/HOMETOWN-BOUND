@@ -72,6 +72,57 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &3663714757558102374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8490783053451126400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad3231a7f5d71d47b00d18cd64982a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exerciseID: 0
+  score: 5
+  maxTime: 60
+  moduleButton: {fileID: 0}
+  buttons: []
+  leftObject: {fileID: 0}
+  nameOfObject: 
+  leftImage: {fileID: 2800000, guid: 5992330d07192ff4eb535e5ef559f4ea, type: 3}
+  images: []
+  selected: []
+  _correctCount: 0
+  _incorrectCount: 0
+  customContent: 0
+  instructionsDefault: {fileID: 8300000, guid: 37ce8ad4a4cd90c4285ddb854b39399d, type: 3}
+  instructionsCustom: {fileID: 8300000, guid: 37ce8ad4a4cd90c4285ddb854b39399d, type: 3}
+  leftPanel: {fileID: 2325851855086016477}
+  flyingPanel: {fileID: 6665442681467907252}
+  snapPanel: {fileID: 2030156166381842401}
+  leftImages: []
+  flyingImages: []
+  snapButtons: []
+  minSpeed: 1
+  maxSpeed: 3
+  overriderefs: 1
+  dragPrefab: {fileID: 350042120434065802, guid: f41bd7384b9cea44ebaa8dbe68abdf00,
+    type: 3}
+  snapPrefab: {fileID: 7563514406028116704, guid: 3ede9e72296c31c4b8e85a2602bfcced,
+    type: 3}
+  familyMembers:
+  - Washington
+  - Clinton
+  - Adams
+  - Kennedy
+  - Reagan
+  - Eisenhower
+  - Nixon
+  splitRows: 1
+  physicalFrame: 0
+  pictureFrame: {fileID: 0}
 --- !u!1 &1735518051990186605
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,51 +976,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 225, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3663714757558102374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8490783053451126400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dad3231a7f5d71d47b00d18cd64982a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  exerciseID: 0
-  score: 5
-  maxTime: 60
-  moduleButton: {fileID: 0}
-  buttons: []
-  leftObject: {fileID: 0}
-  nameOfObject: 
-  leftImage: {fileID: 2800000, guid: 5992330d07192ff4eb535e5ef559f4ea, type: 3}
-  images: []
-  selected: []
-  _correctCount: 0
-  _incorrectCount: 0
-  leftPanel: {fileID: 2325851855086016477}
-  flyingPanel: {fileID: 6665442681467907252}
-  snapPanel: {fileID: 2030156166381842401}
-  leftImages: []
-  flyingImages: []
-  snapButtons: []
-  minSpeed: 1
-  maxSpeed: 3
-  overriderefs: 1
-  dragPrefab: {fileID: 350042120434065802, guid: f41bd7384b9cea44ebaa8dbe68abdf00,
-    type: 3}
-  snapPrefab: {fileID: 7563514406028116704, guid: 3ede9e72296c31c4b8e85a2602bfcced,
-    type: 3}
-  familyMembers:
-  - Washington
-  - Clinton
-  - Adams
-  - Kennedy
-  - Reagan
-  - Eisenhower
-  - Nixon
 --- !u!1 &8647502819555539848
 GameObject:
   m_ObjectHideFlags: 0
