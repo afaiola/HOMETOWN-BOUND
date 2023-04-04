@@ -37,6 +37,7 @@ public class Module : MonoBehaviour
     [SerializeField] public int ModuleNo;
     public bool open;
     [SerializeField] Button closeButton;
+    protected AudioSource helpAudio;
 
     private QuantumTek.QuantumUI.QUI_Bar progressBar;
     public virtual void OnValidate()
@@ -74,6 +75,10 @@ public class Module : MonoBehaviour
         }
         else
         {
+            if (helpAudio)
+            {
+                helpAudio.clip = exercises[current].customContent ? exercises[current].instructionsCustom : exercises[current].instructionsDefault;
+            }
             exercises[current].Arrange();
             exercises[current].gameObject.SetActive(true);
             foreach (var layoutGroup in this.GetComponentsInChildren<LayoutGroup>())

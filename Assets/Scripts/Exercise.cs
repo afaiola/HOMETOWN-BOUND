@@ -24,6 +24,9 @@ public class Exercise : MonoBehaviour
     public int _correctCount;
     public int _incorrectCount;
 
+    public bool customContent = false;
+    public AudioClip instructionsDefault, instructionsCustom;
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.A) && Debug.isDebugBuild)

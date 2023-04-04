@@ -50,7 +50,7 @@ public class SavePatientData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Initialize();
+        //Initialize();
     }
 
     // Update is called once per frame
@@ -79,7 +79,6 @@ public class SavePatientData : MonoBehaviour
         if (File.Exists(patientDataFile))
             File.Delete(patientDataFile);
         // try fetching patientDataFile.
-        StorageManager.Instance.downloadStatusEvent = new UnityEngine.Events.UnityEvent<bool>();
         StorageManager.Instance.downloadStatusEvent.AddListener(FileDownload);
         StorageManager.Instance.StartCSVDownload(patientDataFile);
     }

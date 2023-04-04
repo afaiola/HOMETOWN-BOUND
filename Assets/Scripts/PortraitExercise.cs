@@ -37,10 +37,12 @@ public class PortraitExercise : DragExercise
             }
         }
 
-        AspectRatioFitter portraitFitter = leftObject.GetComponent<AspectRatioFitter>();
+        
         float portraitWidth = leftObject.texture.width;
         float portraitHeight = leftObject.texture.height;
         float portraitRatio = portraitWidth / portraitHeight;
+        AspectRatioFitter portraitFitter = leftObject.gameObject.AddComponent<AspectRatioFitter>();
+        portraitFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
         portraitFitter.aspectRatio = portraitRatio;
 
         RectTransform snapRect = snapPanel.GetComponent<RectTransform>();
@@ -51,8 +53,11 @@ public class PortraitExercise : DragExercise
         {
             // top and bottom always correct
             float frameWidth = 0.05f + portraitRatio / 2f;
+            float frameLength = 0.9f + portraitRatio / 2f;
             pictureFrame.transform.GetChild(0).localPosition = new Vector3(0, -frameWidth, 0);
             pictureFrame.transform.GetChild(2).localPosition = new Vector3(0, frameWidth, 0);
+            pictureFrame.transform.GetChild(1).localScale = new Vector3(0.1f, frameLength, 0.1f);
+            pictureFrame.transform.GetChild(3).localScale = new Vector3(0.1f, frameLength, 0.1f);
         }
         else
         {

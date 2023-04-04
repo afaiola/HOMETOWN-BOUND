@@ -62,6 +62,7 @@ public class GoTo : MonoBehaviour
     {
         TankController.Instance.DisableMovement();
         ScoreCalculator.instance.GetStars();
+        Debug.Log("starting module: " + module.current);
         ScoreCalculator.instance.StartActivity(module.exercises[module.current].exerciseID);
         module?.Play();
         if (moduleObject)

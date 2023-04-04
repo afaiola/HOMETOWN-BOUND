@@ -7,6 +7,7 @@ public class HouseCutscene : MonoBehaviour
 {
     public Transform startPos, goalPos;
     public Door door;
+    public AudioSource instructions;
 
     private Transform player;
     private float doorOpenTime = 2f;
@@ -79,5 +80,7 @@ public class HouseCutscene : MonoBehaviour
         yield return new WaitForSeconds(door.moveTime);
         TankController.Instance.EnableMovement();
         UIManager.Instance.inCutscene = false;
+        instructions.Play();
+
     }
 }

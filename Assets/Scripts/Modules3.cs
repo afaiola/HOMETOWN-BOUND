@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Modules3 : Module
 {
-    public Text helpText;
+    public TMPro.TextMeshProUGUI helpText;
     public float speedInc = 0.5f;
     public float minSpeed = 1f;
     public float maxSpeed = 3f;
@@ -27,6 +27,7 @@ public class Modules3 : Module
                 card.pattern = flyPattern;
             }
         }*/
+        helpAudio = helpText.transform.parent.GetComponentInChildren<AudioSource>();
     }
 
     protected override void RunFirstModule()
@@ -40,6 +41,8 @@ public class Modules3 : Module
         (exercises[0] as CardExercise).maxFlipTime = maxFlipTime;
         (exercises[0] as CardExercise).Arrange();
         helpText.text = "Click on the picture of " + (exercises[0] as CardExercise).nameOfObject;
+        helpAudio.clip = exercises[0].customContent ? exercises[0].instructionsCustom : exercises[0].instructionsDefault;
+        helpAudio.Play();
     }
 
     public override void Advance()
@@ -61,6 +64,10 @@ public class Modules3 : Module
         }
         base.Advance();
         if (current < exercises.Count)
+        {
             helpText.text = "Click on the picture of " + (exercises[current] as CardExercise).nameOfObject;
+            helpAudio.clip = exercises[current].customContent ? exercises[current].instructionsCustom : exercises[current].instructionsDefault;
+            helpAudio.Play();
+        }
     }
 }

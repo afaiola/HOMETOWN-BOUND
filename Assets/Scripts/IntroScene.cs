@@ -99,9 +99,6 @@ public class IntroScene : MonoBehaviour
         nurse.SetActive(false);
         yield return new WaitForSecondsRealtime(1f);
         speechBubble.Close();
-        skipped = true;
-        if (onComplete != null)
-            onComplete.Invoke();
 
         UIManager.Instance.OpenEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
@@ -115,7 +112,9 @@ public class IntroScene : MonoBehaviour
         UIManager.Instance.PromptGameWindowFocus();
         Menu.Instance.UpdateModuleName(nextActionMessage);
         // TODO: turn off the speech bubble
-        
+        skipped = true;
+        if (onComplete != null)
+            onComplete.Invoke();
     }
 
     public void Interrupt()
@@ -129,15 +128,14 @@ public class IntroScene : MonoBehaviour
         TankController.Instance.transform.position = point2.transform.position;
         TankController.Instance.EnableMovement();
         speechBubble.Close();
-        skipped = true;
-        if (onComplete != null)
-            onComplete.Invoke();
 
         UIManager.Instance.OpenEyes();
         UIManager.Instance.inCutscene = false;
         //UIManager.Instance.canPause = true;
         Menu.Instance.UpdateModuleName(nextActionMessage);
         // TODO: turn off the speech bubble 
-        
+        skipped = true;
+        if (onComplete != null)
+            onComplete.Invoke();
     }
 }

@@ -81,6 +81,8 @@ public class ModuleMapper : MonoBehaviour
             int mod = Mathf.FloorToInt(content.exerciseID / 7);
             int ex = content.exerciseID % 7;
             Exercise exercise = modules[mod].exercises[ex];
+            exercise.customContent = true;
+
             Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
             string contentDetails = ""; 
             if (content_map.ContainsKey(content.pictureName))
@@ -111,6 +113,7 @@ public class ModuleMapper : MonoBehaviour
             string pictureName = content.pictureName;
 
             if (content.pictureName == "other") pictureName = "significant other";
+            
             if (pictureName[pictureName.Length - 1] == '1' || pictureName[pictureName.Length - 1] == '2') pictureName = pictureName.Substring(0, pictureName.Length - 1);
 
             if (contentDetails != "")
@@ -119,7 +122,7 @@ public class ModuleMapper : MonoBehaviour
                 content.details = char.ToUpper(contentDetails[0]) + contentDetails.Substring(1);
             }
 
-            exercise.nameOfObject = "your " + pictureName + content.details;
+            exercise.nameOfObject = $"your <color=#79B251>{pictureName}</color>{content.details}";
         }
 
         foreach (var content in StorageManager.Instance.dropdownContents)
@@ -132,18 +135,22 @@ public class ModuleMapper : MonoBehaviour
             exercise.customContent = true;
             int optionSelected = int.Parse(content_map[content.pictureName].ToString());
             content.details = optionSelected.ToString();
-            exercise.nameOfObject = $"your favorite {content.pictureName}";
+            if (content.pictureName == "food") content.pictureName = "type of food";
+            if (content.pictureName == "restaurant") content.pictureName = "fast food restaurant";
+            if (content.pictureName == "grocery") content.pictureName = "grocery store";
+            exercise.nameOfObject = $"your favorite <color=#79B251> {content.pictureName}";
 
             if (content.pictureName == "program")
             {
                 TVExercise tv = exercise as TVExercise;
                 tv.goalChannel = optionSelected;
-                Debug.Log("Set tv channel to " + optionSelected);
+                Debug.Log("Set tv channel to <color=#79B251>" + optionSelected);
             }
             else
             {
                 exercise.leftImage = exercise.images[optionSelected];
             }
+
             Debug.Log($"set {content.pictureName} to exercise: {exercise.name} with option: {optionSelected}");
 
         }

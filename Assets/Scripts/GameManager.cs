@@ -48,16 +48,24 @@ public class GameManager : MonoBehaviour
 
         // load the downloaded images into the exercises
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
-        StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
-
+        StorageManager.Instance.contentDownloadedEvent.AddListener(ContentMapped);
+        //StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
         StorageManager.Instance.StartContentDownload();
 
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
         
-        intro.PlayCutscene(Profiler.Instance.currentUser.timesLoggedIn > 1);
+        intro.PlayCutscene(Profiler.Instance.currentUser.timesLoggedIn <= 1);
     }
 
-    private void LoadModule()
+    private void ContentMapped()
+    {
+        //SavePatientData.Instance.Initialize();  // ensure patient data is downloaded
+        StorageManager.Instance.downloadStatusEvent = new UnityEngine.Events.UnityEvent<bool>();
+        StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
+        GameObject.FindObjectOfType<SavePatientData>().Initialize();
+    }
+
+    private void LoadModule(bool status)
     {
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
         int lastModulePlayed = SavePatientData.Instance.LastModulePlayed();

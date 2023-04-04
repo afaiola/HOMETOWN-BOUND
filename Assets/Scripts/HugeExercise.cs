@@ -42,6 +42,13 @@ public class HugeExercise : Exercise
     }
     public override void Arrange()
     {
+        ModuleButton[] existingButtons = grid.GetComponentsInChildren<ModuleButton>();
+        if (existingButtons.Length > 0)
+        {
+            foreach (var button in existingButtons)
+                Destroy(button.gameObject);
+            buttons = new List<ModuleButton>();
+        }
         var rndList = new List<int>();
         var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();   
         while (rndList.Count<leftImages.Length)
@@ -60,6 +67,19 @@ public class HugeExercise : Exercise
                 leftImages[i].texture = images[rndList[i]];
 
         }
+
+        int extraImages = leftPanel.transform.childCount - leftImages.Length;
+        int numImages = leftImages.Length;
+        if (type == shapeType.letters)
+        {
+            extraImages = leftPanel.transform.childCount - leftTexts.Length;
+            numImages = leftTexts.Length;
+        }
+        for (int i = 0; i < extraImages; i++)
+        {
+            Destroy(leftPanel.transform.GetChild(i+ numImages).gameObject);
+        }
+
         string leftString = "";
         for (int i = 0; i < leftTexts.Length; i++)
         {
