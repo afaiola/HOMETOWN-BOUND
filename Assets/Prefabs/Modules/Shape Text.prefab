@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afebd3fcaf1ec045a9b09d372a8605c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  module: {fileID: 0}
+  exercise: {fileID: 0}
   image: {fileID: 5524869144706749100}
   text: {fileID: 2018298307419993995}
   overlay: {fileID: 5524869144706749100}
@@ -334,7 +334,8 @@ AudioSource:
   m_GameObject: {fileID: 5524869146004539436}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7783396259364605333, guid: 6f83a680d39afc443927014582762021,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 0.5

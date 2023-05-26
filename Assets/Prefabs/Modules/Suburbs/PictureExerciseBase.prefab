@@ -46,7 +46,8 @@ AudioSource:
   m_GameObject: {fileID: 8189380135952737863}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7783396259364605333, guid: 6f83a680d39afc443927014582762021,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -151,11 +152,15 @@ MonoBehaviour:
   moduleButton: {fileID: 0}
   buttons: []
   leftObject: {fileID: 0}
+  nameOfObject: 
   leftImage: {fileID: 0}
   images: []
   selected: []
   _correctCount: 0
   _incorrectCount: 0
+  customContent: 0
+  instructionsDefault: {fileID: 0}
+  instructionsCustom: {fileID: 0}
   goalPrefab: {fileID: 0}
   pedestrianPrefab: {fileID: 0}
   goalLocations: []

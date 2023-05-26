@@ -325,12 +325,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cfabceda145cd44489a6d3c948e0b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  exerciseID: 0
   score: 0
   maxTime: 0
   moduleButton: {fileID: 5524869146004539436, guid: 42a6e7f02d3774645a3f3d0cad2b37a3,
     type: 3}
   buttons: []
   leftObject: {fileID: 7092830983780438713}
+  nameOfObject: 
   leftImage: {fileID: 2800000, guid: 0938cf839c122e24fb178d7355eed05a, type: 3}
   images:
   - {fileID: 2800000, guid: cf9614a3dd07091439f96c6ca52f3287, type: 3}
@@ -343,6 +345,11 @@ MonoBehaviour:
   - {fileID: 2800000, guid: cf9614a3dd07091439f96c6ca52f3287, type: 3}
   - {fileID: 2800000, guid: 0938cf839c122e24fb178d7355eed05a, type: 3}
   selected: []
+  _correctCount: 0
+  _incorrectCount: 0
+  customContent: 0
+  instructionsDefault: {fileID: 0}
+  instructionsCustom: {fileID: 0}
 --- !u!82 &7092830983448922470
 AudioSource:
   m_ObjectHideFlags: 0
@@ -352,7 +359,8 @@ AudioSource:
   m_GameObject: {fileID: 7092830983448922465}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7783396259364605333, guid: 6f83a680d39afc443927014582762021,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1

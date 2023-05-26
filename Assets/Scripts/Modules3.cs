@@ -41,8 +41,11 @@ public class Modules3 : Module
         (exercises[0] as CardExercise).maxFlipTime = maxFlipTime;
         (exercises[0] as CardExercise).Arrange();
         helpText.text = "Click on the picture of " + (exercises[0] as CardExercise).nameOfObject;
-        helpAudio.clip = exercises[0].customContent ? exercises[0].instructionsCustom : exercises[0].instructionsDefault;
-        helpAudio.Play();
+        if (helpAudio)
+        {
+            helpAudio.clip = exercises[0].customContent ? exercises[0].instructionsCustom : exercises[0].instructionsDefault;
+            helpAudio.Play();
+        }
     }
 
     public override void Advance()
