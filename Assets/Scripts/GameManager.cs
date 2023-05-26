@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
 
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
         
-        intro.PlayCutscene(Profiler.Instance.currentUser.timesLoggedIn <= 1);
+        intro.PlayCutscene(Profiler.Instance.currentUser.newGame);
     }
 
     private void ContentMapped()
@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
     {
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
         int lastModulePlayed = SavePatientData.Instance.LastModulePlayed();
+        if (Profiler.Instance.currentUser.newGame) lastModulePlayed = 0;
         if (lastModulePlayed == 0)
         {
             intro.SetDialogue(true);

@@ -12,7 +12,7 @@ using Firebase.Firestore;
 public class UserAccountManager : MonoBehaviour
 {
     public UserInputPanel signInPanel, registerPanel;
-    public GameObject loadingBar;
+    public GameObject loadingBar, newGamePanel;
     public Emailer emailPanel;
     public UnityEvent loginSuccessEvent = new UnityEvent();
 
@@ -48,6 +48,7 @@ public class UserAccountManager : MonoBehaviour
         loadingBar.SetActive(false);
 
         emailPanel.gameObject.SetActive(false);
+        newGamePanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -120,10 +121,18 @@ public class UserAccountManager : MonoBehaviour
                     if (user.ContainsKey(k_days_played)) login_ct = int.Parse(user[k_days_played].ToString());
 
                     Profiler.Instance.UserSignedIn(email, ci, skin, login_ct, playTime, startDate, lastLogin, consecDays, uname);
-                    signInPanel.gameObject.SetActive(false);
-                    registerPanel.gameObject.SetActive(false);
-                    loadingBar.SetActive(true);
-                    loginSuccessEvent.Invoke();
+                    if (login_ct <= 1)
+                    {
+                        signInPanel.gameObject.SetActive(false);
+                        registerPanel.gameObject.SetActive(false);
+                        loadingBar.SetActive(true);
+                        loginSuccessEvent.Invoke();
+                    }
+                    else
+                    {
+                        newGamePanel.SetActive(true);
+                    }
+
                 }
             }
             else
@@ -224,5 +233,14 @@ public class UserAccountManager : MonoBehaviour
             registerPanel.SubmitFail(message);
             // TODO: Update the proper helper messages on fail ie: username unavailable
         }
+    }
+    
+    public void StartNewGame(bool newGame)
+    {
+        Profiler.Instance.currentUser.newGame = newGame;
+        signInPanel.gameObject.SetActive(false);
+        registerPanel.gameObject.SetActive(false);
+        loadingBar.SetActive(true);
+        loginSuccessEvent.Invoke();
     }
 }

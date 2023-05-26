@@ -20,6 +20,8 @@ public class ButtonOption : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (button == null)
+            button = GetComponent<Button>();
         button.onClick.AddListener(OptionSelected);
     }
 

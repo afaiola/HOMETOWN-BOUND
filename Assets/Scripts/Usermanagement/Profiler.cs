@@ -20,6 +20,7 @@ public class Profiler : MonoBehaviour
         public DateTime startDate;
         public DateTime lastLoginDate;
         public int consecutiveDays;
+        public bool newGame;
         // TODO: possibly add a key to allow user to update the firebase
 
         public Profile(string _name, int _ci, int _skin, int login_ct, double _playTime, DateTime _start, DateTime _lastLogin, int _consecDays, string firstName)
@@ -33,6 +34,7 @@ public class Profiler : MonoBehaviour
             lastLoginDate = _lastLogin;
             consecutiveDays = _consecDays;
             displayName = firstName;
+            newGame = login_ct <= 1;
         }
     }
 
