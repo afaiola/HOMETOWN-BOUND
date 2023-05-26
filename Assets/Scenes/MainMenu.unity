@@ -636,8 +636,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2831,8 +2831,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281479730
+  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3044,8 +3044,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1457732702}
   - {fileID: 867480881}
+  - {fileID: 1457732702}
   m_Father: {fileID: 1952631439}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4220,7 +4220,7 @@ RectTransform:
   m_Children:
   - {fileID: 653653727}
   m_Father: {fileID: 566236315}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8424,7 +8424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1331742901
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9396,7 +9396,7 @@ RectTransform:
   m_Children:
   - {fileID: 150067936}
   m_Father: {fileID: 566236315}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -9496,7 +9496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.48627454, b: 0.8313726, a: 1}
+  m_Color: {r: 0.8919492, g: 0.8962264, b: 0.35088107, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11453,7 +11453,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "This game uses user-provided content. For a customized experience, please
-    take our survey by clicking the <b><color=#FF7CD4>pink</color></b> button below.
+    take our survey by clicking the <b><color=#E3E559>yellow</color></b> button below.
     \n\nYou may skip the survey by selecting <b><color=#65BB6B>play</color></b>\n\nYou
     will also find a link to the survey in your email if you wish to upload from
     a different device."
@@ -12985,7 +12985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.48627454, b: 0.8313726, a: 1}
+  m_Color: {r: 0.8919492, g: 0.8962264, b: 0.35088107, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
