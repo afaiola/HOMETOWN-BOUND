@@ -10,6 +10,9 @@ public class CarSensor : MonoBehaviour
     //[System.NonSerialized] 
     public GameObject player;
     //[System.NonSerialized] 
+    public bool useRaycast = true;
+    public float sensorLength = 10f;
+    public float sensorViewAngle = 60f;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +28,6 @@ public class CarSensor : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //if (other.GetComponent<CarSensor>()) return;
-
         GameObject obstacle = other.GetComponentInParent<Car>()?.gameObject;
         if (obstacle == null) obstacle = other.GetComponentInParent<Pedestrian>()?.gameObject;
 
