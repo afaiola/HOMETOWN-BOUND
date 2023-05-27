@@ -31,6 +31,17 @@ public class DragImage : MonoBehaviour
     {
         if (dragged)
         {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            foreach (var result in results)
+            {
+                Snap snap = result.gameObject.GetComponent<Snap>();
+                if (snap)
+                    if (snap.TryDrop())
+                        return;
+            }
             dragged = null;
             fly.enabled = true;
             if (dropEvent != null)

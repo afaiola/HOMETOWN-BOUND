@@ -21,24 +21,36 @@ public class Snap : ModuleButton
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
             if (results.Any(z => z.gameObject == gameObject))
             {
-                if (stringCmp)
+                float dist = Vector2.Distance(DragImage.dragged.transform.position, transform.position);
+                if (dist < 5f)
                 {
-                    if (DragImage.dragged.GetComponentInChildren<TMPro.TextMeshProUGUI>().text == tmpText.text)
-                    {
-                        tmpText.gameObject.SetActive(true);
-                        Click();
-                    }
-                }
-                else
-                {
-                    if (DragImage.dragged.GetComponent<RawImage>().texture == rightTexture)
-                    {
-                        Click();
-                    }
+                    TryDrop();
                 }
                 
             }
         }
+    }
+
+    public bool TryDrop()
+    {
+        if (stringCmp)
+        {
+            if (DragImage.dragged.GetComponentInChildren<TMPro.TextMeshProUGUI>().text == tmpText.text)
+            {
+                tmpText.gameObject.SetActive(true);
+                Click();
+                return true;
+            }
+        }
+        else
+        {
+            if (DragImage.dragged.GetComponent<RawImage>().texture == rightTexture)
+            {
+                Click();
+                return true;
+            }
+        }
+        return false;
     }
 
     public override void Click()
