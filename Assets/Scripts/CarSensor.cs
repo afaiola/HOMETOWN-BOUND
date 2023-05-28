@@ -33,16 +33,7 @@ public class CarSensor : MonoBehaviour
 
         if (obstacle != null)
         {
-            bool dup = false;
-            foreach (var c in sensedObjs)
-            {
-                if (c == obstacle)
-                {
-                    dup = true;
-                    break;
-                }
-            }
-            if (!dup)
+            if (!sensedObjs.Contains(obstacle))
             {
                 sensedObjs.Add(obstacle.gameObject);
             }
