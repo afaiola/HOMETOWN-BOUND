@@ -339,8 +339,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 250
+  near clip plane: 0.01
+  far clip plane: 1000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -459,8 +459,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 250
+  near clip plane: 0.01
+  far clip plane: 1000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -728,12 +728,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 1811c70d6aba6014196f17358b3e5795, type: 3}
+      objectReference: {fileID: 4300000, guid: 424b894ac83fdc04485f7ae61406c076, type: 3}
     - target: {fileID: 137000012301791484, guid: 09a4d14b0b284ac48bcc8c9482f4cb1e,
         type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 4300000, guid: 1811c70d6aba6014196f17358b3e5795, type: 3}
+      objectReference: {fileID: 4300000, guid: 424b894ac83fdc04485f7ae61406c076, type: 3}
     m_RemovedComponents:
     - {fileID: 114000010225988480, guid: 09a4d14b0b284ac48bcc8c9482f4cb1e, type: 3}
     - {fileID: 114000012119597538, guid: 09a4d14b0b284ac48bcc8c9482f4cb1e, type: 3}
