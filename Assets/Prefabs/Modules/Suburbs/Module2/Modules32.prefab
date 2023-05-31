@@ -867,7 +867,7 @@ PrefabInstance:
     - target: {fileID: 919976200103151341, guid: 367a45c53b2fb13428775f473c42ec9e,
         type: 3}
       propertyPath: nameOfObject
-      value: the <color=#79B251>cat</color> with one<color=#0000FF>blue </color>
+      value: the <color=#79B251>cat</color> with one <color=#0000FF>blue</color>
         eye and one <color=#00FF00>green</color> eye.
       objectReference: {fileID: 0}
     - target: {fileID: 1220723408698700698, guid: 367a45c53b2fb13428775f473c42ec9e,
@@ -2680,6 +2680,11 @@ PrefabInstance:
         type: 3}
       propertyPath: speedInc
       value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364324261609701004, guid: e4e71109634fe784bb4503e6989c3c83,
+        type: 3}
+      propertyPath: playAudio
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7364324261609701004, guid: e4e71109634fe784bb4503e6989c3c83,
         type: 3}

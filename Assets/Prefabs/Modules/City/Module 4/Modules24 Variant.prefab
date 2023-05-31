@@ -24,6 +24,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 687991653, guid: 2baa9276e1ed02041bec84b9ff9aaf88, type: 3}
+      propertyPath: playAudio
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 687991653, guid: 2baa9276e1ed02041bec84b9ff9aaf88, type: 3}
       propertyPath: modules.Array.size
       value: 6
       objectReference: {fileID: 0}
@@ -147,7 +151,7 @@ PrefabInstance:
     - target: {fileID: 5084658443985613871, guid: 2baa9276e1ed02041bec84b9ff9aaf88,
         type: 3}
       propertyPath: m_Name
-      value: Modules24
+      value: Modules24 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 9026475528797699566, guid: 2baa9276e1ed02041bec84b9ff9aaf88,
         type: 3}

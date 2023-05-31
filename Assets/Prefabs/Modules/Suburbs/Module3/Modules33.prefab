@@ -436,7 +436,7 @@ PrefabInstance:
     - target: {fileID: 4178661706847877589, guid: 8556539db2b656548ad4eeca5ff54eda,
         type: 3}
       propertyPath: nameOfObject
-      value: the <color=#79B251>boy</color> who is <b>NOT</b> smiling.
+      value: the young girl with the <color=#00FF00>green</color> hair bow.
       objectReference: {fileID: 0}
     - target: {fileID: 4178661706847877589, guid: 8556539db2b656548ad4eeca5ff54eda,
         type: 3}
@@ -794,11 +794,11 @@ PrefabInstance:
         type: 3}
       propertyPath: leftImage
       value: 
-      objectReference: {fileID: 2800000, guid: f1c8fc98a4b83a74891d2d7774fdba93, type: 3}
+      objectReference: {fileID: 2800000, guid: 641ef0839bf5141448c44ef34897a61a, type: 3}
     - target: {fileID: 5050443458205567653, guid: 693617354c4e3ce40bcfffbed0f27758,
         type: 3}
       propertyPath: nameOfObject
-      value: the <color=#79B251>woman</color> with<color=#FF0000>red</color> hair.
+      value: the <color=#79B251>woman</color> with <color=#FF0000>red</color> hair.
       objectReference: {fileID: 0}
     - target: {fileID: 5071623811407018519, guid: 693617354c4e3ce40bcfffbed0f27758,
         type: 3}
@@ -1360,6 +1360,11 @@ PrefabInstance:
     - target: {fileID: 7364324261609701004, guid: e4e71109634fe784bb4503e6989c3c83,
         type: 3}
       propertyPath: speedInc
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7364324261609701004, guid: e4e71109634fe784bb4503e6989c3c83,
+        type: 3}
+      propertyPath: playAudio
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7364324261609701004, guid: e4e71109634fe784bb4503e6989c3c83,

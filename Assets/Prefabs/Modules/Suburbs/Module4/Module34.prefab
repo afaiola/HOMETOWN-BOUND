@@ -2277,6 +2277,16 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 7699307484053299783, guid: 32df7ca706e5043458178490056e3160,
         type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699307484053299783, guid: 32df7ca706e5043458178490056e3160,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c1e0cf14d6745eb4c8ea1597b208308a, type: 3}
+    - target: {fileID: 7699307484053299783, guid: 32df7ca706e5043458178490056e3160,
+        type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
       objectReference: {fileID: 3036974137219815167, guid: 6f83a680d39afc443927014582762021,
@@ -2311,6 +2321,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9176437775237797070, guid: 32df7ca706e5043458178490056e3160,
+        type: 3}
+      propertyPath: playAudio
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9176437775237797070, guid: 32df7ca706e5043458178490056e3160,
         type: 3}
@@ -2400,7 +2415,7 @@ PrefabInstance:
     - target: {fileID: 3663714757558102374, guid: 69733113aa38e174d995c2559c824624,
         type: 3}
       propertyPath: familyMembers.Array.data[0]
-      value: Bear
+      value: Panda
       objectReference: {fileID: 0}
     - target: {fileID: 3663714757558102374, guid: 69733113aa38e174d995c2559c824624,
         type: 3}
