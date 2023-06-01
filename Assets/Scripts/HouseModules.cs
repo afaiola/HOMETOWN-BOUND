@@ -24,7 +24,8 @@ public class HouseModules : Module
     {
         base.Advance();
         helpAudio.clip = exercises[current].instructionsDefault;
-        helpAudio.Play();
+        if (current > 0)
+            helpAudio.Play();
         if (current < exercises.Count)
         {
             if (current % 2 == 0)

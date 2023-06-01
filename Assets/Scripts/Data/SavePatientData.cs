@@ -46,6 +46,7 @@ public class SavePatientData : MonoBehaviour
     private string ciDataFile;
     private List<PatientDataEntry> patientData;
     public List<PatientDataEntry> ciData;
+    private int recentExercise, currentAttempt;
 
     // Start is called before the first frame update
     void Start()
@@ -355,6 +356,7 @@ public class SavePatientData : MonoBehaviour
                         patientData[i].attempts[j].successes = successes;
                         patientData[i].attempts[j].misses = misses;
                         newEntry = true;
+                        currentAttempt = j;
                         break;
                     }
                 }
@@ -383,6 +385,7 @@ public class SavePatientData : MonoBehaviour
             entry.attempts[0].misses = misses;
             patientData.Add(entry);
         }
+        recentExercise = exerciseNum;
         SaveFile();
     }
 
@@ -467,14 +470,35 @@ public class SavePatientData : MonoBehaviour
         StorageManager.Instance.StartCSVUpload(patientDataFile);
     }
 
-    public int LastModulePlayed()
+    public int GetActiveAttempt()
     {
-        int lastExercise = LastExercisePlayed();
+        for (int i = 0; i < patientData.Count; i++)
+        {
+            for (int j = 0; j < patientData[i].attempts.Length; j++)
+            {
+                if (patientData[i].attempts[j].time != 0)
+                {
+                    return j;
+                }
+            }
+        }
+        return 2;
+    }
+
+    // returns most recently played module this session
+    public int RecentModule()
+    {
+        return recentExercise / 7;
+    }
+
+    public int LastModulePlayed(int attempt=-1)
+    {
+        int lastExercise = LastExercisePlayed(attempt);
         int mod = Mathf.FloorToInt(lastExercise / 7);
         return mod;
     }
 
-    public int LastExercisePlayed()
+    public int LastExercisePlayed(int attempt=-1)
     {
         int[] lastPlayed = new int[3];  // last exercise played on each attempt
         if (patientData == null)
@@ -489,12 +513,15 @@ public class SavePatientData : MonoBehaviour
                 }
             }
         }
+        if (attempt != -1 && attempt < 3)
+            return lastPlayed[attempt];
         int maxExerciseID = 7 * 5 * 2 + 7 * 3 + 4 + 1;
         for (int i = 0; i < lastPlayed.Length; i++)
         {
             if (lastPlayed[i] < maxExerciseID)
                 return lastPlayed[i];
         }
+
         return 0;
     }
 

@@ -12,12 +12,18 @@ public class FirebaseInit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        onFirebaseInitalized.AddListener(FBInitialized);
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             FirebaseAnalytics.SetAnalyticsCollectionEnabled(true);
             onFirebaseInitalized.Invoke();
         });
         //FirebaseApp.CheckandFix
+    }
+
+    private void FBInitialized()
+    {
+        Debug.Log("Firebase Initialized");
     }
 
     // Update is called once per frame

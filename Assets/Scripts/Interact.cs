@@ -13,7 +13,7 @@ public class Interact : MonoBehaviour/*, IPointerEnterHandler, IPointerExitHandl
     public UnityEvent interactEvent;
 
     private GameObject player;
-    private bool hovering;
+    private bool hovering, resetting;
 
     public void OnMouseUp()
     {
@@ -28,6 +28,27 @@ public class Interact : MonoBehaviour/*, IPointerEnterHandler, IPointerExitHandl
 
     public void ModuleInteract()
     {
+        if (resetting) return;
+        ActivatorZone zone = GetComponent<ActivatorZone>();
+        // if previous module not played, prompt user to play the correct previous module
+        // TODO: figure out if we want to use last module with saved info or for the current play session
+        int currAttempt = SavePatientData.Instance.GetActiveAttempt();
+        int lastModule = SavePatientData.Instance.LastModulePlayed(currAttempt);
+        int lastLevel = lastModule / 5;
+        int modNum = correspondingModule.ModuleNo + (correspondingModule.lvl-1) * 5;
+        Debug.Log($"Interact with {modNum}. Last module on attempt {currAttempt} was {lastModule}");
+        if (modNum - lastModule > 1)
+        {
+            Menu.Instance.UpdateModuleName($"Sorry. You missed Module <b>{(lastModule+1) % 5}</b> in <b>{((Levels)lastLevel).ToString()} TOWN</b>. Please go back and complete before you proceed");
+            Menu.Instance.MissedModuleWarning((lastModule + 1) % 5, (Levels)lastLevel);
+            zone.oneTime = false;
+            return;
+        }
+        if (typeof(HouseModules) == correspondingModule.GetType())
+        {
+            SceneLoader.Instance.LoadHouseInterior();
+        }
+        zone.oneTime = true;
         GetComponent<AudioSource>().Play();
         correspondingModule.Play();
         StaticEvent.moduleStarted();
@@ -65,5 +86,21 @@ public class Interact : MonoBehaviour/*, IPointerEnterHandler, IPointerExitHandl
         {
             outline.enabled = false;
         }
+    }
+
+    public void Reset()
+    {
+        resetting = true;
+        ActivatorZone zone = GetComponent<ActivatorZone>();
+        zone.oneTime = false;
+        zone.exitEvent.AddListener(ResetOnExit);
+        gameObject.SetActive(true);
+    }
+
+    private void ResetOnExit()
+    {
+        resetting = false;
+        ActivatorZone zone = GetComponent<ActivatorZone>();
+        zone.oneTime = false;
     }
 }

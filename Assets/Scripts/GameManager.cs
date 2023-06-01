@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-public enum Levels { SUGARLAND, LEXLAND, HOMELAND};
+public enum Levels { LOLLIPOP, DOWN, HOME};
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject player;
@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.gotoMenu.gameObject.SetActive(false);
 
         moduleMapper.interactables[moduleMapper.interactables.Length - 1].interactEvent.AddListener(sceneLoader.LoadHouseInterior);
-        moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
+        //moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo = new UnityEvent();
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo.AddListener(sceneLoader.LoadHouseInterior);
 

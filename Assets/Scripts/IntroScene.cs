@@ -113,6 +113,9 @@ public class IntroScene : MonoBehaviour
         Menu.Instance.UpdateModuleName(nextActionMessage);
         // TODO: turn off the speech bubble
         skipped = true;
+        FloatingOrigin floatingOrigin = GameObject.FindObjectOfType<FloatingOrigin>();
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = true;
         if (onComplete != null)
             onComplete.Invoke();
     }
@@ -134,6 +137,9 @@ public class IntroScene : MonoBehaviour
         //UIManager.Instance.canPause = true;
         Menu.Instance.UpdateModuleName(nextActionMessage);
         // TODO: turn off the speech bubble 
+        FloatingOrigin floatingOrigin = GameObject.FindObjectOfType<FloatingOrigin>();
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = true;
         skipped = true;
         if (onComplete != null)
             onComplete.Invoke();

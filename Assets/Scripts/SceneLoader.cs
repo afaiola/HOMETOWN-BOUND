@@ -62,7 +62,6 @@ public class SceneLoader : MonoBehaviour
     public void LoadHouseInterior()
     {
         //GameManager.Instance.LevelLoaded(3);
-
         SceneManager.LoadSceneAsync("House", LoadSceneMode.Additive);
     }
 

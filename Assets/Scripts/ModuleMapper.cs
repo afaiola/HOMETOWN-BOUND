@@ -156,6 +156,12 @@ public class ModuleMapper : MonoBehaviour
         }
     }
 
+    public void ResetModule(Module module)
+    {
+        int modIdx = (module.lvl - 1) * 5 + module.ModuleNo-1;
+        interactables[modIdx].Reset();
+    }
+
     // Update is called once per frame
     void Update()
     {

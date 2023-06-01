@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class HideRegisterButton : MonoBehaviour
 {
+    public TextPopulator username;
     // Start is called before the first frame update
     void Awake()
     {
         if (!string.IsNullOrEmpty(PlayerPrefs.GetString("USERNAME"))){
-            GameObject.Find("UsernameField").GetComponent<TextPopulator>().PopulateUsername();
+            if (username)
+                username.PopulateUsername();
             this.gameObject.SetActive(false);
         }
     }

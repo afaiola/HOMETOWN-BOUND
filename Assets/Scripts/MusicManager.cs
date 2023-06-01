@@ -45,12 +45,12 @@ public class MusicManager : MonoBehaviour
 
         foreach (var zone in musicZones)
         {
-            if (zone.level == Levels.LEXLAND)
+            if (zone.level == Levels.DOWN)
             {
                 zone.enterEvent = new UnityEngine.Events.UnityEvent();
                 zone.enterEvent.AddListener(PlayCityMusic);
             }
-            else if (zone.level == Levels.HOMELAND)
+            else if (zone.level == Levels.HOME)
             {
                 zone.enterEvent = new UnityEngine.Events.UnityEvent();
                 zone.enterEvent.AddListener(PlayHomelandMusic);
@@ -59,12 +59,12 @@ public class MusicManager : MonoBehaviour
 
         foreach (var zone in ambienceZones)
         {
-            if (zone.level == Levels.LEXLAND)
+            if (zone.level == Levels.DOWN)
             {
                 zone.enterEvent = new UnityEngine.Events.UnityEvent();
                 zone.enterEvent.AddListener(PlayCityAmbience);
             }
-            else if (zone.level == Levels.HOMELAND)
+            else if (zone.level == Levels.HOME)
             {
                 zone.enterEvent = new UnityEngine.Events.UnityEvent();
                 zone.enterEvent.AddListener(PlaySuburbAmbience);

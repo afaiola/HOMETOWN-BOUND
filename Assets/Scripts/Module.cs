@@ -153,10 +153,11 @@ public class Module : MonoBehaviour
             GetComponent<AudioSource>().Play();
 
         progressBar = GetComponentInChildren<QuantumTek.QuantumUI.QUI_Bar>();
-        progressBar.SetFill(0);
+        progressBar.SetFill((float)current / exercises.Count);
 
         //reached the module in time
-        ScoreCalculator.instance.EndActivity(1, 0);
+        if (current == 0)
+            ScoreCalculator.instance.EndActivity(1, 0);
         if (exercises.Count > 0)
         {
             RunFirstModule();
@@ -174,14 +175,24 @@ public class Module : MonoBehaviour
     /// </summary>
     protected virtual void RunFirstModule()
     {
-        exercises[0].Arrange();
+        exercises[current].Arrange();
+        exercises[current].gameObject.SetActive(true);
+    }
+
+    protected virtual void ExitEarly()
+    {
+        Exit();
+        gameObject.SetActive(true);
+        transform.GetChild(0).gameObject.SetActive(false);
+        ModuleMapper modMap = GameObject.FindObjectOfType<ModuleMapper>();
+        modMap.ResetModule(this);
     }
 
     protected virtual void Exit()
     {
         ScoreCalculator.instance.EndActivity(0, 0);
         TankController.Instance.EnableMovement();
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         foreach (var ex in exercises) ex.gameObject.SetActive(false);
         gameObject.SetActive(false);
         End();
@@ -191,7 +202,7 @@ public class Module : MonoBehaviour
     public virtual void ShowSecurity()
     {
         SecurityCode.Instance.onSuccess = new UnityEngine.Events.UnityEvent();
-        SecurityCode.Instance.onSuccess.AddListener(Exit);
+        SecurityCode.Instance.onSuccess.AddListener(ExitEarly);
         SecurityCode.Instance.Show();
     }
 }

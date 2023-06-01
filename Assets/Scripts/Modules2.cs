@@ -14,7 +14,9 @@ public class Modules2 : Module
     public float maxSpeed = 3f;
     protected override void RunFirstModule()
     {
-        (exercises[0] as DragExercise).Arrange();
+        exercises[current].gameObject.SetActive(true);
+        (exercises[current] as DragExercise).Arrange();
+        helpAudio.Play();
     }
 
     public override void Advance()

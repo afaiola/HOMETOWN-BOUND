@@ -8,7 +8,7 @@ public class ActivatorZone : MonoBehaviour
 {
     [SerializeField] public UnityEvent enterEvent;
     [SerializeField] public UnityEvent exitEvent;
-    [SerializeField] private bool oneTime;
+    [SerializeField] public bool oneTime;
     // Start is called before the first frame update
     void Start()
     {

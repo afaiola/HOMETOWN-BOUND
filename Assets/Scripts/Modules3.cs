@@ -32,20 +32,21 @@ public class Modules3 : Module
 
     protected override void RunFirstModule()
     {
-        (exercises[0] as CardExercise).flyPattern = flyPattern;
-        (exercises[0] as CardExercise).flyPattern = flyPattern;
-        (exercises[0] as CardExercise).minSpeed = minSpeed;
-        (exercises[0] as CardExercise).maxSpeed = maxSpeed;
-        (exercises[0] as CardExercise).timeActive = timeActive;
-        (exercises[0] as CardExercise).minFlipTime = minFlipTime;
-        (exercises[0] as CardExercise).maxFlipTime = maxFlipTime;
-        (exercises[0] as CardExercise).Arrange();
-        helpText.text = "Click on the picture of " + (exercises[0] as CardExercise).nameOfObject;
-        if (helpAudio)
-        {
-            helpAudio.clip = exercises[0].customContent ? exercises[0].instructionsCustom : exercises[0].instructionsDefault;
-            helpAudio.Play();
-        }
+        exercises[current].gameObject.SetActive(true);
+        (exercises[current] as CardExercise).flyPattern = flyPattern;
+        (exercises[current] as CardExercise).flyPattern = flyPattern;
+        (exercises[current] as CardExercise).minSpeed = minSpeed;
+        (exercises[current] as CardExercise).maxSpeed = maxSpeed;
+        (exercises[current] as CardExercise).timeActive = timeActive;
+        (exercises[current] as CardExercise).minFlipTime = minFlipTime;
+        (exercises[current] as CardExercise).maxFlipTime = maxFlipTime;
+        (exercises[current] as CardExercise).Arrange();
+
+        helpText.text = "Click on the picture of " + (exercises[current] as CardExercise).nameOfObject;
+        if (helpAudio == null)
+            helpAudio = helpText.transform.parent.GetComponentInChildren<AudioSource>();
+        helpAudio.clip = exercises[current].customContent ? exercises[current].instructionsCustom : exercises[current].instructionsDefault;
+        helpAudio.Play();
     }
 
     public override void Advance()
