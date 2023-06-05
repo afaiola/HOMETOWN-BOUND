@@ -65,6 +65,7 @@ GameObject:
   - component: {fileID: 1417065742827318976}
   - component: {fileID: 1417065743761140598}
   - component: {fileID: 1417065743761140599}
+  - component: {fileID: 2396609950711263827}
   m_Layer: 0
   m_Name: FPSController
   m_TagString: Player
@@ -281,6 +282,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   director: {fileID: 0}
+--- !u!114 &2396609950711263827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417065742832269088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30fe3d4ddc1e8e448b56d8289021dbd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  threshold: 50
+  canUpdate: 0
+  nonSceneObjects: []
 --- !u!1 &1417065742832269090
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,7 +446,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1417065743209802710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.000000059604645, z: 0}
+  m_LocalPosition: {x: 0, y: 0.00000017881393, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1417065742832233218}
