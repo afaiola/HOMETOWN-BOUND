@@ -92,7 +92,8 @@ public class SceneLoader : MonoBehaviour
         Destroy(UIManager.Instance.gameObject);
         Destroy(GameManager.Instance.scavengerObjects);
         Destroy(GameManager.Instance.gameObject);
-        //Destroy(Profiler.instance.gameObject);
+        Destroy(Profiler.Instance.gameObject);
+        Destroy(StorageManager.Instance.gameObject);
         Destroy(gameObject);
     }
 }

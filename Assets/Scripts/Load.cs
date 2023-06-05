@@ -8,36 +8,22 @@ using UnityEngine.SceneManagement;
 public class Load : MonoBehaviour
 {
     public Transform loadingBar;
-    // Start is called before the first frame update
+    bool menuUnloaded, scenesLoaded;
+    AsyncOperation gameLoad;
 
-    bool startedLoading;
-    void Start()
+    public void Transition()
     {
+        Debug.Log("Scenes loaded");
+        gameLoad.allowSceneActivation = true;
+        scenesLoaded = true;
     }
 
     void Update()
     {
-        if (!startedLoading)
+        if (!menuUnloaded && scenesLoaded)
         {
-            startedLoading = true;
-            DontDestroyOnLoad(gameObject);
-            //StartCoroutine(LoadSceneAsync());
-        }
-    }
-
-    bool ready, finish;
-    AsyncOperation gameLoad;
-    public void Transition()
-    {
-        gameLoad.allowSceneActivation = true;
-        finish = true;
-    }
-
-    void FixedUpdate()
-    {
-        if (ready == true && finish == true)
-        {
-            enabled = false;
+            Debug.Log("Unloading mainmenu");
+            menuUnloaded = true;
             SceneManager.UnloadSceneAsync("MainMenu");
         }
     }
@@ -64,7 +50,7 @@ public class Load : MonoBehaviour
             float loadProgress = gameLoad.progress + cityLoad.progress + neighborhoodLoad.progress;
             loadProgress /= 3f;
             loadProgress = (loadProgress + StorageManager.Instance.GetDownloadProgress()) / 2f; // maybe separate this into a separate bar
-            //Debug.Log("progress: " + loadProgress);
+            Debug.Log("progress: " + loadProgress);
             if (loadingBar)
             {
                 loadingBar.localScale = new Vector3(loadProgress, 1, 1);
@@ -72,7 +58,6 @@ public class Load : MonoBehaviour
 
             yield return null;
         }
-        ready = true;
         Transition();
     }
 }
