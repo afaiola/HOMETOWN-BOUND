@@ -16,7 +16,7 @@ public class Modules2 : Module
     {
         exercises[current].gameObject.SetActive(true);
         (exercises[current] as DragExercise).Arrange();
-        helpAudio.Play();
+        //helpAudio.Play();
     }
 
     public override void Advance()
