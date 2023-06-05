@@ -55,7 +55,7 @@ public class CableProceduralStatic : MonoBehaviour
 
 
 
-	void Draw()
+	public void Draw()
 	{
 		// What point is being calculated
 		int i = 0;
