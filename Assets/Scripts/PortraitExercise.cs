@@ -93,6 +93,7 @@ public class PortraitExercise : DragExercise
                 y *= -1f;
             }
             x *= separationDist;
+            x += 10;    // just makes this one fit better. May need to change if image changes
             if (splitRows) x += adjustedSize.x / 2f;    // increased separation dist causes objects to be too far left
 
             // if row of names too congested, stagger odd numbered labels
