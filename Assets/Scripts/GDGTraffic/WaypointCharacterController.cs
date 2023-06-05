@@ -68,6 +68,11 @@ public class WaypointCharacterController : MonoBehaviour
         } 
     }
 
+    public virtual void SetOffset(Vector3 offset)
+    {
+        SetDestination(destination + offset);
+    }
+
     public virtual void SetDestination(Vector3 dest)
     {
         float dist = Vector3.Distance(transform.position, dest);

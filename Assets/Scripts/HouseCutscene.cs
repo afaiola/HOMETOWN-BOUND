@@ -46,14 +46,20 @@ public class HouseCutscene : MonoBehaviour
         UIManager.Instance.CloseEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime*1.5f);
 
-        // face player toward door
-        player.transform.position = startPos.position;
-        player.transform.rotation = startPos.rotation;
-
         // async unload the neighborhood
         GameManager.Instance.sceneLoader.UnloadNeighborhood();
 
+        // face player toward door
+        // do this first time to know where to reposition to
+        player.transform.position = startPos.position;
+        player.transform.rotation = startPos.rotation;
+
+        TankController.Instance.GetComponent<FloatingOrigin>()?.RecenterOrigin();
         yield return new WaitForSecondsRealtime(1f);
+
+        // do this twice to ensure player is in correct position.
+        player.transform.position = startPos.position;
+
 
         UIManager.Instance.OpenEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
@@ -63,11 +69,9 @@ public class HouseCutscene : MonoBehaviour
 
         // walk player into house
         timecount = 0f;
-        Vector3 playerGoal = goalPos.position;
-
         while (timecount < playerMoveTime)
         {
-            player.transform.position = Vector3.Lerp(startPos.position, playerGoal, timecount / playerMoveTime);
+            player.transform.position = Vector3.Lerp(startPos.position, goalPos.position, timecount / playerMoveTime);
             timecount += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }

@@ -16,7 +16,7 @@ public class Patrol : MonoBehaviour
         animator = GetComponent<Animator>();
         animator.SetBool("isWalking", true);
         controller = GetComponent<UnityEngine.CharacterController>();
-        p1 = transform.position;
+        p1 = transform.localPosition;
         current = p1;
 
     }
@@ -25,13 +25,13 @@ public class Patrol : MonoBehaviour
     Vector3 oldPosition;
     void FixedUpdate()
     {
-        if(transform.position==oldPosition)
+        if(transform.localPosition == oldPosition)
         {
             counter++;
             if (counter == 20)
             {
                 counter = 0;
-                current = current == p1 ? p2.position : p1;
+                current = current == p1 ? p2.localPosition : p1;
             }
         }
     }
@@ -39,14 +39,20 @@ public class Patrol : MonoBehaviour
     void Update()
     {
         if (animator.GetBool("isWalking")){
-            if (Vector3.Distance(transform.position, current) < 2)
+            if (Vector3.Distance(transform.localPosition, current) < 2)
             {
-                current = current == p1 ? p2.position : p1;
+                current = current == p1 ? p2.localPosition : p1;
             }
-                transform.LookAt(current);
-            var movDir = (current - transform.position).normalized * speed;
-            oldPosition = transform.position;
-            controller.Move(movDir * Time.deltaTime - Vector3.up * 0.1f);
+            //transform.LookAt(current);
+            //controller.Move(movDir * Time.deltaTime - Vector3.up * 0.1f);
+
+            var movDir = (current - transform.localPosition).normalized * speed * 0.5f;
+            oldPosition = transform.localPosition;
+            transform.localPosition += movDir * Time.deltaTime;
+            
+            Vector3 lookDir = movDir - new Vector3(0, movDir.y, 0);
+            Quaternion targetRotation = Quaternion.LookRotation(lookDir);
+            transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetRotation, 100f * speed * Time.deltaTime);
         }
     }
 }

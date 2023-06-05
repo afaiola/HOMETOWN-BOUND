@@ -12,6 +12,7 @@ public class TankController : MonoBehaviour
     public bool canMove;
     public float maxAngle = 60;
     private UnityEngine.CharacterController controller;
+    private Rigidbody rb;
     public Camera playerCam;
 
     public float speed = 15;
@@ -23,6 +24,7 @@ public class TankController : MonoBehaviour
     private float m_NextStep;
     [SerializeField] private float m_StepInterval;
     private AudioSource m_AudioSource;
+    private FloatingOrigin floatingOrigin;
 
     public Material[] skinColors;
 
@@ -44,6 +46,7 @@ public class TankController : MonoBehaviour
 
         handAnimations = GetComponentsInChildren<Animation>().ToList();
         controller = GetComponent<UnityEngine.CharacterController>();
+        rb = GetComponent<Rigidbody>();
         m_AudioSource = GetComponent<AudioSource>();
         m_StepCycle = 0f;
         m_NextStep = m_StepCycle / 2f;
@@ -55,6 +58,8 @@ public class TankController : MonoBehaviour
         {
             rend.sharedMaterial = skinColors[Profiler.Instance.currentUser.skin_id];
         }
+
+        floatingOrigin = GetComponent<FloatingOrigin>();
     }
 
     private void Update()
@@ -79,7 +84,7 @@ public class TankController : MonoBehaviour
 
         MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.5f);
         MoveCharacterLeftRight(Input.GetAxisRaw("Horizontal") * 0.35f);
-
+        //Fall();
         /*var movDir = transform.forward * Input.GetAxis("Mouse ScrollWheel") * speed * 10;
         if (movDir == Vector3.zero)
             movDir = transform.forward * Input.GetAxis("Mouse Y") * speed;
@@ -97,6 +102,39 @@ public class TankController : MonoBehaviour
 
         ProgressStepCycle(speed,y);
         */
+    }
+
+    public void Recenter(Vector3 pos)
+    {
+        controller.enabled = false;
+        transform.position -= pos;
+        controller.enabled = true;
+    }
+
+    private void Fall()
+    {
+        RaycastHit[] hits = Physics.RaycastAll(transform.position, -transform.up);
+        if (hits.Length > 0)
+        {
+            Transform floor = null;
+            foreach (var hit in hits)
+            {
+                if (hit.collider.transform.parent != transform)
+                    floor = hit.collider.transform;
+            }
+            if (floor != null)
+            {
+                float distance = transform.position.y - floor.position.y;
+                Debug.Log($"distance to {floor.name} = {distance}");
+                var movDir = -transform.up * 9.81f;
+                if (Mathf.Abs(distance -2f) > 0.1f)
+                {
+                    if (distance < 2)
+                        movDir *= -1f;
+                    transform.position += movDir * Time.deltaTime;
+                }
+            }
+        }
     }
 
     public void RotateCharacterLeftRight(float value)
@@ -149,7 +187,6 @@ public class TankController : MonoBehaviour
             handAnimations.Reverse();
         }
 
-        // moves the character in horizontal direction
         controller.Move(movDir * Time.deltaTime - Vector3.up * 0.1f);
 
         ProgressStepCycle(speed, value);
@@ -157,9 +194,12 @@ public class TankController : MonoBehaviour
 
     private void PlayFootStepAudio()
     {
-        if (!controller.isGrounded)
+        if (controller)
         {
-            return;
+            if (!controller.isGrounded)
+            {
+                return;
+            }
         }
         // pick & play a random footstep sound from the array,
         // excluding sound at index 0
@@ -195,18 +235,24 @@ public class TankController : MonoBehaviour
         enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        controller.enabled = true;
+        if (controller)
+            controller.enabled = true;
         canMove = true;
         StartCoroutine(FixMouse(CursorLockMode.Locked));
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = true;
     }
 
     public void DisableMovement()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-        controller.enabled = false;
+        if (controller)
+            controller.enabled = false;
         canMove = false;
         StartCoroutine(FixMouse(CursorLockMode.Confined));
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = true;
     }
 
     IEnumerator FixMouse(CursorLockMode cursorSetting)
