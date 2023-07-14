@@ -435,7 +435,7 @@ MonoBehaviour:
     m_Bottom: 10
   m_ChildAlignment: 4
   m_Spacing: 10
-  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 1
@@ -571,6 +571,9 @@ MonoBehaviour:
   selected: []
   _correctCount: 0
   _incorrectCount: 0
+  customContent: 0
+  instructionsDefault: {fileID: 0}
+  instructionsCustom: {fileID: 0}
   size: 64
   type: 0
   shape: {fileID: 5524869146004539436, guid: 42a6e7f02d3774645a3f3d0cad2b37a3, type: 3}
@@ -672,7 +675,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 3
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
