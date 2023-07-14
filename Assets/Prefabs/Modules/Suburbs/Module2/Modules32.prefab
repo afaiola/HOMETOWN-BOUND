@@ -465,8 +465,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1062284166463355945, guid: 80ea82b7ed245ae4e826d19114073ed2,
         type: 3}
+      propertyPath: leftImage
+      value: 
+      objectReference: {fileID: 2800000, guid: 57f218196fae1fd459caedd3743b6649, type: 3}
+    - target: {fileID: 1062284166463355945, guid: 80ea82b7ed245ae4e826d19114073ed2,
+        type: 3}
       propertyPath: nameOfObject
-      value: the <color=#79B251>boy</color> who is the <color=#79B251>most sad.</color>
+      value: the <color=#79B251>boy</color> wearing the <color=#FFA500>orange</color>
+        shirt.
       objectReference: {fileID: 0}
     - target: {fileID: 1065449579048848539, guid: 80ea82b7ed245ae4e826d19114073ed2,
         type: 3}
@@ -863,7 +869,7 @@ PrefabInstance:
         type: 3}
       propertyPath: leftImage
       value: 
-      objectReference: {fileID: 2800000, guid: aa63fb19b2add414280e23dff873ea2a, type: 3}
+      objectReference: {fileID: 2800000, guid: 65ad70c5de2ef0c4b84cfd1de8a0a381, type: 3}
     - target: {fileID: 919976200103151341, guid: 367a45c53b2fb13428775f473c42ec9e,
         type: 3}
       propertyPath: nameOfObject
