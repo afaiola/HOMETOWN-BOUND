@@ -125,6 +125,11 @@ public class MusicManager : MonoBehaviour
 
     private void PlayNewClip(AudioSource source, AudioClip clip, float volume, float delay=0f)
     {
+        if (clip == null)
+        {
+            source.Stop();
+            return;
+        }
         if (source.clip == clip) return;    // if already playing, don't restart
         source.Stop();
         source.volume = volume;
