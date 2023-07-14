@@ -60,6 +60,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensedObjs: []
   player: {fileID: 0}
+  useRaycast: 1
+  sensorLength: 10
+  sensorViewAngle: 60
 --- !u!64 &7197097294762412208
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -131,7 +134,6 @@ MonoBehaviour:
   models:
   - {fileID: 3906858398850894755, guid: 4e5d0e807dbad91499504a38d4068b2c, type: 3}
   - {fileID: 100008, guid: b70eb1cf1be37564f8063fba2095584b, type: 3}
-  - {fileID: 1181029763419816, guid: e88383b28fa9049408fb72235350effe, type: 3}
   - {fileID: 2139645596133741514, guid: 3265c51107ec9bc408a482ef4eb9d119, type: 3}
   - {fileID: 4970048543539617765, guid: fcf7e98dce28d8c4d9426d674599ed97, type: 3}
   - {fileID: 2595236143962783352, guid: 6c82244af6c315341bc9d4fdc3e86558, type: 3}
