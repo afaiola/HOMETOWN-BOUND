@@ -80,8 +80,11 @@ public class SavePatientData : MonoBehaviour
         if (File.Exists(patientDataFile))
             File.Delete(patientDataFile);
         // try fetching patientDataFile.
-        StorageManager.Instance.downloadStatusEvent.AddListener(FileDownload);
-        StorageManager.Instance.StartCSVDownload(patientDataFile);
+        if (StorageManager.Instance)
+        {
+            StorageManager.Instance.downloadStatusEvent.AddListener(FileDownload);
+            StorageManager.Instance.StartCSVDownload(patientDataFile);
+        }
     }
 
     private void FileDownload(bool status)

@@ -29,6 +29,8 @@ public class DragImage : MonoBehaviour
 
     public void Click()
     {
+        // TODO: move with VR pointer position
+        // TODO: drag on pointer select, drop on pointer select again.
         if (dragged)
         {
             PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);

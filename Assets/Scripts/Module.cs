@@ -70,7 +70,8 @@ public class Module : MonoBehaviour
             starPanel.GetComponent<StarComponent>().Set(stars);
             StartCoroutine(Wrap());
             Profiler.Instance.UpdateUserProfile();
-            SavePatientData.Instance.UploadPatientData();
+            if (SavePatientData.Instance)
+                SavePatientData.Instance.UploadPatientData();
             StaticEvent.moduleEnded();
         }
         else
@@ -142,7 +143,8 @@ public class Module : MonoBehaviour
     {
         open = true;
         UIManager.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
-        TankController.Instance.DisableMovement();
+        if (TankController.Instance)
+            TankController.Instance.DisableMovement();
 
         transform.GetChild(0).gameObject.SetActive(true);
         foreach (var layoutGroup in this.GetComponentsInChildren<LayoutGroup>())

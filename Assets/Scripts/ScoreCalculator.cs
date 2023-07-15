@@ -58,14 +58,18 @@ public class ScoreCalculator
         // Score exercise based on comparison to expected CI times
         //float[] times = new float[5];
         totalScore += GetScore(duration, successes, misses, currentExerciseNo);
-        SavePatientData.Instance.SaveEntry(currentExerciseNo, duration, successes, misses);
-        activityEnd.Invoke();
+        if (SavePatientData.Instance)
+            SavePatientData.Instance.SaveEntry(currentExerciseNo, duration, successes, misses);
+        if (activityEnd != null)
+            activityEnd.Invoke();
     }
 
     // Gets the point value for an exercise. Points correlate to stars for a particular exercise
     public int GetScore(float duration, int successes, int misses, int idx)
     {
         int score = 0;
+        if (SavePatientData.Instance == null) return 0;
+
         SavePatientData.PatientDataEntry cientry = SavePatientData.Instance.GetCIEntry(idx);
         if (cientry.attempts == null) return 0;
         float compareTime = 10f;
