@@ -39,7 +39,8 @@ public class ScoreCalculator
         start = Time.time;
 
         currentExerciseNo = exerciseID;
-        activityStart.Invoke(currentExerciseNo);
+        if (activityStart != null)
+            activityStart.Invoke(currentExerciseNo);
     }
 
     public void EndActivity(int successes, int misses)

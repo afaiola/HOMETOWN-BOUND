@@ -5,44 +5,68 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
-public class DragImage : MonoBehaviour
+public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
+    [SerializeField] private float dragFollowSpeed = 1f;
     public static Button dragged;
     [SerializeField]Button image;
     [SerializeField] FlyAround fly;
     public UnityEvent dropEvent;
 
+    private VRCanvasHelper canvasHelper;
+    private float clickTime;
+    private float clickDelay = 0.5f;
+
     private void OnValidate()
     {
         image = GetComponent<Button>();
         fly = GetComponent<FlyAround>();
+        canvasHelper = GetComponentInParent<VRCanvasHelper>();
     }
-  
+
     private void Update()
+    {
+        Vector3 inputPos = Input.mousePosition;
+        if (canvasHelper)
+        {
+            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos)) return;
+        }
+        SetDraggedPosition(inputPos);
+
+    }
+
+    public void SetDraggedPosition(Vector3 pos)
     {
         if (dragged == image)
         {
-            transform.position = Input.mousePosition;
+            pos = Vector3.Lerp(transform.position, pos, Time.deltaTime * dragFollowSpeed);
+            transform.position = pos;
         }
     }
 
-    public void Click()
+    public void Click(PointerEventData eventData)
     {
-        // TODO: move with VR pointer position
-        // TODO: drag on pointer select, drop on pointer select again.
+        // prevents OnPointerUp selects occuring right after OnPointerDown events
+        // occurs when trying to release the dragged image
+        if (Time.time - clickTime < clickDelay) return; 
+
+        clickTime = Time.time;
         if (dragged)
         {
-            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-            List<RaycastResult> results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-            foreach (var result in results)
+            if (dragged == image)
             {
-                Snap snap = result.gameObject.GetComponent<Snap>();
-                if (snap)
-                    if (snap.TryDrop())
-                        return;
+                List<RaycastResult> results = new List<RaycastResult>();
+                eventData.position = transform.position;
+                EventSystem.current.RaycastAll(eventData, results);
+                foreach (var result in results)
+                {
+                    Snap snap = result.gameObject.GetComponent<Snap>();
+                    if (snap)
+                        if (snap.TryDrop())
+                            return;
+                }
             }
             dragged = null;
             fly.enabled = true;
@@ -64,4 +88,23 @@ public class DragImage : MonoBehaviour
         dragged.gameObject.SetActive(false);
         dragged = null;
     }
+
+    
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("pointer down");
+        Click(eventData);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        // checking time here to prevent dropping right after picking up
+        // this allows to drag and drop and for click on pickup and putdown
+
+        //image.OnPointerClick(eventData);
+        Debug.Log("pointer up");
+        Click(eventData);
+
+    }
+
 }

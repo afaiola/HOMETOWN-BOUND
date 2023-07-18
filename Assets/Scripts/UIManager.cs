@@ -89,7 +89,8 @@ public class UIManager : MonoBehaviour
         Cursor.visible = true;
 
         Time.timeScale = 0;
-        pauseMenu.GetComponentInChildren<Text>().text = "Paused";
+        if (pauseMenu)
+            pauseMenu.GetComponentInChildren<Text>().text = "Paused";
     }
 
     public void AFKMenu()
