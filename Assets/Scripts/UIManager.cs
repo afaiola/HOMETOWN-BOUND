@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         if (refocusObj)
             refocusObj.SetActive(false);
-        pauseMenu.SetActive(false);
+        //pauseMenu.SetActive(false);
     }
 
     // Update is called once per frame

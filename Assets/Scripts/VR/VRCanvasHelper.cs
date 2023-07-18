@@ -45,6 +45,8 @@ public class VRCanvasHelper : MonoBehaviour
 
     public bool GetCanvasWorldPosition(ref Vector3 resultPos)
     {
+        // TODO: get whichever pointer is active. 
+        // if both active, pick whichever was there first
         resultPos = VRManager.Instance.GetPrimaryHitPosition();
         if (Single.IsInfinity(resultPos.x))
             return false;

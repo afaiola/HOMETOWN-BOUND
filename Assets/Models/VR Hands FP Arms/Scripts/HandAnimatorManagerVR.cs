@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.InputSystem;
 
 public class HandAnimatorManagerVR : MonoBehaviour
 {
@@ -13,41 +14,29 @@ public class HandAnimatorManagerVR : MonoBehaviour
 	public bool action = false;
 	public bool hold = false;
 
-	//trackpad keys 8 or 9
-	public string changeKey = "joystick button 9";
-	//trigger keys 14 or 15
-	public string actionKey = "joystick button 15";
-
-	//grip axis 11 or 12
-	public string holdKey = "Axis 12";
+	[SerializeField] InputActionReference buttonAction;
+	[SerializeField] InputActionReference triggerAction;
+	[SerializeField] InputActionReference gripAction;
 
 	public int numberOfAnimations = 8;
 
 	// Use this for initialization
 	void Start ()
 	{
-		string[] joys = UnityEngine.Input.GetJoystickNames ();
-		foreach (var item in joys) {
-			Debug.Log (item);
-		}
 		handAnimator = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetKeyUp (changeKey)) {
-			currentState = (currentState + 1) % (numberOfAnimations + 1);
-		}
-
-		if (Input.GetAxis (holdKey) > 0) {
+		if (gripAction.action.ReadValue<float>() > 0.1f)
 			hold = true;
-		} else
+		else
 			hold = false;
 
-		if (Input.GetKey (actionKey)) {
+		if (triggerAction.action.ReadValue<float>() > 0.1f)
 			action = true;
-		} else
+		else
 			action = false;
 
 
@@ -58,20 +47,19 @@ public class HandAnimatorManagerVR : MonoBehaviour
 		}
 
 		handAnimator.SetBool ("Action", action);
-		handAnimator.SetBool ("Hold", hold);
+		//handAnimator.SetBool ("Hold", hold);
 
 	}
 
 	void TurnOnState (int stateNumber)
 	{
 		foreach (var item in stateModels) {
+			if (item.go == null) continue;
 			if (item.stateNumber == stateNumber && !item.go.activeSelf)
 				item.go.SetActive (true);
 			else if (item.go.activeSelf)
 				item.go.SetActive (false);
 		}
 	}
-
-
 }
 

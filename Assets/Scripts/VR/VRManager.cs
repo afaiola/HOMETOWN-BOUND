@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class VRManager : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class VRManager : MonoBehaviour
     [SerializeField] private XRRayInteractor[] rayTeleporters;
     // direct interactors are for grabbing objects directly with the controllers
     //[SerializeField] private XRDirectInteractor[] directInteractors;
+
+    // TODO: get hand avatars from Assets/Models/VR Hands FP Arms/Prefabs
+    // TODO: use poke interactor for UI
     
     // Start is called before the first frame update
     void Start()
@@ -33,6 +37,20 @@ public class VRManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
+        VRSettings vrSettings = GameObject.FindObjectOfType<VRSettings>();
+        if (vrSettings)
+        {
+            vrSettings.onMovementTypeChange = new UnityEvent();
+            vrSettings.onMovementTypeChange.AddListener(ApplyMovementType);
+            vrSettings.onRotateTypeChange = new UnityEvent();
+            vrSettings.onRotateTypeChange.AddListener(ApplyMovementType);
+            vrSettings.onHandednessChange = new UnityEvent();
+            vrSettings.onHandednessChange.AddListener(ApplyHandedness);
+
+            vrSettings.LoadSettings();
+        }
+        ApplyHandedness();
+        ApplyMovementType();
     }
 
     // Update is called once per frame
@@ -47,8 +65,8 @@ public class VRManager : MonoBehaviour
         int primaryHand = VRSettings.Instance.PrimaryHand;
         int secondaryHand = 1 - primaryHand;
 
-        rayTeleporters[primaryHand].gameObject.SetActive(true && VRSettings.Instance.UseTeleportMovement);
-        rayTeleporters[secondaryHand].gameObject.SetActive(false);
+        rayTeleporters[secondaryHand].gameObject.SetActive(true && VRSettings.Instance.UseTeleportMovement);
+        rayTeleporters[primaryHand].gameObject.SetActive(false);
 
         // TODO: if using the handheld settings, change the hands.
     }
@@ -59,7 +77,7 @@ public class VRManager : MonoBehaviour
         snapTurnProvider.enabled = VRSettings.Instance.UseIncrementalRotate;
 
         continuousMoverProvider.enabled = !VRSettings.Instance.UseTeleportMovement;
-        continuousMoverProvider.enabled = !VRSettings.Instance.UseIncrementalRotate;
+        continuousTurnProvider.enabled = !VRSettings.Instance.UseIncrementalRotate;
     }
 
 
@@ -74,6 +92,7 @@ public class VRManager : MonoBehaviour
     public Vector3 GetPrimaryHitPosition()
     {
         RaycastResult hit;
+        if (VRSettings.Instance == null) return Vector3.positiveInfinity;
         if (!rayInteractors[VRSettings.Instance.PrimaryHand].TryGetCurrentUIRaycastResult(out hit))
         {
             return Vector3.positiveInfinity;
