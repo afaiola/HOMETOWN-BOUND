@@ -28,7 +28,6 @@ public class TankController : MonoBehaviour
 
     public Material[] skinColors;
 
-    private int displayWidth, displayHeight;
     private float timeSinceLastMove = 0;
 
     void Start()
@@ -40,6 +39,7 @@ public class TankController : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         DontDestroyOnLoad(gameObject);
@@ -51,15 +51,20 @@ public class TankController : MonoBehaviour
         m_StepCycle = 0f;
         m_NextStep = m_StepCycle / 2f;
 
-        displayWidth = Display.main.renderingWidth / 2;
-        displayHeight = Display.main.renderingHeight / 2;
-
-        foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            rend.sharedMaterial = skinColors[Profiler.Instance.currentUser.skin_id];
-        }
+        SetHandModel();
 
         floatingOrigin = GetComponent<FloatingOrigin>();
+    }
+
+    public void SetHandModel()
+    {
+        int skinID = Random.Range(0, skinColors.Length);
+        if (Profiler.Instance)
+            skinID = Profiler.Instance.currentUser.skin_id;
+        foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            rend.sharedMaterial = skinColors[skinID];
+        }
     }
 
     private void Update()
@@ -69,7 +74,7 @@ public class TankController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!canMove) return;
+        if (!canMove || VRManager.Instance != null) return;
 
         if (Time.time - timeSinceLastMove > afkTime && !UIManager.Instance.paused)
         {

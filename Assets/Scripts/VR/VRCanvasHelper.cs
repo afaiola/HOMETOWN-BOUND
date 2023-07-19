@@ -11,7 +11,7 @@ public class VRCanvasHelper : MonoBehaviour
 {
     private TrackedDeviceGraphicRaycaster trackedRaycaster;
     private Vector3 worldMin, worldMax;
-
+    private bool usingPrimaryHand;
 
     // Start is called before the first frame update
     void Start()
@@ -43,13 +43,21 @@ public class VRCanvasHelper : MonoBehaviour
         
     }
 
-    public bool GetCanvasWorldPosition(ref Vector3 resultPos)
+    public bool GetCanvasWorldPosition(ref Vector3 resultPos, bool requireActive=false)
     {
         // TODO: get whichever pointer is active. 
         // if both active, pick whichever was there first
-        resultPos = VRManager.Instance.GetPrimaryHitPosition();
+        
+        resultPos = VRManager.Instance.GetHitPosition(true, requireActive);
         if (Single.IsInfinity(resultPos.x))
-            return false;
+        {
+            resultPos = VRManager.Instance.GetHitPosition(false, requireActive);
+            if (Single.IsInfinity(resultPos.x))
+                return false;
+            // active hand failed, but secondary succeeded. switch
+            //usingPrimaryHand = !usingPrimaryHand;
+        }
+
         ClampWorldPosToCanvas(ref resultPos);
         return true;
     }

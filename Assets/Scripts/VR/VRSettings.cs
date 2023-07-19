@@ -28,13 +28,7 @@ public class VRSettings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: set initial values based on save data
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        _instance = this;
+        
     }
 
     // Update is called once per frame
@@ -47,12 +41,13 @@ public class VRSettings : MonoBehaviour
 
     public void LoadSettings()
     {
-        /*if (!PlayerPrefs.HasKey(movementSaveKey))
-            PlayerPrefs.SetInt(movementSaveKey, 0);
-        if (!PlayerPrefs.HasKey(rotateSaveKey))
-            PlayerPrefs.SetInt(rotateSaveKey, 0);
-        if (!PlayerPrefs.HasKey(handednessSaveKey))
-            PlayerPrefs.SetInt(handednessSaveKey, 0);*/
+        // TODO: set initial values based on save data
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
         useTeleportMovement = PlayerPrefs.GetInt(movementSaveKey, 0) == 1;
         useIncrementalRotate = PlayerPrefs.GetInt(rotateSaveKey, 0) == 1;
         isLeftHanded = PlayerPrefs.GetInt(handednessSaveKey, 0) == 1;
@@ -64,9 +59,9 @@ public class VRSettings : MonoBehaviour
         teleportToggle.onValueChange = new UnityEvent<bool>();
         teleportToggle.onValueChange.AddListener(SetMovementType);
         rotateToggle.onValueChange = new UnityEvent<bool>();
-        rotateToggle.onValueChange.AddListener(SetMovementType);
+        rotateToggle.onValueChange.AddListener(SetRotateSetting);
         handednessToggle.onValueChange = new UnityEvent<bool>();
-        handednessToggle.onValueChange.AddListener(SetMovementType);
+        handednessToggle.onValueChange.AddListener(SetHandedness);
     }
 
     public void SetMovementType(bool isTeleport)
@@ -80,8 +75,8 @@ public class VRSettings : MonoBehaviour
 
     public void SetRotateSetting(bool isIncremental)
     {
-        useTeleportMovement = isIncremental;
-        PlayerPrefs.SetInt(rotateSaveKey, !useTeleportMovement ? 0 : 1);
+        useIncrementalRotate = isIncremental;
+        PlayerPrefs.SetInt(rotateSaveKey, !useIncrementalRotate ? 0 : 1);
         if (onRotateTypeChange != null)
             onRotateTypeChange.Invoke();
     }

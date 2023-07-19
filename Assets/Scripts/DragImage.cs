@@ -31,7 +31,7 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         Vector3 inputPos = Input.mousePosition;
         if (canvasHelper)
         {
-            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos)) return;
+            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos, dragged != image)) return;
         }
         SetDraggedPosition(inputPos);
 
