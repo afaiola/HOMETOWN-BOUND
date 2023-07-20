@@ -246,6 +246,11 @@ public class TankController : MonoBehaviour
         StartCoroutine(FixMouse(CursorLockMode.Locked));
         if (floatingOrigin)
             floatingOrigin.canUpdate = true;
+
+        if (VRManager.Instance)
+        {
+            VRManager.Instance.ApplySettings();
+        }
     }
 
     public void DisableMovement()
@@ -258,6 +263,11 @@ public class TankController : MonoBehaviour
         StartCoroutine(FixMouse(CursorLockMode.Confined));
         if (floatingOrigin)
             floatingOrigin.canUpdate = true;
+
+        if (VRManager.Instance)
+        {
+            VRManager.Instance.DisableMovement();
+        }
     }
 
     IEnumerator FixMouse(CursorLockMode cursorSetting)

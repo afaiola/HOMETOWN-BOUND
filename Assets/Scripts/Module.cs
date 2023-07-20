@@ -170,6 +170,11 @@ public class Module : MonoBehaviour
         {
             StartCoroutine(Wrap());
         }
+
+        if (VRManager.Instance)
+        {
+            UIManager.Instance.MoveToVRPlayer();
+        }
     }
 
     /// <summary>

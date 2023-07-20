@@ -21,6 +21,8 @@ public class UIManager : MonoBehaviour
     CursorLockMode prevMode;
     bool prevVisible;
 
+    public Vector3 vrOffset;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +38,19 @@ public class UIManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         if (refocusObj)
             refocusObj.SetActive(false);
-        //pauseMenu.SetActive(false);
+        pauseMenu.SetActive(false);
+
+        if (GameObject.FindObjectOfType<VRManager>())
+        {
+            // convert UI to VR
+            gameObject.AddComponent< UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
+            gameObject.AddComponent<VRCanvasHelper>();
+            Canvas canvas = GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+            // TODO: do something to replace the pause menu
+        }
+
     }
 
     // Update is called once per frame
@@ -69,6 +83,14 @@ public class UIManager : MonoBehaviour
                 // when button is pressed down, resume, lock cursor on release
             }
         }
+    }
+
+    public void TogglePause()
+    {
+        if (paused)
+            Resume();
+        else
+            Pause();
     }
 
     public void Pause()
@@ -190,6 +212,16 @@ public class UIManager : MonoBehaviour
         Menu.Instance.gotoButton.onValueChanged.RemoveAllListeners();
         Menu.Instance.gotoButton.onValueChanged.AddListener(ShowEndScreen);
         TankController.Instance.DisableMovement();
+    }
+
+    public void MoveToVRPlayer()
+    {
+        transform.position = TankController.Instance.transform.position +
+            TankController.Instance.transform.forward * vrOffset.z +
+            new Vector3(0, vrOffset.y, 0);
+        transform.LookAt(TankController.Instance.transform);
+        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y-180, 0);    // turns object around
+        GetComponent<VRCanvasHelper>().CalculateCanvasRange();
     }
 
 }

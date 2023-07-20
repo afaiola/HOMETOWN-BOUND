@@ -6,6 +6,7 @@ using UnityEngine.XR.Management;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class VRManager : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class VRManager : MonoBehaviour
     //[SerializeField] private XRDirectInteractor[] directInteractors;
 
     // TODO: use poke interactor for UI
+
+    [SerializeField] private InputActionReference pauseAction;
     
     // Start is called before the first frame update
     void Start()
@@ -74,7 +77,10 @@ public class VRManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (pauseAction.action.triggered)
+        {
+            UIManager.Instance.TogglePause();
+        }
     }
 
     private void SetupHands()
@@ -100,6 +106,15 @@ public class VRManager : MonoBehaviour
 
         continuousMoverProvider.moveSpeed = VRSettings.Instance.UseTeleportMovement ? 0 : smoothMoveSpeed;
         continuousTurnProvider.turnSpeed = VRSettings.Instance.UseIncrementalRotate ? 0 : smoothRotateSpeed;
+    }
+
+    public void DisableMovement()
+    {
+        foreach (var tp in rayTeleporters)
+            tp.gameObject.SetActive(false);
+        snapTurnProvider.turnAmount = 0;
+        continuousMoverProvider.moveSpeed = 0;
+        continuousTurnProvider.turnSpeed = 0;
     }
 
 

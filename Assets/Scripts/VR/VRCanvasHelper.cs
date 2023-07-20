@@ -16,31 +16,46 @@ public class VRCanvasHelper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        Rect rect = rectTransform.rect;
-        float worldOffsetX = -Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.x;
-        float worldOffsetY = rect.height / 2 * transform.root.localScale.y;
-        float worldOffsetZ = -Mathf.Sin(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.z;
-
-        float worldMinX = transform.root.position.x - worldOffsetX;
-        float worldMinY = transform.root.position.y - worldOffsetY;
-        float worldMinZ = transform.root.position.z - worldOffsetZ;
-
-        float worldMaxX = transform.root.position.x + worldOffsetX;
-        float worldMaxY = transform.root.position.y + worldOffsetY;
-        float worldMaxZ = transform.root.position.z + worldOffsetZ;
-
-        worldMin = new Vector3(worldMinX, worldMinY, worldMinZ);
-        worldMax = new Vector3(worldMaxX, worldMaxY, worldMaxZ);
-
-        Debug.Log($"range {worldMin}-{worldMax}");
-
+        CalculateCanvasRange();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void CalculateCanvasRange()
+    {
+        StartCoroutine(DelayedCalculateRange());
+    }
+
+    private IEnumerator DelayedCalculateRange()
+    {
+        // wait a frame to give canvas time to recalculate position
+        yield return new WaitForEndOfFrame();
+
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        Rect rect = rectTransform.rect;
+        float worldOffsetX = -Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.x;
+        float worldOffsetY = rect.height / 2 * transform.root.localScale.y;
+        float worldOffsetZ = -Mathf.Sin(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.z;
+
+        /*float worldMinX = transform.root.position.x - worldOffsetX;
+        float worldMinY = transform.root.position.y - worldOffsetY;
+        float worldMinZ = transform.root.position.z - worldOffsetZ;
+
+        float worldMaxX = transform.root.position.x + worldOffsetX;
+        float worldMaxY = transform.root.position.y + worldOffsetY;
+        float worldMaxZ = transform.root.position.z + worldOffsetZ;
+        worldMin = new Vector3(worldMinX, worldMinY, worldMinZ);
+        worldMax = new Vector3(worldMaxX, worldMaxY, worldMaxZ);*/
+
+        Vector3 worldOffset = new Vector3(worldOffsetX, worldOffsetY, worldOffsetZ);
+        worldMin = transform.root.position - worldOffset;
+        worldMax = transform.root.position + worldOffset;
+
+        Debug.Log($"range {worldMin}-{worldMax} offset: {worldOffset}");
     }
 
     public bool GetCanvasWorldPosition(ref Vector3 resultPos, bool requireActive=false)
@@ -53,7 +68,10 @@ public class VRCanvasHelper : MonoBehaviour
         {
             resultPos = VRManager.Instance.GetHitPosition(false, requireActive);
             if (Single.IsInfinity(resultPos.x))
+            {
+                Debug.Log("no active pointer");
                 return false;
+            }
             // active hand failed, but secondary succeeded. switch
             //usingPrimaryHand = !usingPrimaryHand;
         }

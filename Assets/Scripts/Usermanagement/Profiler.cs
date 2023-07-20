@@ -57,6 +57,7 @@ public class Profiler : MonoBehaviour
 
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
+        currentUser = new Profile("player", 0, 0, 0, 0, DateTime.Now, DateTime.Now, 0, "Player");
     }
 
     public void UserSignedIn(string _username, int _ci, int _skin, int login_ct, double playTime, DateTime startDate, DateTime lastLogin, int consecDays, string firstName)

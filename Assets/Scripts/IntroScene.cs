@@ -47,9 +47,11 @@ public class IntroScene : MonoBehaviour
 
     public void SetDialogue(bool firstTime)
     {
-        string name = Profiler.Instance.currentUser.displayName;
-        if (name != "") name = $", {name}";
-        string subtitles = $"How are we doing today{name}? Everything looks good. Feel free to get up, get dressed, and go home from the hospital.";
+        string patientName = "";
+        if (Profiler.Instance)
+            patientName = Profiler.Instance.currentUser.displayName;
+        if (patientName != "") patientName = $", {patientName}";
+        string subtitles = $"How are we doing today{patientName}? Everything looks good. Feel free to get up, get dressed, and go home from the hospital.";
         
         source.clip = introClip;
         nextActionMessage = "Leave the hospital.";
@@ -57,7 +59,7 @@ public class IntroScene : MonoBehaviour
         {
             source.clip = continuePlayingClip;
             nextActionMessage = "Loading Checkpoint...";
-            subtitles = $"How are we doing today{name}? Everything looks good. Let's pick up where we left off.";
+            subtitles = $"How are we doing today{patientName}? Everything looks good. Let's pick up where we left off.";
         }
 
         if (speechBubble)

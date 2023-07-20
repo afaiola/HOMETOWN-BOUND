@@ -51,7 +51,7 @@ public class SavePatientData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Initialize();
+        Initialize();
     }
 
     // Update is called once per frame
@@ -63,15 +63,13 @@ public class SavePatientData : MonoBehaviour
     // set up the save file and format it to hold entries for all exercises
     public void Initialize()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
+        _instance = this;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
 
@@ -498,6 +496,8 @@ public class SavePatientData : MonoBehaviour
     {
         int lastExercise = LastExercisePlayed(attempt);
         int mod = Mathf.FloorToInt(lastExercise / 7);
+        Debug.Log($"last played M{mod} E{lastExercise}");
+
         return mod;
     }
 

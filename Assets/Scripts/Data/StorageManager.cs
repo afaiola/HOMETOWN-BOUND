@@ -15,7 +15,7 @@ public class StorageManager : MonoBehaviour
     public static StorageManager Instance { get => _instance; }
     private static StorageManager _instance;
 
-    [System.NonSerialized] public UnityEvent<bool> downloadStatusEvent;
+    [System.NonSerialized] public UnityEvent<bool> downloadStatusEvent = new UnityEvent<bool>();
 
     public PlayerContent[] playerContents, dropdownContents;
     public PlayerContent portraitContent;
@@ -27,15 +27,18 @@ public class StorageManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else
+        Initialize();
+    }
+
+    public void Initialize()
+    {
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
+        _instance = this;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
     }

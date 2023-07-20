@@ -8,17 +8,27 @@ public class LookAt : MonoBehaviour
     [SerializeField] Animator animator;
     public Transform lookPosition;
     public float lookWeight = 0;
-    [SerializeField] bool lockAt1;
-    
+    [SerializeField] bool lockAt1, lookOnStart;
+    private Vector3 lookOffset =  new Vector3(0, 2.8f, 0);
+
+    private void Start()
+    {
+        if (lookOnStart)
+        {
+            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+    }
+
     private void OnValidate()
     {
         animator = GetComponent<Animator>();
     }
+
     void OnAnimatorIK(int layer)
     {
         if (lookPosition)
         {
-            animator.SetLookAtPosition(lookPosition.position);
+            animator.SetLookAtPosition(lookPosition.position + lookOffset);
         }
         if (lockAt1)
             animator.SetLookAtWeight(1, 0, 1, Mathf.Min(1, 1 * 2), 1);
