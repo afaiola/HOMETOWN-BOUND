@@ -214,13 +214,37 @@ public class UIManager : MonoBehaviour
         TankController.Instance.DisableMovement();
     }
 
-    public void MoveToPosition()
+    public void MoveToPosition(Transform location=null, bool useOffset=true, bool useScale=false)
     {
-        transform.position = TankController.Instance.transform.position +
-            TankController.Instance.transform.forward * vrOffset.z +
-            new Vector3(0, vrOffset.y, 0);
-        transform.LookAt(TankController.Instance.transform);
-        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y-180, 0);    // turns object around
+        Vector3 pos = location.position;
+        if (location == null)
+        {
+            location = TankController.Instance.transform;
+        }
+        transform.position = location.position;
+
+        if (useOffset)
+        {
+            transform.position *= vrOffset.z;
+            transform.position += new Vector3(0, vrOffset.y, 0);
+        }
+
+        transform.LookAt(location);
+        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
+
+        if (useScale)
+        {
+            transform.rotation = location.rotation;
+            transform.localScale = location.localScale;
+        }
+        else
+        {
+            transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+        }
+            
+        
+
+        transform.position = pos;
         StartCoroutine(WaitToCalculateCanvasRange());
     }
 

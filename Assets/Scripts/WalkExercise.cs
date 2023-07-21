@@ -40,6 +40,11 @@ public class WalkExercise : Exercise
     public void EnterArea()
     {
         // TODO: force to look straight ahead
+        if (VRManager.Instance)
+        {
+            _correctCount++;
+            Success();
+        }
         StartCoroutine(MoveToPos());
     }
 

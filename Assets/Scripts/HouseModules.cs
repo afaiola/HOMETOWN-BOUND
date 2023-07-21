@@ -11,6 +11,8 @@ public class HouseModules : Module
     public TMPro.TextMeshProUGUI helpText;
     public AudioClip commotionClip;
 
+    [SerializeField] Transform[] physicalExercises;
+
     protected override void RunFirstModule()
     {
         (exercises[0] as WalkExercise).Arrange();
@@ -49,8 +51,14 @@ public class HouseModules : Module
                     helpText.text = "Flip to the <color=#79B251>" + tv.channels[tv.goalChannel].name + "</color> channel. Press <color=#79B251>'OK'</color> to confirm.";
                 }
             }
+            MoveVRCanvas();
         }
         //ScoreCalculator.instance.exercising = false;
+    }
+
+    protected override void MoveVRCanvas()
+    {
+        UIManager.Instance.MoveToPosition(physicalExercises[current], false, true);
     }
 
     public override void End()

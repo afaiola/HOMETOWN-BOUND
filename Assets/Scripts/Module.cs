@@ -170,11 +170,14 @@ public class Module : MonoBehaviour
         {
             StartCoroutine(Wrap());
         }
-
+        
         if (VRManager.Instance)
-        {
-            UIManager.Instance.MoveToPosition();
-        }
+            MoveVRCanvas();
+    }
+
+    protected virtual void MoveVRCanvas()
+    {
+        UIManager.Instance.MoveToPosition();
     }
 
     /// <summary>
