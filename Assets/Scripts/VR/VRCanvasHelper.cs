@@ -37,7 +37,8 @@ public class VRCanvasHelper : MonoBehaviour
 
         RectTransform rectTransform = GetComponent<RectTransform>();
         Rect rect = rectTransform.rect;
-        float worldOffsetX = -Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.x;
+
+        float worldOffsetX = Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.x;
         float worldOffsetY = rect.height / 2 * transform.root.localScale.y;
         float worldOffsetZ = -Mathf.Sin(Mathf.Deg2Rad * transform.root.eulerAngles.y) * (rect.width / 2) * transform.root.localScale.z;
 
@@ -51,11 +52,16 @@ public class VRCanvasHelper : MonoBehaviour
         worldMin = new Vector3(worldMinX, worldMinY, worldMinZ);
         worldMax = new Vector3(worldMaxX, worldMaxY, worldMaxZ);*/
 
-        Vector3 worldOffset = new Vector3(worldOffsetX, worldOffsetY, worldOffsetZ);
+        //Vector3 worldOffset = new Vector3(worldOffsetX, worldOffsetY, worldOffsetZ);
+        Vector3 worldOffset = new Vector3(
+            Mathf.Abs(worldOffsetX), 
+            Mathf.Abs(worldOffsetY),
+            Mathf.Abs(worldOffsetZ)
+            );
         worldMin = transform.root.position - worldOffset;
         worldMax = transform.root.position + worldOffset;
 
-        Debug.Log($"range {worldMin}-{worldMax} offset: {worldOffset}");
+        Debug.Log($"angle {transform.root.eulerAngles.y} gives range {worldMin}-{worldMax} offset: {worldOffset}");
     }
 
     public bool GetCanvasWorldPosition(ref Vector3 resultPos, bool requireActive=false)
@@ -69,7 +75,6 @@ public class VRCanvasHelper : MonoBehaviour
             resultPos = VRManager.Instance.GetHitPosition(false, requireActive);
             if (Single.IsInfinity(resultPos.x))
             {
-                Debug.Log("no active pointer");
                 return false;
             }
             // active hand failed, but secondary succeeded. switch
@@ -82,10 +87,13 @@ public class VRCanvasHelper : MonoBehaviour
 
     public void ClampWorldPosToCanvas(ref Vector3 pos)
     {
+        Debug.Log($"pre clamp: {pos}");
         pos = new Vector3(
             Mathf.Clamp(pos.x, worldMin.x, worldMax.x),
             Mathf.Clamp(pos.y, worldMin.y, worldMax.y),
             Mathf.Clamp(pos.z, worldMin.z, worldMax.z)
         );
+        Debug.Log($"post clamp: {pos}");
+
     }
 }

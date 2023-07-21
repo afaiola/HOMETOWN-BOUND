@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Text = TMPro.TextMeshProUGUI;
 
 public class SecurityEvent : UnityEvent<bool> { }
 
@@ -13,9 +14,13 @@ public class SecurityCode : MonoBehaviour
 
     private InputField input;
     [SerializeField] private GameObject canvas;
+    [SerializeField] private Text title;
     [SerializeField] private Button submitButton;
     [SerializeField] private Button closebutton;
+    [SerializeField] private Button clearButton;
     [SerializeField] private string code;
+
+    [SerializeField] private IntegerButton[] keypadNumbers;
 
     public UnityEvent onSuccess;
 
@@ -36,7 +41,14 @@ public class SecurityCode : MonoBehaviour
         input = GetComponentInChildren<InputField>();
         submitButton.onClick.AddListener(CheckCode);
         closebutton.onClick.AddListener(Stop);
+        clearButton.onClick.AddListener(ClearCode);
         Stop();
+
+        for (int i = 0; i < keypadNumbers.Length; i++)
+        {
+            keypadNumbers[i].Setup(i);
+            keypadNumbers[i].sendIntEvent.AddListener(EnterNumber);
+        }
     }
 
     // Update is called once per frame
@@ -46,6 +58,16 @@ public class SecurityCode : MonoBehaviour
         {
             CheckCode();
         }
+    }
+
+    private void EnterNumber(int value)
+    {
+        input.text += value.ToString();
+    }
+
+    private void ClearCode()
+    {
+        input.text = "";
     }
 
     private void CheckCode()
@@ -64,15 +86,15 @@ public class SecurityCode : MonoBehaviour
     {
         Image buttonImage = submitButton.GetComponent<Image>();
         Color buttonColor = buttonImage.color;
-        Text submitText = submitButton.GetComponentInChildren<Text>();
-        Color textColor = submitText.color;
+        //Text submitText = submitButton.GetComponentInChildren<Text>();
+        Color textColor = title.color;
 
         submitButton.interactable = false;
         submitButton.enabled = false;
         buttonImage.enabled = false;
-        submitText.text = "Success!";
+        title.text = "Code Valid";
         //buttonImage.color = Color.green;
-        submitText.color = Color.green;
+        title.color = Color.green;
 
         yield return new WaitForSecondsRealtime(1f);
         StaticEvent.moduleEnded();
@@ -82,9 +104,9 @@ public class SecurityCode : MonoBehaviour
         submitButton.interactable = true;
         submitButton.enabled = true;
         buttonImage.enabled = true;
-        submitText.text = "Submit";
-        buttonImage.color = buttonColor;
-        submitText.color = textColor;
+        title.text = "Security Code";
+        //buttonImage.color = buttonColor;
+        title.color = textColor;
         input.text = "";
         Stop();
     }
@@ -93,24 +115,24 @@ public class SecurityCode : MonoBehaviour
     {
         Image buttonImage = submitButton.GetComponent<Image>();
         Color buttonColor = buttonImage.color;
-        Text submitText = submitButton.GetComponentInChildren<Text>();
-        Color textColor = submitText.color;
+        //Text submitText = submitButton.GetComponentInChildren<Text>();
+        Color textColor = title.color;
 
         submitButton.interactable = false;
         submitButton.enabled = false;
         buttonImage.enabled = false;
-        submitText.text = "Invalid Code";
+        title.text = "Invalid Code";
         //buttonImage.color = Color.red;
-        submitText.color = Color.red;
+        title.color = Color.red;
 
         yield return new WaitForSecondsRealtime(2f);
 
         submitButton.interactable = true;
         submitButton.enabled = true;
         buttonImage.enabled = true;
-        submitText.text = "Submit";
-        buttonImage.color = buttonColor;
-        submitText.color = textColor;
+        title.text = "Security Code";
+        //buttonImage.color = buttonColor;
+        title.color = textColor;
         input.text = "";
     }
 

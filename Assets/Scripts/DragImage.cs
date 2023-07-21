@@ -23,7 +23,6 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     {
         image = GetComponent<Button>();
         fly = GetComponent<FlyAround>();
-        canvasHelper = GetComponentInParent<VRCanvasHelper>();
     }
 
     private void Update()
@@ -42,6 +41,7 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         if (dragged == image)
         {
             pos = Vector3.Lerp(transform.position, pos, Time.deltaTime * dragFollowSpeed);
+            Debug.Log("Setting pos to " + pos);
             transform.position = pos;
         }
     }
@@ -50,6 +50,9 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     {
         // prevents OnPointerUp selects occuring right after OnPointerDown events
         // occurs when trying to release the dragged image
+        if (canvasHelper == null && VRManager.Instance)
+            canvasHelper = GetComponentInParent<VRCanvasHelper>();
+
         if (Time.time - clickTime < clickDelay) return; 
 
         clickTime = Time.time;

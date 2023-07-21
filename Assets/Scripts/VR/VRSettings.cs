@@ -47,6 +47,7 @@ public class VRSettings : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        Debug.Log("load settings");
         _instance = this;
         useTeleportMovement = PlayerPrefs.GetInt(movementSaveKey, 0) == 1;
         useIncrementalRotate = PlayerPrefs.GetInt(rotateSaveKey, 0) == 1;
@@ -66,7 +67,6 @@ public class VRSettings : MonoBehaviour
 
     public void SetMovementType(bool isTeleport)
     {
-        Debug.Log("setting movement type setting");
         useTeleportMovement = isTeleport;
         PlayerPrefs.SetInt(movementSaveKey, !useTeleportMovement ? 0 : 1);
         if (onMovementTypeChange != null)

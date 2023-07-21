@@ -15,8 +15,13 @@ public class LookAt : MonoBehaviour
     {
         if (lookOnStart)
         {
-            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+            Invoke("Initialize", 1f);
         }
+    }
+
+    private void Initialize()
+    {
+        lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void OnValidate()

@@ -214,14 +214,21 @@ public class UIManager : MonoBehaviour
         TankController.Instance.DisableMovement();
     }
 
-    public void MoveToVRPlayer()
+    public void MoveToPosition()
     {
         transform.position = TankController.Instance.transform.position +
             TankController.Instance.transform.forward * vrOffset.z +
             new Vector3(0, vrOffset.y, 0);
         transform.LookAt(TankController.Instance.transform);
         transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y-180, 0);    // turns object around
+        StartCoroutine(WaitToCalculateCanvasRange());
+    }
+
+    private IEnumerator WaitToCalculateCanvasRange()
+    {
+        yield return new WaitForEndOfFrame();
         GetComponent<VRCanvasHelper>().CalculateCanvasRange();
+
     }
 
 }

@@ -79,6 +79,7 @@ public class VRManager : MonoBehaviour
     {
         if (pauseAction.action.triggered)
         {
+            Debug.Log("Pause Action");
             UIManager.Instance.TogglePause();
         }
     }
@@ -90,14 +91,7 @@ public class VRManager : MonoBehaviour
 
     public void ApplySettings()
     {
-        /*teleportProvider.enabled = VRSettings.Instance.UseTeleportMovement;
-        snapTurnProvider.enabled = VRSettings.Instance.UseIncrementalRotate;
-
-        continuousMoverProvider.enabled = !VRSettings.Instance.UseTeleportMovement;
-        continuousTurnProvider.enabled = !VRSettings.Instance.UseIncrementalRotate;*/
-
-        //int primaryHand = VRSettings.Instance.PrimaryHand;
-        //int secondaryHand = 1 - primaryHand;
+        if (VRSettings.Instance == null) return;
 
         rayTeleporters[1].gameObject.SetActive(true && VRSettings.Instance.UseTeleportMovement);
         rayTeleporters[0].gameObject.SetActive(false);
@@ -129,17 +123,19 @@ public class VRManager : MonoBehaviour
     public Vector3 GetHitPosition(bool primary = true, bool requireActive = false)
     {
         RaycastResult hit;
-        if (VRSettings.Instance == null) return Vector3.positiveInfinity;
+        if (VRSettings.Instance == null)
+        {
+            Debug.LogError("No vr settings");
+            return Vector3.positiveInfinity;
+        }
 
         int primaryHand = VRSettings.Instance.PrimaryHand;
         int secondaryHand = 1 - primaryHand;
-
         if (xrControllers[primary ? primaryHand : secondaryHand].activateActionValue.action.ReadValue<float>() < 0.1f && requireActive)
             return Vector3.positiveInfinity;
-
         if (!rayInteractors[primary ? primaryHand : secondaryHand].TryGetCurrentUIRaycastResult(out hit))
             return Vector3.positiveInfinity;
-        
+        Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}"); 
         return hit.worldPosition;
     }
 }

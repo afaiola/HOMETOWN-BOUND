@@ -15,6 +15,11 @@ public class Greet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Invoke("Initialize", 1f);
+    }
+
+    private void Initialize()
+    {
         StaticEvent.moduleStart.AddListener(ToggleCanWave);
         StaticEvent.moduleEnd.AddListener(ToggleCanWave);
         player = GameObject.FindGameObjectWithTag("Player").transform;

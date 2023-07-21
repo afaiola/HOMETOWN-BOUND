@@ -173,7 +173,7 @@ public class Module : MonoBehaviour
 
         if (VRManager.Instance)
         {
-            UIManager.Instance.MoveToVRPlayer();
+            UIManager.Instance.MoveToPosition();
         }
     }
 
