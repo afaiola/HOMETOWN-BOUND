@@ -23,6 +23,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1459532108807402297}
     m_Modifications:
+    - target: {fileID: 6242543002980493507, guid: bbcad0efc16572440973b65461a3e17a,
+        type: 3}
+      propertyPath: images.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6242543002980493507, guid: bbcad0efc16572440973b65461a3e17a,
+        type: 3}
+      propertyPath: images.Array.data[0]
+      value: 
+      objectReference: {fileID: 2800000, guid: d1c8f9e5c20a91d4fa36a5345292c5e4, type: 3}
     - target: {fileID: 9085254620367766964, guid: bbcad0efc16572440973b65461a3e17a,
         type: 3}
       propertyPath: m_AspectRatio
@@ -2166,46 +2176,6 @@ PrefabInstance:
       propertyPath: m_Padding.m_Right
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[0]
-      value: 
-      objectReference: {fileID: 2800000, guid: 042ad828a3815bd49b6acd9980d00db1, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[1]
-      value: 
-      objectReference: {fileID: 2800000, guid: 1b433a43dd8aa6f43ab3f2716a869070, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[2]
-      value: 
-      objectReference: {fileID: 2800000, guid: 510081aff6caa0e478094fdb21746356, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[3]
-      value: 
-      objectReference: {fileID: 2800000, guid: 25a5565a4d3b3b44b99de7dad27275ab, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[4]
-      value: 
-      objectReference: {fileID: 2800000, guid: 92889bc1b263f0648ae76330c6191b84, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[5]
-      value: 
-      objectReference: {fileID: 2800000, guid: 7a8a0c5b0b08905408084444bb1b72d3, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[6]
-      value: 
-      objectReference: {fileID: 2800000, guid: 1852e45314f2cb843bf67d0fd9e321ab, type: 3}
-    - target: {fileID: 4208735396296416914, guid: 3f3c2e9a372438c488e645c3b83c6cfa,
-        type: 3}
-      propertyPath: images.Array.data[7]
-      value: 
-      objectReference: {fileID: 2800000, guid: f2c3a94e8a929de489a881cdccfbab6b, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f3c2e9a372438c488e645c3b83c6cfa, type: 3}
 --- !u!114 &3376331628899266313 stripped
