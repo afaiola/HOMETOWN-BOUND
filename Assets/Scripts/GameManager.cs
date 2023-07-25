@@ -69,6 +69,9 @@ public class GameManager : MonoBehaviour
         else
             vrManager.Initialize();
 
+        foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
+            looker.Initialize();
+
         // Each scene has its own modules. Wait until all are loaded before matching modules up to their respective interactibles.
         ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
         if (moduleMapper)

@@ -13,15 +13,13 @@ public class LookAt : MonoBehaviour
 
     private void Start()
     {
-        if (lookOnStart)
-        {
-            Invoke("Initialize", 1f);
-        }
     }
 
-    private void Initialize()
+    public void Initialize()
     {
-        lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        if (lookOnStart)
+            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+
     }
 
     private void OnValidate()

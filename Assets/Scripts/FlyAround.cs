@@ -21,7 +21,7 @@ public class FlyAround : MonoBehaviour
     private float angleInc;
     private float direction;
     RectTransform[] snaps;
-    Vector2[] spawnPoints = new Vector2[8];
+    Vector2[] spawnPoints = new Vector2[9];
     public int cornerIndex = 0;
 
     private float b_height, b_width, p_height, p_width;
@@ -51,14 +51,15 @@ public class FlyAround : MonoBehaviour
         float center = 0;
         float top = p_height - b_height;
 
-        spawnPoints[0] = new Vector2(left, top); //top left
-        spawnPoints[4] = new Vector2(middle, top); // top middle
-        spawnPoints[1] = new Vector2(right, top); // top right
-        spawnPoints[2] = new Vector2(left, bottom); // bottom left
-        spawnPoints[5] = new Vector2(middle, bottom); // bottom middle
-        spawnPoints[3] = new Vector2(right, bottom); //bottom right
-        spawnPoints[6] = new Vector2(right, center); //center right
-        spawnPoints[7] = new Vector2(left, center); //center left
+        spawnPoints[0] = new Vector2(left, top); 
+        spawnPoints[1] = new Vector2(middle, top); 
+        spawnPoints[2] = new Vector2(right, top);
+        spawnPoints[3] = new Vector2(left, bottom);
+        spawnPoints[4] = new Vector2(middle, bottom); 
+        spawnPoints[5] = new Vector2(right, bottom);
+        spawnPoints[6] = new Vector2(left, center); 
+        spawnPoints[7] = new Vector2(middle, center); 
+        spawnPoints[8] = new Vector2(right, center); 
     }
 
     private Vector2 GetPosition()
