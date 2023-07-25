@@ -16,13 +16,15 @@ public class GameManager : MonoBehaviour
 
     public bool useVR;
     // includes player, menu, and security code
-    [SerializeField] GameObject[] vrObjects, desktopObjects;    
+    [SerializeField] GameObject[] vrObjects, desktopObjects;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(StartRoutine());
     }
+
+    
 
     private IEnumerator StartRoutine()
     {
@@ -40,7 +42,13 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(scavengerObjects);
         DontDestroyOnLoad(gameObject);
 
-        // TODO: enable VR objects if VR
+        VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
+        if (vrManager)
+        {
+            yield return vrManager.StartXR();
+            useVR = vrManager.xrDeviceOn;
+        }
+
         // make sure each of these items are disabled prior to this start call to prevent any unwanted initialization
         for (int i = 0; i < vrObjects.Length; i++)
             vrObjects[i].SetActive(useVR);
@@ -49,6 +57,17 @@ public class GameManager : MonoBehaviour
 
         // wait for objects to activate before initializing them
         yield return new WaitForEndOfFrame();
+
+        GameObject.FindObjectOfType<TankController>().Initialize();
+        GameObject.FindObjectOfType<Menu>().Initialize();
+        GameObject.FindObjectOfType<UIManager>().Initialize();
+        GameObject.FindObjectOfType<SecurityCode>().Initialize();
+        GameObject.FindObjectOfType<StatisticsManager>().Initialize();
+
+        if (!useVR && vrManager)
+            Destroy(vrManager.gameObject);
+        else
+            vrManager.Initialize();
 
         // Each scene has its own modules. Wait until all are loaded before matching modules up to their respective interactibles.
         ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();

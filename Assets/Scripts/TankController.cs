@@ -32,6 +32,11 @@ public class TankController : MonoBehaviour
 
     void Start()
     {
+        
+    }
+    
+    public void Initialize()
+    {
         if (_instance == null)
         {
             _instance = this;

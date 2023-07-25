@@ -58,7 +58,11 @@ public class HouseModules : Module
 
     protected override void MoveVRCanvas()
     {
-        UIManager.Instance.MoveToPosition(physicalExercises[current], false, true);
+        if (VRManager.Instance)
+        {
+            UIManager.Instance.MoveToPosition(physicalExercises[current], false, true);
+            TankController.Instance.EnableMovement();   // allow us to move around during the exercise
+        }
     }
 
     public override void End()

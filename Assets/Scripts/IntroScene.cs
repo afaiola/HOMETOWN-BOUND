@@ -82,6 +82,9 @@ public class IntroScene : MonoBehaviour
         StaticEvent.ActivateSpeechBubble();
         TankController.Instance.DisableMovement();
         TankController.Instance.enabled = false;
+
+        if (VRManager.Instance)
+            VRManager.Instance.SetCameraSitting();
         
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 
@@ -96,6 +99,10 @@ public class IntroScene : MonoBehaviour
 
         TankController.Instance.transform.position = start.position;
         TankController.Instance.transform.rotation = start.rotation;
+
+        if (VRManager.Instance)
+            VRManager.Instance.SetCameraStanding();
+
         guy.SetActive(false);
         dr.SetActive(false);
         nurse.SetActive(false);

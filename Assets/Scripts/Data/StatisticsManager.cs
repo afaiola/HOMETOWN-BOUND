@@ -45,6 +45,11 @@ public class StatisticsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    public void Initialize()
+    {
         if (_instance == null)
         {
             _instance = this;

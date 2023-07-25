@@ -8,6 +8,8 @@ public class VRSettings : MonoBehaviour
     public static VRSettings Instance { get { return _instance; } }
     private static VRSettings _instance;
 
+    public GameObject settingsMenu;
+
     [System.NonSerialized]
     public UnityEvent onMovementTypeChange, onRotateTypeChange, onHandednessChange;
 

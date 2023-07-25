@@ -26,6 +26,11 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void Initialize()
+    {
         if (_instance == null)
         {
             _instance = this;
@@ -43,14 +48,13 @@ public class UIManager : MonoBehaviour
         if (GameObject.FindObjectOfType<VRManager>())
         {
             // convert UI to VR
-            gameObject.AddComponent< UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
+            gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
             gameObject.AddComponent<VRCanvasHelper>();
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
             // TODO: do something to replace the pause menu
         }
-
     }
 
     // Update is called once per frame
@@ -216,21 +220,18 @@ public class UIManager : MonoBehaviour
 
     public void MoveToPosition(Transform location=null, bool useOffset=true, bool useScale=false)
     {
-        Vector3 pos = location.position;
         if (location == null)
         {
             location = TankController.Instance.transform;
         }
+
         transform.position = location.position;
 
         if (useOffset)
         {
-            transform.position *= vrOffset.z;
+            transform.position += location.forward * vrOffset.z;
             transform.position += new Vector3(0, vrOffset.y, 0);
         }
-
-        transform.LookAt(location);
-        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
 
         if (useScale)
         {
@@ -239,12 +240,11 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            transform.LookAt(location);
+            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
             transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
         }
-            
-        
 
-        transform.position = pos;
         StartCoroutine(WaitToCalculateCanvasRange());
     }
 

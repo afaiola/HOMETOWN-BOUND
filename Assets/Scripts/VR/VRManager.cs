@@ -13,6 +13,12 @@ public class VRManager : MonoBehaviour
     public static VRManager Instance { get { return _instance; } }
     private static VRManager _instance;
 
+    [System.NonSerialized] public bool xrDeviceOn;
+    [SerializeField] private XRLoader[] loaders;
+    private int activeLoader;
+
+    [SerializeField] private Transform cameraOffset;
+
     [Header("Movement Sources")]
     [SerializeField] private TeleportationProvider teleportProvider;
     [SerializeField] private ActionBasedSnapTurnProvider snapTurnProvider;
@@ -36,6 +42,11 @@ public class VRManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    public void Initialize()
+    {
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -43,14 +54,6 @@ public class VRManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
-
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-        {
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-        }
-        XRGeneralSettings.Instance.Manager.InitializeLoaderSync();
-        XRGeneralSettings.Instance.Manager.StartSubsystems();
 
         VRSettings vrSettings = GameObject.FindObjectOfType<VRSettings>();
         if (vrSettings)
@@ -71,7 +74,7 @@ public class VRManager : MonoBehaviour
 
         ApplySettings();
 
-        Invoke("SetupHands", 0.5f);
+        SetupHands();
     }
 
     // Update is called once per frame
@@ -81,6 +84,72 @@ public class VRManager : MonoBehaviour
         {
             Debug.Log("Pause Action");
             UIManager.Instance.TogglePause();
+        }
+    }
+
+    public IEnumerator StartXR()
+    {
+        XRSettings.enabled = true;
+        bool success = false;
+        Debug.Log("Get if hardward on");
+        if (XRGeneralSettings.Instance == null) Debug.Log("no xr settings");
+        if (XRGeneralSettings.Instance.Manager == null) XRManagerSettings.CreateInstance<XRManagerSettings>();
+        if (XRGeneralSettings.Instance.Manager.activeLoaders == null) Debug.Log("no xr loaders");
+
+        Debug.Log("vr init checked");
+
+        XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+
+        for (int i = 0; i < loaders.Length; i++)
+        {
+            XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
+            //XRGeneralSettings.Instance.Manager.loaders.Add(loaders[i]);
+            Debug.Log($"{loaders[i].name} loaded");
+
+            yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+            Debug.Log($"{loaders[i].name} initialized");
+            //if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
+            XRGeneralSettings.Instance.Manager.StartSubsystems();
+
+            //Check if initialization was successfull.
+            var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances(xrDisplaySubsystems);
+            if (xrDisplaySubsystems.Count > 0)
+            {
+                success = xrDisplaySubsystems[0].running;
+            }
+
+            Debug.Log("Is " + loaders[i].name + " available? " + success);
+            if (success)
+            {
+                activeLoader = i;
+                break;
+            }
+
+            //XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+        }
+        XRSettings.enabled = success;
+        xrDeviceOn = success;
+
+        /*
+        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
+        {
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+        }
+        yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+        XRGeneralSettings.Instance.Manager.StartSubsystems();*/
+    }
+
+    void StopXR()
+    {
+        if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
+        {
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            Camera.main.ResetAspect();
+            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
         }
     }
 
@@ -137,5 +206,15 @@ public class VRManager : MonoBehaviour
             return Vector3.positiveInfinity;
         Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}"); 
         return hit.worldPosition;
+    }
+
+    public void SetCameraSitting()
+    {
+        cameraOffset.transform.localPosition = new Vector3(0, 1f, 0);
+    }
+
+    public void SetCameraStanding()
+    {
+        cameraOffset.transform.localPosition = new Vector3(0, 1.3f, 0);
     }
 }
