@@ -18770,7 +18770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed10a0b6185af164c840c8eab0155ee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsMenu: {fileID: 0}
+  settingsMenu: {fileID: 6243608597983446689}
   teleportToggle: {fileID: 5595030671736158652}
   rotateToggle: {fileID: 6797532959025421273}
   handednessToggle: {fileID: 8807643291731439004}
@@ -30416,8 +30416,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10, y: 0}
+  m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &718180433883132704
 CanvasRenderer:
