@@ -75,6 +75,14 @@ public class VRManager : MonoBehaviour
         ApplySettings();
 
         SetupHands();
+
+        // otherwise, interactors dont interact with anything
+        foreach (var ray in rayInteractors)
+        {
+            ray.interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+            ray.enableUIInteraction = false;
+            ray.enableUIInteraction = true;
+        }
     }
 
     // Update is called once per frame
@@ -133,6 +141,7 @@ public class VRManager : MonoBehaviour
         XRSettings.enabled = success;
         xrDeviceOn = success;
 
+        
         /*
         if (XRGeneralSettings.Instance.Manager.activeLoader != null)
         {

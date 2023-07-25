@@ -241,9 +241,9 @@ public class UIManager : MonoBehaviour
         else
         {
             transform.LookAt(location);
-            transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
             transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
         }
+        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
 
         StartCoroutine(WaitToCalculateCanvasRange());
     }
