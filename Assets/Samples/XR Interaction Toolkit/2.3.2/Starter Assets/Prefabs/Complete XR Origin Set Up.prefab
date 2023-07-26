@@ -229,8 +229,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe710a313e9ce24682f4bf5da99e49a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loaders: []
+  loaders:
+  - {fileID: 11400000, guid: d958c26244556e24d8deb4a0628b6b60, type: 2}
   cameraOffset: {fileID: 9014170783728641054}
+  tunnelingController: {fileID: 6313088446475077113}
   teleportProvider: {fileID: 3127728407712097242}
   snapTurnProvider: {fileID: 3127728407712097240}
   continuousMoverProvider: {fileID: 9130514246195502207}
@@ -296,6 +298,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_InteractionManager
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 310206635587374891, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 438475615729679169, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
         type: 3}
@@ -4186,6 +4193,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 9014170785273859917}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6313088446475077113 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3063675830756887220, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
+    type: 3}
+  m_PrefabInstance: {fileID: 9014170785273859917}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e8ce15a55737ce48a67dc7bd89cb7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &9014170785475729497 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 202364692, guid: f6336ac4ac8b4d34bc5072418cdc62a0,
