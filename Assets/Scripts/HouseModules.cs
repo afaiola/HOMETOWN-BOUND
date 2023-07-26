@@ -58,7 +58,7 @@ public class HouseModules : Module
 
     protected override void MoveVRCanvas()
     {
-        if (VRManager.Instance)
+        if (VRManager.Instance && current % 2 == 1)
         {
             UIManager.Instance.MoveToPosition(physicalExercises[current], false, true);
             TankController.Instance.EnableMovement();   // allow us to move around during the exercise
@@ -68,6 +68,7 @@ public class HouseModules : Module
     public override void End()
     {
         base.End();
+        Menu.Instance.UpdateModuleName("Let's check out the commotion in the garage!");
         GarageCutscene garage = GameObject.FindObjectOfType<GarageCutscene>();
         if (garage)
         {

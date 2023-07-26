@@ -197,16 +197,31 @@ public class UIManager : MonoBehaviour
 
         while (timecount < blinktime)
         {
-            blinking = Mathf.Lerp(start, goal, timecount);
+            blinking = Mathf.Lerp(start, goal, timecount/blinktime);
             topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, blinking);
             bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, blinking);
             timecount += Time.deltaTime;
+
+            if (VRManager.Instance)
+            {
+                float tunnelFactor = timecount / blinktime;
+                if (start < goal)
+                {
+                    tunnelFactor = 1 - tunnelFactor;
+                }
+                VRManager.Instance.SetTunnelingSize(tunnelFactor);
+            }
             yield return new WaitForEndOfFrame();
         }
 
         TankController.Instance.playerCam.transform.localRotation = new Quaternion();   // reset view
         topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, goal);
         bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, goal);
+
+        if (VRManager.Instance)
+        {
+            VRManager.Instance.SetTunnelingSize(start < goal ? 0 : 1);
+        }
     }
 
     public void ShowEndScreen(bool on = true)
@@ -216,6 +231,9 @@ public class UIManager : MonoBehaviour
         Menu.Instance.gotoButton.onValueChanged.RemoveAllListeners();
         Menu.Instance.gotoButton.onValueChanged.AddListener(ShowEndScreen);
         TankController.Instance.DisableMovement();
+
+        if (VRManager.Instance)
+            MoveToPosition();
     }
 
     public void MoveToPosition(Transform location=null, bool useOffset=true, bool useScale=false)

@@ -34,7 +34,7 @@ public class GarageCutscene : MonoBehaviour
     {
         activator.enabled = true;
         activator.gameObject.SetActive(true);
-        garageUI.SetActive(true);
+        //garageUI.SetActive(true);
         Whispers();
         path.gameObject.SetActive(true);
     }

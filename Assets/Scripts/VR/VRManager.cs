@@ -18,6 +18,7 @@ public class VRManager : MonoBehaviour
     private int activeLoader;
 
     [SerializeField] private Transform cameraOffset;
+    [SerializeField] private VRBlink tunnelingController;
 
     [Header("Movement Sources")]
     [SerializeField] private TeleportationProvider teleportProvider;
@@ -83,6 +84,8 @@ public class VRManager : MonoBehaviour
             ray.enableUIInteraction = false;
             ray.enableUIInteraction = true;
         }
+
+        tunnelingController.Initialize();
     }
 
     // Update is called once per frame
@@ -225,5 +228,10 @@ public class VRManager : MonoBehaviour
     public void SetCameraStanding()
     {
         cameraOffset.transform.localPosition = new Vector3(0, 1.3f, 0);
+    }
+
+    public void SetTunnelingSize(float value)
+    {
+        tunnelingController.SetAperatureSize(value);
     }
 }

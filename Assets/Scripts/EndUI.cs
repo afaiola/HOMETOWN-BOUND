@@ -19,6 +19,8 @@ public class EndUI : MonoBehaviour
         if (exitButton != null)
             exitButton.onClick.AddListener(Close);
         gameObject.SetActive(false);
+        statsButton.onClick = new Button.ButtonClickedEvent();
+        statsButton.onClick.AddListener(StatisticsManager.Instance.OpenMenu);
     }
 
     // Update is called once per frame
