@@ -21,7 +21,8 @@ public class UIManager : MonoBehaviour
     CursorLockMode prevMode;
     bool prevVisible;
 
-    public Vector3 vrOffset;
+    public Vector3 vrOffset;    // 30.57 - 29.93 = 0.55
+    public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);  
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +53,7 @@ public class UIManager : MonoBehaviour
             gameObject.AddComponent<VRCanvasHelper>();
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
-            transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+            transform.localScale = worldScale;
             // TODO: do something to replace the pause menu
         }
     }
@@ -259,7 +260,7 @@ public class UIManager : MonoBehaviour
         else
         {
             transform.LookAt(location);
-            transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+            transform.localScale = worldScale;
         }
         transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y - 180, 0);    // turns object around
 

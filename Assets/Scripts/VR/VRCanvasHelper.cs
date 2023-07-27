@@ -64,12 +64,11 @@ public class VRCanvasHelper : MonoBehaviour
         Debug.Log($"angle {transform.root.eulerAngles.y} gives range {worldMin}-{worldMax} offset: {worldOffset}");
     }
 
-    public bool GetCanvasWorldPosition(ref Vector3 resultPos, bool requireActive=false)
+    public bool GetCanvasWorldPosition(ref Vector3 resultPos, ref bool hand, bool requireActive=false)
     {
         // TODO: get whichever pointer is active. 
         // if both active, pick whichever was there first
-        
-        resultPos = VRManager.Instance.GetHitPosition(true, requireActive);
+        resultPos = VRManager.Instance.GetHitPosition(hand, requireActive);
         if (Single.IsInfinity(resultPos.x))
         {
             resultPos = VRManager.Instance.GetHitPosition(false, requireActive);
@@ -77,8 +76,13 @@ public class VRCanvasHelper : MonoBehaviour
             {
                 return false;
             }
+            hand = false;
             // active hand failed, but secondary succeeded. switch
             //usingPrimaryHand = !usingPrimaryHand;
+        }
+        else
+        {
+            hand = true;
         }
 
         ClampWorldPosToCanvas(ref resultPos);
@@ -88,12 +92,28 @@ public class VRCanvasHelper : MonoBehaviour
     public void ClampWorldPosToCanvas(ref Vector3 pos)
     {
         Debug.Log($"pre clamp: {pos}");
+
+        // x is distance to middle
+        // zero out local z to keep item on the canvas
+        /*Vector3 localPos = pos - transform.position;
+        localPos -= new Vector3(0, 0, localPos.z);
+        Debug.Log("zeroed z " + pos);
+        pos = localPos + transform.position;*/
+        /*localPos = new Vector3(
+            localPos.x * Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y * -1),
+            localPos.y,
+            localPos.z * Mathf.Sin(Mathf.Deg2Rad * transform.root.eulerAngles.y * -1)
+        );*/
         pos = new Vector3(
             Mathf.Clamp(pos.x, worldMin.x, worldMax.x),
             Mathf.Clamp(pos.y, worldMin.y, worldMax.y),
             Mathf.Clamp(pos.z, worldMin.z, worldMax.z)
         );
-        Debug.Log($"post clamp: {pos}");
 
+        Debug.Log($"fixed to canvas clamp: {pos}");
+        /*
+        
+        Debug.Log($"post clamp: {pos}");
+        */
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class HandAnimatorManagerVR : MonoBehaviour
 {
@@ -61,5 +62,20 @@ public class HandAnimatorManagerVR : MonoBehaviour
 				item.go.SetActive (false);
 		}
 	}
+
+	public void InteractorHoverEnter(HoverEnterEventArgs hoverEnterEventArgs)
+    {
+		SetActionState(true);
+	}
+
+	public void InteractHoverExit(HoverExitEventArgs hoverExitEventArgs)
+	{ 
+		SetActionState(false);
+	}
+
+	public void SetActionState(bool isOn)
+    {
+		handAnimator.SetBool("Action", isOn);
+    }
 }
 

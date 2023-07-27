@@ -19,8 +19,6 @@ public class EndUI : MonoBehaviour
         if (exitButton != null)
             exitButton.onClick.AddListener(Close);
         gameObject.SetActive(false);
-        statsButton.onClick = new Button.ButtonClickedEvent();
-        statsButton.onClick.AddListener(StatisticsManager.Instance.OpenMenu);
     }
 
     // Update is called once per frame
@@ -31,6 +29,9 @@ public class EndUI : MonoBehaviour
 
     public void GetScores()
     {
+        statsButton.onClick = new Button.ButtonClickedEvent();
+        statsButton.onClick.AddListener(StatisticsManager.Instance.OpenMenu);
+
         levelScores = new int[3];
         levelCount = new int[3];
         int[] exerciseScores = new int[7];

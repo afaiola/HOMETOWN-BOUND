@@ -37,6 +37,7 @@ public class VRManager : MonoBehaviour
     //[SerializeField] private XRDirectInteractor[] directInteractors;
 
     // TODO: use poke interactor for UI
+    [SerializeField] private XRPokeInteractor[] pokeInteractors;
 
     [SerializeField] private InputActionReference pauseAction;
     
@@ -83,6 +84,17 @@ public class VRManager : MonoBehaviour
             ray.interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
             ray.enableUIInteraction = false;
             ray.enableUIInteraction = true;
+        }
+
+        for(int i = 0; i < xrControllers.Length; i++)
+        {
+            pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+            pokeInteractors[i].enableUIInteraction = false;
+            pokeInteractors[i].enableUIInteraction = true;
+
+            //HandAnimatorManagerVR handAnimator = xrControllers[i].GetComponentInChildren<HandAnimatorManagerVR>();
+            //pokeInteractors[i].hoverEntered.AddListener(handAnimator.InteractorHoverEnter);
+            //pokeInteractors[i].hoverExited.AddListener(handAnimator.InteractHoverExit);
         }
 
         tunnelingController.Initialize();
@@ -203,7 +215,6 @@ public class VRManager : MonoBehaviour
 
     public Vector3 GetHitPosition(bool primary = true, bool requireActive = false)
     {
-        RaycastResult hit;
         if (VRSettings.Instance == null)
         {
             Debug.LogError("No vr settings");
@@ -212,11 +223,26 @@ public class VRManager : MonoBehaviour
 
         int primaryHand = VRSettings.Instance.PrimaryHand;
         int secondaryHand = 1 - primaryHand;
-        if (xrControllers[primary ? primaryHand : secondaryHand].activateActionValue.action.ReadValue<float>() < 0.1f && requireActive)
+
+        bool primaryActive = xrControllers[primaryHand].activateActionValue.action.ReadValue<float>() > 0.1f;
+        bool secondaryActive = xrControllers[secondaryHand].activateActionValue.action.ReadValue<float>() > 0.1f;
+
+        if (pokeInteractors[primaryHand].isSelectActive && !primaryActive)
+        {
+            return pokeInteractors[primaryHand].attachTransform.position;
+        }
+
+        if (pokeInteractors[secondaryHand].isSelectActive && !primaryActive)
+        {
+            return pokeInteractors[secondaryHand].attachTransform.position;
+        }
+
+        RaycastResult hit;
+        if (!(primary ? primaryActive : secondaryActive) && requireActive)
             return Vector3.positiveInfinity;
         if (!rayInteractors[primary ? primaryHand : secondaryHand].TryGetCurrentUIRaycastResult(out hit))
             return Vector3.positiveInfinity;
-        Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}"); 
+        //Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}"); 
         return hit.worldPosition;
     }
 

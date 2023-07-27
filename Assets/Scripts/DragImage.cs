@@ -19,10 +19,14 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     private float clickTime;
     private float clickDelay = 0.5f;
 
+    private RectTransform rect;
+    private bool grabbedByPrimaryHand = true;
+
     private void OnValidate()
     {
         image = GetComponent<Button>();
         fly = GetComponent<FlyAround>();
+        rect = GetComponent<RectTransform>();
     }
 
     private void Update()
@@ -30,7 +34,7 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         Vector3 inputPos = Input.mousePosition;
         if (canvasHelper)
         {
-            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos, dragged != image)) return;
+            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos, ref grabbedByPrimaryHand, dragged != image)) return;
         }
         SetDraggedPosition(inputPos);
 
@@ -43,6 +47,8 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
             pos = Vector3.Lerp(transform.position, pos, Time.deltaTime * dragFollowSpeed);
             Debug.Log("Setting pos to " + pos);
             transform.position = pos;
+            rect.anchoredPosition3D = new Vector3(rect.anchoredPosition3D.x, rect.anchoredPosition3D.y, 0);
+            Debug.Log("3D anchoredPos " + rect.anchoredPosition3D);
         }
     }
 
