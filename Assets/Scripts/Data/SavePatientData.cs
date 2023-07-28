@@ -87,7 +87,7 @@ public class SavePatientData : MonoBehaviour
 
     private void FileDownload(bool status)
     {
-        Debug.Log("File download success? " + status);
+        //Debug.Log("File download success? " + status);
         patientData = new List<PatientDataEntry>();
         if (!CreateFile(patientDataFile, out patientData))
             UploadPatientData();
@@ -121,7 +121,7 @@ public class SavePatientData : MonoBehaviour
         {
             if (File.Exists(path))
             {
-                Debug.Log("load existing " + Path.GetFileName(path));
+                //Debug.Log("load existing " + Path.GetFileName(path));
                 data = Load(path);
                 return true;
             }
@@ -130,7 +130,7 @@ public class SavePatientData : MonoBehaviour
                 // Create new data
                 if (path == ciDataFile)
                 {
-                    Debug.Log("create new: " + Path.GetFileName(ciDataFile));
+                    //Debug.Log("create new: " + Path.GetFileName(ciDataFile));
                     data = InitializeCIData();
                 }
                 else
@@ -261,7 +261,7 @@ public class SavePatientData : MonoBehaviour
         // There isn't enough data, so the file must be bad. Get a new one
         if (data.Count < 15)
         {
-            Debug.Log("deleting " + path);
+            //Debug.Log("deleting " + path);
             File.Delete(path);
             CreateFile(path, out data, path == ciDataFile ? 15 : 3);
             return data;
@@ -332,7 +332,7 @@ public class SavePatientData : MonoBehaviour
 
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            Debug.Log("syncing files");
+            //Debug.Log("syncing files");
             SyncFiles();
         }
 
@@ -496,7 +496,7 @@ public class SavePatientData : MonoBehaviour
     {
         int lastExercise = LastExercisePlayed(attempt);
         int mod = Mathf.FloorToInt(lastExercise / 7);
-        Debug.Log($"last played M{mod} E{lastExercise}");
+        //Debug.Log($"last played M{mod} E{lastExercise}");
 
         return mod;
     }

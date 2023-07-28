@@ -27,7 +27,7 @@ public class VRBlink : MonoBehaviour
     public void Initialize()
     {
         m_CurrentParameters = new VignetteParameters();
-        SetAperatureSize(1f);
+        SetAperatureSize(0);
     }
 
     bool TrySetUpMaterial()

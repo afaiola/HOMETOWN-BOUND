@@ -120,7 +120,7 @@ public class IntroScene : MonoBehaviour
         //UIManager.Instance.canPause = true;
         UIManager.Instance.PromptGameWindowFocus();
         Menu.Instance.UpdateModuleName(nextActionMessage);
-        // TODO: turn off the speech bubble
+        
         skipped = true;
         FloatingOrigin floatingOrigin = GameObject.FindObjectOfType<FloatingOrigin>();
         if (floatingOrigin)

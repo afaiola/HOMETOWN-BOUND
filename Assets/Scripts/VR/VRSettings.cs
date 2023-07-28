@@ -85,6 +85,7 @@ public class VRSettings : MonoBehaviour
 
     public void SetHandedness(bool isLeft)
     {
+        Debug.Log("set hand " + isLeft);
         isLeftHanded = isLeft;
         PlayerPrefs.SetInt(rotateSaveKey, PrimaryHand);
         if (onHandednessChange != null)

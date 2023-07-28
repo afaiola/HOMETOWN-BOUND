@@ -24,10 +24,11 @@ public class SpeechBubble : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void ShowText(string message)
+    public void ShowText(string message, float timeActive=10f)
     {
         gameObject.SetActive(true);
         messageText.text = message;
+        Invoke("Close", timeActive);
     }
 
 }

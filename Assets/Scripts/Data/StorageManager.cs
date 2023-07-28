@@ -128,7 +128,7 @@ public class StorageManager : MonoBehaviour
             float downloadPercent = 10000f * (float)filesDownloaded / (float)totalFiles / 100f;
             //Debug.Log($"Download progress: {downloadPercent}%");
         }
-        Debug.Log("extern data download complete");
+        //Debug.Log("extern data download complete");
         contentDownloadedEvent.Invoke();
     }
 

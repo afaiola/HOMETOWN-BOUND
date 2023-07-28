@@ -4,56 +4,87 @@ using UnityEngine;
 
 public class TutorialAction : MonoBehaviour
 {
-    public int id;
+    [System.NonSerialized] public int id;
     public TutorialAction nextAction;
 
     [System.Serializable]
     public struct TutorialObject
     {
+        public string name;
         public GameObject obj;
+        public Transform objLocation;
+        public bool isObjActive;
         public bool isAnimated;
+        public AnimatorControllerParameterType animtionParameterType;
         public string animationName;
-        public bool hasSound;
+        public AudioClip audioClip;
+        public string subtitle;
     }
 
-    [SerializeField] TutorialObject[] tutorialObjects;
-    [SerializeField] TutorialActionSuccessCondition[] successConditions;
-    [SerializeField] int successRequired;
+    [SerializeField] protected TutorialObject[] tutorialObjects;
+    [SerializeField] protected TutorialActionSuccessCondition[] successConditions;
+    [SerializeField] protected int successRequired;
 
-    private void OnValidate()
+    protected void OnValidate()
     {
+        successConditions = GetComponentsInChildren<TutorialActionSuccessCondition>();
         successRequired = successConditions.Length;
+
+        for (int i = 0; i < tutorialObjects.Length; i++)
+        {
+            if (tutorialObjects[i].obj)
+                tutorialObjects[i].name = tutorialObjects[i].obj.name;
+        }    
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public virtual void Run()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void Run()
-    {
+        // TODO: start on delay
+        Debug.Log("starting action " + name);
         foreach (var tut in tutorialObjects)
         {
-            tut.obj.SetActive(true);
+            if (tut.obj)
+            {
+                tut.obj.SetActive(tut.isObjActive);
+                if (tut.objLocation)
+                {
+                    tut.obj.transform.position = tut.objLocation.position;
+                    tut.obj.transform.rotation = tut.objLocation.rotation;
+                }
+            }
 
             if (tut.isAnimated)
             {
                 Animator anim = tut.obj.GetComponent<Animator>();
-                anim.Play(tut.animationName);
+                switch (tut.animtionParameterType)
+                {
+                    case AnimatorControllerParameterType.Bool:
+                        bool boolVal = anim.GetBool(tut.animationName);
+                        anim.SetBool(tut.animationName, !boolVal);
+                        break;
+                    case AnimatorControllerParameterType.Trigger:
+                        anim.SetTrigger(tut.animationName);
+                        break;
+                    default:
+                        break;
+                }
             }
 
-            if (tut.hasSound)
+            if (tut.audioClip)
             {
                 AudioSource audio = tut.obj.GetComponent<AudioSource>();
+                audio.clip = tut.audioClip;
                 audio.Play();
+
+                SpeechBubble speechBubble = tut.obj.GetComponentInChildren<SpeechBubble>();
+                if (speechBubble)
+                    speechBubble.ShowText(tut.subtitle);//, tut.audioClip.length);
             }
+        }
+
+        foreach (var condition in successConditions)
+        {
+            condition.Activate();
         }
     }
 

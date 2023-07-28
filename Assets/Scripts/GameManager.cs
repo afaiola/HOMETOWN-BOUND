@@ -24,8 +24,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StartRoutine());
     }
 
-    
-
     private IEnumerator StartRoutine()
     {
         if (_instance == null)
@@ -104,7 +102,16 @@ public class GameManager : MonoBehaviour
         bool firstTime = true;
         if (Profiler.Instance)
             firstTime = Profiler.Instance.currentUser.newGame;
-        intro.PlayCutscene(firstTime);
+
+        if (VRManager.Instance && firstTime)
+        {
+            TutorialManager tutorial = GameObject.FindObjectOfType<TutorialManager>();
+            tutorial.BeginTutorial();
+        }
+        else
+        {
+            intro.PlayCutscene(firstTime);
+        }
     }
 
     private void ContentMapped()

@@ -105,7 +105,6 @@ public class VRManager : MonoBehaviour
     {
         if (pauseAction.action.triggered)
         {
-            Debug.Log("Pause Action");
             UIManager.Instance.TogglePause();
         }
     }
@@ -114,12 +113,10 @@ public class VRManager : MonoBehaviour
     {
         XRSettings.enabled = true;
         bool success = false;
-        Debug.Log("Get if hardward on");
         if (XRGeneralSettings.Instance == null) Debug.Log("no xr settings");
         if (XRGeneralSettings.Instance.Manager == null) XRManagerSettings.CreateInstance<XRManagerSettings>();
         if (XRGeneralSettings.Instance.Manager.activeLoaders == null) Debug.Log("no xr loaders");
 
-        Debug.Log("vr init checked");
 
         XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
 
@@ -127,10 +124,8 @@ public class VRManager : MonoBehaviour
         {
             XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
             //XRGeneralSettings.Instance.Manager.loaders.Add(loaders[i]);
-            Debug.Log($"{loaders[i].name} loaded");
 
             yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-            Debug.Log($"{loaders[i].name} initialized");
             //if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
             XRGeneralSettings.Instance.Manager.StartSubsystems();
 
@@ -142,7 +137,6 @@ public class VRManager : MonoBehaviour
                 success = xrDisplaySubsystems[0].running;
             }
 
-            Debug.Log("Is " + loaders[i].name + " available? " + success);
             if (success)
             {
                 activeLoader = i;

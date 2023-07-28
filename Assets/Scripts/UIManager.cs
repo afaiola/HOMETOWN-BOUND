@@ -54,8 +54,11 @@ public class UIManager : MonoBehaviour
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = worldScale;
-            // TODO: do something to replace the pause menu
         }
+
+        // start with eyes closed
+        topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, Screen.height / 2);
+        bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, Screen.height / 2);
     }
 
     // Update is called once per frame

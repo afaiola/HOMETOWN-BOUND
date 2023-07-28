@@ -62,7 +62,6 @@ public class ModuleMapper : MonoBehaviour
 
     public void MapPlayerContent()
     {
-        Debug.Log("map content");
         string json_file = $"{Application.persistentDataPath}{Path.DirectorySeparatorChar}usercontent{Path.DirectorySeparatorChar}{Profiler.Instance.currentUser.username}{Path.DirectorySeparatorChar}content_map.json";
         // if I create an object with an entry for each possible item in the json, I can tell which fields were answered and can make decisions that way
         string json = "";
@@ -70,20 +69,20 @@ public class ModuleMapper : MonoBehaviour
         {
             json = r.ReadToEnd();
         }
-        Debug.Log("length of json content: " + json.Length);
+        //Debug.Log("length of json content: " + json.Length);
         if (json.Length < 10) return;
         var content_map = JObject.Parse(json);
         // TODO: check if picture is valid before applying it
         foreach (var content in StorageManager.Instance.playerContents)
         {
-            Debug.Log("trying content: " + content.pictureName);
+            //Debug.Log("trying content: " + content.pictureName);
             if (!content.valid) continue;
             int mod = Mathf.FloorToInt(content.exerciseID / 7);
             int ex = content.exerciseID % 7;
             Exercise exercise = modules[mod].exercises[ex];
             exercise.customContent = true;
 
-            Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
+            //Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
             string contentDetails = ""; 
             if (content_map.ContainsKey(content.pictureName))
             {
