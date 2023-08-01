@@ -711,6 +711,7 @@ Transform:
   - {fileID: 202364688}
   - {fileID: 1670256625}
   - {fileID: 2196849375614954873}
+  - {fileID: 740462977610763744}
   m_Father: {fileID: 1717954561962503726}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6393,7 +6394,6 @@ Transform:
   m_LocalScale: {x: 1.25, y: 1.251, z: 1.25}
   m_Children:
   - {fileID: 1680501587}
-  - {fileID: 740462977610763744}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6413,7 +6413,7 @@ MonoBehaviour:
   m_OriginBaseGameObject: {fileID: 1717954561962503725}
   m_CameraFloorOffsetObject: {fileID: 1680501586}
   m_RequestedTrackingOriginMode: 0
-  m_CameraYOffset: 1.36144
+  m_CameraYOffset: 0
 --- !u!114 &6232745470614056086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18850,20 +18850,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5244963142548433593}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
-  m_LocalScale: {x: 0.0020000003, y: 0.002, z: 0.0020000003}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.49999294}
+  m_LocalScale: {x: 0.0020000006, y: 0.002, z: 0.0020000006}
   m_Children:
   - {fileID: 3749862990143064173}
   - {fileID: 7672769494598092306}
   - {fileID: 1468831022764964336}
   - {fileID: 1734760591311733445}
-  m_Father: {fileID: 1717954561962503726}
-  m_RootOrder: 1
+  m_Father: {fileID: 1680501587}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 2.17}
+  m_AnchoredPosition: {x: 0, y: 1.1700001}
   m_SizeDelta: {x: 800, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3156770658034230674
@@ -20543,7 +20543,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0020768733, y: 0.0038578568}
+  m_AnchoredPosition: {x: 0.010161765, y: 0.0038578568}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3270904286696837518
@@ -21722,7 +21722,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6340525409235289318}
   m_HandleRect: {fileID: 3138719593305717188}
   m_Direction: 2
-  m_Value: 0.99998915
+  m_Value: 0.99997586
   m_Size: 0.47618893
   m_NumberOfSteps: 0
   m_OnValueChanged:
