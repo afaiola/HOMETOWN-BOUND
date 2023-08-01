@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TutorialActionSuccessCondition : MonoBehaviour
 {
+    public bool Successful { get { return isSuccess; } }
+    protected bool isSuccess;
 
     public virtual void Activate()
     {

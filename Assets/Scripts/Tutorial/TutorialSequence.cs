@@ -28,7 +28,7 @@ public class TutorialSequence : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (currAction < 0) return;
 
@@ -45,8 +45,8 @@ public class TutorialSequence : MonoBehaviour
 
         if (actions[currAction].IsComplete())
         {
-            if (actions[currAction].nextAction != null)
-                currAction = actions[currAction].nextAction.id;
+            if (actions[currAction].GetNextAction() != null)
+                currAction = actions[currAction].GetNextAction().id;
             else
                 currAction++;
             if (currAction < actions.Length)

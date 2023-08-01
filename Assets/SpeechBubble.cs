@@ -7,11 +7,22 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField] TMPro.TextMeshProUGUI messageText;
     public string defaultMessage;
 
+    private float messageTime, messageDuration;
+    private bool messageActive;
+
     private void Start()
     {
         gameObject.SetActive(false);
     }
 
+
+    private void Update()
+    {
+        if (messageActive && Time.time - messageTime > messageDuration)
+        {
+            Close();
+        }
+    }
     public void Show()
     {
         gameObject.SetActive(true);
@@ -21,14 +32,30 @@ public class SpeechBubble : MonoBehaviour
 
     public void Close()
     {
+        messageActive = false;
         gameObject.SetActive(false);
+
+        Animator animator = GetComponentInParent<Animator>();
+        if (animator)
+        {
+            animator.SetBool("Talking", false);
+        }
     }
 
     public void ShowText(string message, float timeActive=10f)
     {
+        messageActive = true;
+        messageTime = Time.time;
+        messageDuration = timeActive;
+
         gameObject.SetActive(true);
         messageText.text = message;
-        Invoke("Close", timeActive);
+
+        Animator animator = GetComponentInParent<Animator>();
+        if (animator)
+        {
+            animator.SetBool("Talking", true);
+        }
     }
 
 }

@@ -62,11 +62,13 @@ public class GameManager : MonoBehaviour
         GameObject.FindObjectOfType<SecurityCode>().Initialize();
         GameObject.FindObjectOfType<StatisticsManager>().Initialize();
 
-        if (!useVR && vrManager)
-            Destroy(vrManager.gameObject);
-        else
-            vrManager.Initialize();
-
+        if (vrManager)
+        {
+            if (!useVR)
+                Destroy(vrManager.gameObject);
+            else
+                vrManager.Initialize();
+        }
         foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
             looker.Initialize();
 

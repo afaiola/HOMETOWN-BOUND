@@ -5,7 +5,9 @@ using UnityEngine;
 public class TutorialAction : MonoBehaviour
 {
     [System.NonSerialized] public int id;
-    public TutorialAction nextAction;
+    public TutorialAction onSuccessAction, onFailAction;
+
+    private bool isSuccess;
 
     [System.Serializable]
     public struct TutorialObject
@@ -50,6 +52,7 @@ public class TutorialAction : MonoBehaviour
                 {
                     tut.obj.transform.position = tut.objLocation.position;
                     tut.obj.transform.rotation = tut.objLocation.rotation;
+                    Debug.Log($"moving {tut.obj.name} to {tut.objLocation.name}");
                 }
             }
 
@@ -76,7 +79,7 @@ public class TutorialAction : MonoBehaviour
                 audio.clip = tut.audioClip;
                 audio.Play();
 
-                SpeechBubble speechBubble = tut.obj.GetComponentInChildren<SpeechBubble>();
+                SpeechBubble speechBubble = tut.obj.GetComponentInChildren<SpeechBubble>(true);
                 if (speechBubble)
                     speechBubble.ShowText(tut.subtitle);//, tut.audioClip.length);
             }
@@ -99,14 +102,27 @@ public class TutorialAction : MonoBehaviour
     public virtual bool IsComplete()
     {
         int successCt = 0;
+        isSuccess = true;
         foreach (var condition in successConditions)
         {
             if (condition.IsComplete())
             {
                 successCt++;
+                isSuccess &= condition.Successful;
             }
         }
-
         return successCt >= successRequired;
+    }
+
+    public TutorialAction GetNextAction()
+    {
+        TutorialAction nextAction = null;
+        if (isSuccess)
+            nextAction = onSuccessAction;
+        else 
+            nextAction = onFailAction;
+        //if (nextAction != null)
+        //    Debug.Log("Get next action " + nextAction.name);
+        return nextAction;
     }
 }

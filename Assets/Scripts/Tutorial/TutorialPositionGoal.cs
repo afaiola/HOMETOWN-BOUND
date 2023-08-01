@@ -6,8 +6,14 @@ public class TutorialPositionGoal : TutorialActionSuccessCondition
 {
     private bool entered;
 
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
     public override void Activate()
     {
+        GetComponent<AudioSource>().Play();
         base.Activate();
     }
 
@@ -23,6 +29,7 @@ public class TutorialPositionGoal : TutorialActionSuccessCondition
         {
             entered = true;
             gameObject.SetActive(false);
+            GetComponent<AudioSource>().Stop();
         }
     }
 }

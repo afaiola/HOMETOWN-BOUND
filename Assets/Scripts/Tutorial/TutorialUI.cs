@@ -10,14 +10,21 @@ public class TutorialUI : MonoBehaviour
     [System.NonSerialized] public UnityEvent anyButtonPressed;
 
     [SerializeField] private Text title;
-    [SerializeField] private Button[] buttons;
+    public Button[] buttons;
     [SerializeField] private Button skipButton;
 
     private void Start()
     {
-        foreach (var button in buttons)
+        
+    }
+
+    public void SetupButton(int idx, UnityAction callback)
+    {
+        if (idx < buttons.Length)
         {
-            button.onClick.AddListener(SelectionMade);
+            buttons[idx].onClick = new Button.ButtonClickedEvent();
+            buttons[idx].onClick.AddListener(callback);
+            buttons[idx].onClick.AddListener(SelectionMade);
         }
     }
 

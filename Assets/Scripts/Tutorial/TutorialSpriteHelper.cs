@@ -9,7 +9,7 @@ public class TutorialSpriteHelper : MonoBehaviour
     [SerializeField] private Sprite[] sprites;
     [SerializeField] private float swapTime = 1f;
 
-    [SerializeField] private Transform attachAnchor;
+    //[SerializeField] private Transform attachAnchor;
     [SerializeField] private Vector3 offset;
 
     private int currSprite;
@@ -17,7 +17,7 @@ public class TutorialSpriteHelper : MonoBehaviour
 
     private void Start()
     {
-        
+        gameObject.SetActive(false);
     }
 
     private IEnumerator AnimateSprite()
@@ -42,12 +42,14 @@ public class TutorialSpriteHelper : MonoBehaviour
 
     private void OnEnable()
     {
-        transform.parent = attachAnchor;
+        //transform.parent = attachAnchor;
         transform.localPosition = offset;
         transform.localRotation = new Quaternion();
-
-        float flip = 1 * VRSettings.Instance.PrimaryHand > 0 ? -1f : 1f;
-        image.transform.localScale = new Vector3(flip, 1, 1);
+        if (VRSettings.Instance)
+        {
+            float flip = 1 * VRSettings.Instance.PrimaryHand > 0 ? -1f : 1f;
+            image.transform.localScale = new Vector3(flip, 1, 1);
+        }
 
         currSprite = 0;
         isPlaying = true;

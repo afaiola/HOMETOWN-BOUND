@@ -15,8 +15,8 @@ public class TutorialManager : MonoBehaviour
     public void BeginTutorial()
     {
         currSequence = -1;
-        foreach (var goal in GameObject.FindObjectsOfType<TutorialPositionGoal>())
-            goal.gameObject.SetActive(false);
+        //foreach (var goal in GameObject.FindObjectsOfType<TutorialPositionGoal>())
+        //    goal.gameObject.SetActive(false);
         //foreach (var goal in GameObject.FindObjectsOfType<TutorialRotationGoal>())
         //    goal.gameObject.SetActive(false);
         foreach (var helper in GameObject.FindObjectsOfType<TutorialSpriteHelper>())
@@ -25,6 +25,7 @@ public class TutorialManager : MonoBehaviour
             ui.gameObject.SetActive(false);
 
         StartNextSequence();
+        TankController.Instance.DisableMovement();
     }
 
     private void StartNextSequence()
