@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 8354690354615609944}
   - component: {fileID: 1167878105591984988}
   - component: {fileID: 8492775054244588835}
+  - component: {fileID: 335374003264237404}
   m_Layer: 10
   m_Name: TutorialSpriteHelper
   m_TagString: Untagged
@@ -258,7 +259,20 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5485e2f56028a3c4cb54f5caa167377e, type: 3}
   - {fileID: 21300000, guid: 9866a92691696b346901281f2b329034, type: 3}
   swapTime: 2
+  attachAnchor: {fileID: 0}
   offset: {x: -600, y: -32, z: -15}
+--- !u!114 &335374003264237404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2926893140314645075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c637f235668b1d144b99e653ff73b21d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6871700173337848271
 GameObject:
   m_ObjectHideFlags: 0
