@@ -10,10 +10,28 @@ public class Snap : ModuleButton, IMoveHandler
     [SerializeField] bool checking;
     public bool stringCmp = false;
     public TMPro.TextMeshProUGUI tmpText;
+    private float autoSnapDistance = 7.5f;
+
+    private void Start()
+    {
+        if (VRManager.Instance)
+            autoSnapDistance = 0.025f;
+
+    }
 
     private void Update()
     {
-       
+        if (DragImage.dragged)
+        {
+            if (DragImage.dragged.GetComponent<RawImage>().texture == rightTexture)
+            {
+                float dist = Vector2.Distance(DragImage.dragged.transform.position, transform.position);
+                if (dist < autoSnapDistance)
+                {
+                    TryDrop();
+                }
+            }
+        }
     }
 
     public bool TryDrop()
@@ -60,7 +78,7 @@ public class Snap : ModuleButton, IMoveHandler
             PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
             eventDataCurrentPosition.position = DragImage.dragged.transform.position;
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-
+            
             if (results.Any(z => z.gameObject == gameObject))
             {
                 float dist = Vector2.Distance(DragImage.dragged.transform.position, transform.position);

@@ -49,5 +49,7 @@ public class TutorialManager : MonoBehaviour
         sequences[sequences.Length - 1].StartSequence();
         //GameObject.FindObjectOfType<IntroScene>().PlayCutscene(true);
         Menu.Instance.UpdateModuleName("Leave the hospital.");
+        Menu.Instance.gameObject.SetActive(true);
+        TankController.Instance.EnableMovement();
     }
 }

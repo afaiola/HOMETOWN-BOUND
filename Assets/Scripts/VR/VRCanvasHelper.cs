@@ -61,7 +61,7 @@ public class VRCanvasHelper : MonoBehaviour
         worldMin = transform.root.position - worldOffset;
         worldMax = transform.root.position + worldOffset;
 
-        Debug.Log($"angle {transform.root.eulerAngles.y} gives range {worldMin}-{worldMax} offset: {worldOffset}");
+        //Debug.Log($"angle {transform.root.eulerAngles.y} gives range {worldMin}-{worldMax} offset: {worldOffset}");
     }
 
     public bool GetCanvasWorldPosition(ref Vector3 resultPos, ref bool hand, bool requireActive=false)
@@ -91,29 +91,11 @@ public class VRCanvasHelper : MonoBehaviour
 
     public void ClampWorldPosToCanvas(ref Vector3 pos)
     {
-        Debug.Log($"pre clamp: {pos}");
-
-        // x is distance to middle
-        // zero out local z to keep item on the canvas
-        /*Vector3 localPos = pos - transform.position;
-        localPos -= new Vector3(0, 0, localPos.z);
-        Debug.Log("zeroed z " + pos);
-        pos = localPos + transform.position;*/
-        /*localPos = new Vector3(
-            localPos.x * Mathf.Cos(Mathf.Deg2Rad * transform.root.eulerAngles.y * -1),
-            localPos.y,
-            localPos.z * Mathf.Sin(Mathf.Deg2Rad * transform.root.eulerAngles.y * -1)
-        );*/
         pos = new Vector3(
             Mathf.Clamp(pos.x, worldMin.x, worldMax.x),
             Mathf.Clamp(pos.y, worldMin.y, worldMax.y),
             Mathf.Clamp(pos.z, worldMin.z, worldMax.z)
         );
 
-        Debug.Log($"fixed to canvas clamp: {pos}");
-        /*
-        
-        Debug.Log($"post clamp: {pos}");
-        */
     }
 }

@@ -45,10 +45,8 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         if (dragged == image)
         {
             pos = Vector3.Lerp(transform.position, pos, Time.deltaTime * dragFollowSpeed);
-            Debug.Log("Setting pos to " + pos);
             transform.position = pos;
             rect.anchoredPosition3D = new Vector3(rect.anchoredPosition3D.x, rect.anchoredPosition3D.y, 0);
-            Debug.Log("3D anchoredPos " + rect.anchoredPosition3D);
         }
     }
 
@@ -68,6 +66,7 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
             {
                 List<RaycastResult> results = new List<RaycastResult>();
                 eventData.position = transform.position;
+                // not working for vr
                 EventSystem.current.RaycastAll(eventData, results);
                 foreach (var result in results)
                 {
@@ -101,7 +100,6 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("pointer down");
         Click(eventData);
     }
 
@@ -111,7 +109,6 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         // this allows to drag and drop and for click on pickup and putdown
 
         //image.OnPointerClick(eventData);
-        Debug.Log("pointer up");
         Click(eventData);
 
     }
