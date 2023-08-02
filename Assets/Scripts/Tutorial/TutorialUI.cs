@@ -22,7 +22,7 @@ public class TutorialUI : MonoBehaviour
     {
         if (idx < buttons.Length)
         {
-            buttons[idx].onClick = new Button.ButtonClickedEvent();
+            //buttons[idx].onClick = new Button.ButtonClickedEvent();
             buttons[idx].onClick.AddListener(callback);
             buttons[idx].onClick.AddListener(SelectionMade);
         }

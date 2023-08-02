@@ -48,5 +48,6 @@ public class TutorialManager : MonoBehaviour
         // remove doctor and nurse
         sequences[sequences.Length - 1].StartSequence();
         //GameObject.FindObjectOfType<IntroScene>().PlayCutscene(true);
+        Menu.Instance.UpdateModuleName("Leave the hospital.");
     }
 }

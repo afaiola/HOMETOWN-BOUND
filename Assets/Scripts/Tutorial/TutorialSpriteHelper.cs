@@ -45,11 +45,11 @@ public class TutorialSpriteHelper : MonoBehaviour
         //transform.parent = attachAnchor;
         transform.localPosition = offset;
         transform.localRotation = new Quaternion();
-        if (VRSettings.Instance)
+        /*if (VRSettings.Instance)
         {
             float flip = 1 * VRSettings.Instance.PrimaryHand > 0 ? -1f : 1f;
             image.transform.localScale = new Vector3(flip, 1, 1);
-        }
+        }*/
 
         currSprite = 0;
         isPlaying = true;
