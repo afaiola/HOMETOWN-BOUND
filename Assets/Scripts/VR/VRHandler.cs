@@ -43,39 +43,50 @@ public class VRHandler : MonoBehaviour
             if (XRGeneralSettings.Instance.Manager == null) XRManagerSettings.CreateInstance<XRManagerSettings>();
             if (XRGeneralSettings.Instance.Manager.activeLoaders == null) Debug.Log("no xr loaders");
 
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-
-            XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
-
-            for (int i = 0; i < loaders.Length; i++)
+            var startingSubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances(startingSubsystems);
+            if (startingSubsystems.Count > 0)
             {
-                XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
+                Debug.Log("XR already loaded");
+                success = startingSubsystems[0].running;
+            }
 
-                if (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
-                    yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-                XRGeneralSettings.Instance.Manager.StartSubsystems();
-                Debug.Log("init successful? " + XRGeneralSettings.Instance.Manager.isInitializationComplete);
-                
-                //Check if initialization was successfull.
-                var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
-                SubsystemManager.GetInstances(xrDisplaySubsystems);
-                if (xrDisplaySubsystems.Count > 0)
-                {
-                    success = xrDisplaySubsystems[0].running;
-                }
-
-                Debug.Log($"{loaders[i].name} active? " + success);
-                vrActive = success;
-
-                if (success)
-                {
-                    break;
-                }
-
-                //XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+            if (!success)
+            {
                 XRGeneralSettings.Instance.Manager.StopSubsystems();
                 XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+
+                XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+
+                for (int i = 0; i < loaders.Length; i++)
+                {
+                    XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
+
+                    if (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
+                        yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+                    XRGeneralSettings.Instance.Manager.StartSubsystems();
+                    Debug.Log("init successful? " + XRGeneralSettings.Instance.Manager.isInitializationComplete);
+
+                    //Check if initialization was successfull.
+                    var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
+                    SubsystemManager.GetInstances(xrDisplaySubsystems);
+                    if (xrDisplaySubsystems.Count > 0)
+                    {
+                        success = xrDisplaySubsystems[0].running;
+                    }
+
+                    Debug.Log($"{loaders[i].name} active? " + success);
+                    vrActive = success;
+
+                    if (success)
+                    {
+                        break;
+                    }
+
+                    //XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+                    XRGeneralSettings.Instance.Manager.StopSubsystems();
+                    XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+                }
             }
         }
         Initialize();
