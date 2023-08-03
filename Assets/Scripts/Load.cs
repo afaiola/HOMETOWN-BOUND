@@ -31,6 +31,9 @@ public class Load : MonoBehaviour
     public void LoadGame()
     {
         Debug.Log("load game");
+        VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
+        if (vrHandler)
+            vrHandler.GameLoading();
         StartCoroutine(LoadSceneAsync());
     }
 

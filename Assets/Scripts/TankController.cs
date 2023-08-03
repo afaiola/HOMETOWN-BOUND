@@ -37,15 +37,12 @@ public class TankController : MonoBehaviour
     
     public void Initialize()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
 
@@ -63,7 +60,7 @@ public class TankController : MonoBehaviour
 
     public void SetHandModel()
     {
-        int skinID = Random.Range(0, skinColors.Length);
+        int skinID = skinColors.Length-1;// Random.Range(0, skinColors.Length);
         if (Profiler.Instance)
             skinID = Profiler.Instance.currentUser.skin_id;
         foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())

@@ -43,12 +43,12 @@ public class VRSettings : MonoBehaviour
 
     public void LoadSettings()
     {
-        // TODO: set initial values based on save data
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Debug.Log("load settings");
         _instance = this;
         useTeleportMovement = PlayerPrefs.GetInt(movementSaveKey, 0) == 1;

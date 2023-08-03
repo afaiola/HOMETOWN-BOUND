@@ -39,7 +39,24 @@ public class GameManager : MonoBehaviour
         if (scavengerObjects)
             DontDestroyOnLoad(scavengerObjects);
         DontDestroyOnLoad(gameObject);
+        
+        VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
+        if (vrHandler)
+        {
 
+            //vrHandler.Initialize();
+            //if (vrHandler)
+            //    Destroy(vrHandler.gameObject);
+        }
+        /*if (vrHandler)
+        {
+            //vrHandler.vrActive = false;
+            Debug.Log("vr already loaded");
+            //vrHandler.Initialize();
+            yield return vrHandler.StartXR();
+            useVR = vrHandler.vrActive;
+            //vrHandler.Initialize();
+        }*/
         VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager)
         {
@@ -62,6 +79,7 @@ public class GameManager : MonoBehaviour
         GameObject.FindObjectOfType<SecurityCode>().Initialize();
         GameObject.FindObjectOfType<StatisticsManager>().Initialize();
 
+        //VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager)
         {
             if (!useVR)

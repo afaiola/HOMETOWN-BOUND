@@ -47,6 +47,56 @@ public class VRManager : MonoBehaviour
         
     }
 
+    public IEnumerator StartXR()
+    {
+        yield return new WaitForEndOfFrame();
+
+        Debug.Log("starting xr...");
+
+        XRSettings.enabled = true;
+        bool success = false;
+        if (XRGeneralSettings.Instance == null) Debug.Log("no xr settings");
+        if (XRGeneralSettings.Instance.Manager == null) XRManagerSettings.CreateInstance<XRManagerSettings>();
+        if (XRGeneralSettings.Instance.Manager.activeLoaders == null) Debug.Log("no xr loaders");
+
+        XRGeneralSettings.Instance.Manager.StopSubsystems();
+        XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+
+        XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+
+        for (int i = 0; i < loaders.Length; i++)
+        {
+            XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
+
+            if (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
+                yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
+            XRGeneralSettings.Instance.Manager.StartSubsystems();
+            Debug.Log("init successful? " + XRGeneralSettings.Instance.Manager.isInitializationComplete);
+
+            //Check if initialization was successfull.
+            var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
+            SubsystemManager.GetInstances(xrDisplaySubsystems);
+            if (xrDisplaySubsystems.Count > 0)
+            {
+                success = xrDisplaySubsystems[0].running;
+            }
+
+            Debug.Log($"{loaders[i].name} active? " + success);
+            xrDeviceOn = success;
+
+            if (success)
+            {
+                break;
+            }
+
+            //XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
+            XRGeneralSettings.Instance.Manager.StopSubsystems();
+            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+        }
+        XRSettings.enabled = xrDeviceOn;
+    }
+
+
     public void Initialize()
     {
         if (_instance != null && _instance != this)
@@ -105,75 +155,15 @@ public class VRManager : MonoBehaviour
     {
         if (pauseAction.action.triggered)
         {
-            UIManager.Instance.TogglePause();
+            if (UIManager.Instance)
+                UIManager.Instance.TogglePause();
         }
     }
-
-    public IEnumerator StartXR()
-    {
-        XRSettings.enabled = true;
-        bool success = false;
-        if (XRGeneralSettings.Instance == null) Debug.Log("no xr settings");
-        if (XRGeneralSettings.Instance.Manager == null) XRManagerSettings.CreateInstance<XRManagerSettings>();
-        if (XRGeneralSettings.Instance.Manager.activeLoaders == null) Debug.Log("no xr loaders");
-
-
-        XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
-
-        for (int i = 0; i < loaders.Length; i++)
-        {
-            XRGeneralSettings.Instance.Manager.TryAddLoader(loaders[i]);
-            //XRGeneralSettings.Instance.Manager.loaders.Add(loaders[i]);
-
-            yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-            //if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
-
-            //Check if initialization was successfull.
-            var xrDisplaySubsystems = new List<XRDisplaySubsystem>();
-            SubsystemManager.GetInstances(xrDisplaySubsystems);
-            if (xrDisplaySubsystems.Count > 0)
-            {
-                success = xrDisplaySubsystems[0].running;
-            }
-
-            if (success)
-            {
-                activeLoader = i;
-                break;
-            }
-
-            //XRGeneralSettings.Instance.Manager.TrySetLoaders(new List<XRLoader>());
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-        }
-        XRSettings.enabled = success;
-        xrDeviceOn = success;
-
-        
-        /*
-        if (XRGeneralSettings.Instance.Manager.activeLoader != null)
-        {
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-        }
-        yield return XRGeneralSettings.Instance.Manager.InitializeLoader();
-        XRGeneralSettings.Instance.Manager.StartSubsystems();*/
-    }
-
-    void StopXR()
-    {
-        if (XRGeneralSettings.Instance.Manager.isInitializationComplete)
-        {
-            XRGeneralSettings.Instance.Manager.StopSubsystems();
-            Camera.main.ResetAspect();
-            XRGeneralSettings.Instance.Manager.DeinitializeLoader();
-        }
-    }
-
+    
     private void SetupHands()
     {
-        TankController.Instance.SetHandModel();
+        if (TankController.Instance)
+            TankController.Instance.SetHandModel();
     }
 
     public void ApplySettings()

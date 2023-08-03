@@ -29,12 +29,14 @@ public class LineRenderOnActivate : MonoBehaviour
 
     public void OnActivate(InputAction.CallbackContext context)
     {
+        if (lineRenderer == null) return;
         lineRenderer.enabled = true;
         lineVisual.enabled = true;
     }
 
     public void OnDeactivate(InputAction.CallbackContext context)
     {
+        if (lineRenderer == null) return;
         lineRenderer.enabled = false;
         lineVisual.enabled = false;
 
