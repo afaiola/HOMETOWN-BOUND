@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2288981479513542587}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CanvasAttach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,7 +201,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vrRig: {fileID: 0}
   worldUILocaiton: {fileID: 2288981479513542587}
-  keyboard: {fileID: 0}
   loaders:
   - {fileID: 11400000, guid: d958c26244556e24d8deb4a0628b6b60, type: 2}
   vrActive: 0
