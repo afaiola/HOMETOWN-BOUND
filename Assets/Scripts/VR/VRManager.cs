@@ -32,6 +32,7 @@ public class VRManager : MonoBehaviour
     private float smoothMoveSpeed = 4;
     private float smoothRotateSpeed = 90;
     private float snapTurnAngle = 45;
+    [SerializeField] private float cameraOffsetHeight = 0.7f;   // based on height of standing character while player is seated. 1.1 for in game
 
     [SerializeField] private ActionBasedController[] xrControllers;
 
@@ -237,30 +238,32 @@ public class VRManager : MonoBehaviour
     public void SetCameraSitting()
     {
         Debug.Log("Set camera sit pos");
+        float camHeight = cameraOffsetHeight;
         if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Device)
         {
             xrOrigin.CameraYOffset = 1f;
-            cameraOffset.transform.localPosition = new Vector3(0, 1.3f, 0);
+            camHeight = 1.3f;
         }
         else if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Floor)
         {
-            cameraOffset.transform.localPosition = new Vector3(0, 0.4f, 0);
             VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
         }
+        cameraOffset.transform.localPosition = new Vector3(0, camHeight - 0.3f, 0);
     }
 
     public void SetCameraStanding()
     {
+        float camHeight = cameraOffsetHeight;
         if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Device)
         {
             xrOrigin.CameraYOffset = 1.3f;
-            cameraOffset.transform.localPosition = new Vector3(0, 1.6f, 0);
+            camHeight = 1.6f;
         }
         else if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Floor)
         {
-            cameraOffset.transform.localPosition = new Vector3(0, 0.7f, 0);
             VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
         }
+        cameraOffset.transform.localPosition = new Vector3(0, camHeight, 0);
     }
 
     public void SetTunnelingSize(float value)

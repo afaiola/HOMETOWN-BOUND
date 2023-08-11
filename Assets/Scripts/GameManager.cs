@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
         {
             if (useVR)
             {
-                Debug.Log("manager register groups");
+                Debug.Log("manager register groups");   
                 UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
                 foreach (var group in interactionGroups)
                 {
