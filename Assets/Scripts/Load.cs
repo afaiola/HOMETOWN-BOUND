@@ -53,7 +53,7 @@ public class Load : MonoBehaviour
             float loadProgress = gameLoad.progress + cityLoad.progress + neighborhoodLoad.progress;
             loadProgress /= 3f;
             loadProgress = (loadProgress + StorageManager.Instance.GetDownloadProgress()) / 2f; // maybe separate this into a separate bar
-            Debug.Log("progress: " + loadProgress);
+            //Debug.Log("progress: " + loadProgress);
             if (loadingBar)
             {
                 loadingBar.localScale = new Vector3(loadProgress, 1, 1);

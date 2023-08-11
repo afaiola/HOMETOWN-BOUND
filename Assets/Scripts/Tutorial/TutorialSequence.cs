@@ -56,7 +56,7 @@ public class TutorialSequence : MonoBehaviour
 
     public void StartSequence()
     {
-        Debug.Log("Starting sequence: " + name);
+        //Debug.Log("Starting sequence: " + name);
         currAction = 0;
         actions[0].Run();
     }

@@ -7,16 +7,19 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Unity.XR.CoreUtils;
 
 public class VRManager : MonoBehaviour
 {
     public static VRManager Instance { get { return _instance; } }
     private static VRManager _instance;
 
+    public bool makeSingleton = true;
     [System.NonSerialized] public bool xrDeviceOn;
     [SerializeField] private XRLoader[] loaders;
     private int activeLoader;
 
+    [SerializeField] private XROrigin xrOrigin;
     [SerializeField] private Transform cameraOffset;
     [SerializeField] private VRBlink tunnelingController;
 
@@ -26,7 +29,9 @@ public class VRManager : MonoBehaviour
     [SerializeField] private ActionBasedContinuousMoveProvider continuousMoverProvider;
     [SerializeField] private ActionBasedContinuousTurnProvider continuousTurnProvider;
 
-    private float smoothMoveSpeed, smoothRotateSpeed, snapTurnAngle;
+    private float smoothMoveSpeed = 4;
+    private float smoothRotateSpeed = 90;
+    private float snapTurnAngle = 45;
 
     [SerializeField] private ActionBasedController[] xrControllers;
 
@@ -99,13 +104,16 @@ public class VRManager : MonoBehaviour
 
     public void Initialize()
     {
-        if (_instance != null && _instance != this)
+        if (makeSingleton)
         {
-            Destroy(gameObject);
-            return;
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
 
         VRSettings vrSettings = GameObject.FindObjectOfType<VRSettings>();
         if (vrSettings)
@@ -120,14 +128,11 @@ public class VRManager : MonoBehaviour
             vrSettings.LoadSettings();
         }
 
-        smoothMoveSpeed = continuousMoverProvider.moveSpeed;
-        smoothRotateSpeed = continuousTurnProvider.turnSpeed;
-        snapTurnAngle = snapTurnProvider.turnAmount;
-
         ApplySettings();
 
         SetupHands();
 
+        Debug.Log("manager register interactors");
         // otherwise, interactors dont interact with anything
         foreach (var ray in rayInteractors)
         {
@@ -148,6 +153,7 @@ public class VRManager : MonoBehaviour
         }
 
         tunnelingController.Initialize();
+        //SetCameraSitting();
     }
 
     // Update is called once per frame
@@ -188,16 +194,7 @@ public class VRManager : MonoBehaviour
         continuousTurnProvider.turnSpeed = 0;
     }
 
-
-    public RaycastResult GetPrimaryRaycastResult()
-    {
-        RaycastResult hit;
-
-        rayInteractors[VRSettings.Instance.PrimaryHand].TryGetCurrentUIRaycastResult(out hit);
-        return hit;
-    }
-
-    public Vector3 GetHitPosition(bool primary = true, bool requireActive = false)
+    public Vector3 GetHitPosition(Vector3 referencePos, bool primary = true, bool requireActiveInput = false)
     {
         if (VRSettings.Instance == null)
         {
@@ -207,37 +204,63 @@ public class VRManager : MonoBehaviour
 
         int primaryHand = VRSettings.Instance.PrimaryHand;
         int secondaryHand = 1 - primaryHand;
+        int activeHand = primary ? primaryHand : secondaryHand;
 
-        bool primaryActive = xrControllers[primaryHand].activateActionValue.action.ReadValue<float>() > 0.1f;
-        bool secondaryActive = xrControllers[secondaryHand].activateActionValue.action.ReadValue<float>() > 0.1f;
-
-        if (pokeInteractors[primaryHand].isSelectActive && !primaryActive)
-        {
-            return pokeInteractors[primaryHand].attachTransform.position;
-        }
-
-        if (pokeInteractors[secondaryHand].isSelectActive && !primaryActive)
-        {
-            return pokeInteractors[secondaryHand].attachTransform.position;
-        }
+        // default to the hand position
+        Vector3 worldPos = pokeInteractors[activeHand].attachTransform.position;
 
         RaycastResult hit;
-        if (!(primary ? primaryActive : secondaryActive) && requireActive)
-            return Vector3.positiveInfinity;
-        if (!rayInteractors[primary ? primaryHand : secondaryHand].TryGetCurrentUIRaycastResult(out hit))
-            return Vector3.positiveInfinity;
-        //Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}"); 
-        return hit.worldPosition;
+        bool isActive = xrControllers[activeHand].activateActionValue.action.ReadValue<float>() > 0.1f;
+        if (isActive)
+        {
+            if (rayInteractors[activeHand].TryGetCurrentUIRaycastResult(out hit))
+            {
+                worldPos = hit.worldPosition;
+                //Debug.Log($"hitting {hit.gameObject.name} at {hit.worldPosition}");
+            }
+        }
+
+        if (requireActiveInput)
+        {
+            // we should only use poke interactor if it is near the canvas
+            // and if the action input is active
+            float elementDistance = Vector3.Distance(referencePos, worldPos);
+            if (elementDistance > 0.1f && !isActive)
+                worldPos = Vector3.positiveInfinity;
+            string handName = primary ? "primary" : "secondary";
+            //Debug.Log($"ele dist: {elementDistance} input is active? {isActive} for {handName} hand gives pos {worldPos}");
+        }
+
+        return worldPos;
     }
 
     public void SetCameraSitting()
     {
-        cameraOffset.transform.localPosition = new Vector3(0, 1f, 0);
+        Debug.Log("Set camera sit pos");
+        if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Device)
+        {
+            xrOrigin.CameraYOffset = 1f;
+            cameraOffset.transform.localPosition = new Vector3(0, 1.3f, 0);
+        }
+        else if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Floor)
+        {
+            cameraOffset.transform.localPosition = new Vector3(0, 0.4f, 0);
+            VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
+        }
     }
 
     public void SetCameraStanding()
     {
-        cameraOffset.transform.localPosition = new Vector3(0, 1.3f, 0);
+        if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Device)
+        {
+            xrOrigin.CameraYOffset = 1.3f;
+            cameraOffset.transform.localPosition = new Vector3(0, 1.6f, 0);
+        }
+        else if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Floor)
+        {
+            cameraOffset.transform.localPosition = new Vector3(0, 0.7f, 0);
+            VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
+        }
     }
 
     public void SetTunnelingSize(float value)

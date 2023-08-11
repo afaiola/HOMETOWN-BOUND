@@ -8,6 +8,7 @@ using Text = TMPro.TextMeshProUGUI;
 
 public class UserInputOption : MonoBehaviour
 {
+    [System.NonSerialized] public int id;
     public string optionName;
     public GameObject helper;   // shows when current option is highlighted
     public Text[] helpTexts;    // various texts on the helper object to give detailed info on the inputs
@@ -16,6 +17,8 @@ public class UserInputOption : MonoBehaviour
     [SerializeField] private Sprite validIcon, invalidIcon;
 
     [System.NonSerialized] public UnityEvent inputChanged;
+    [System.NonSerialized] public UnityEvent<int> selected;
+
 
     protected virtual void OnValidate()
     {
@@ -55,6 +58,12 @@ public class UserInputOption : MonoBehaviour
     {
         if (helper)
             helper.SetActive(on);
+    }
+
+    protected void OnSelect()
+    {
+        if (selected != null)
+            selected.Invoke(id);
     }
 
 }

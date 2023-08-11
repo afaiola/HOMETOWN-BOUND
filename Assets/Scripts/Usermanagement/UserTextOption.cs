@@ -23,6 +23,7 @@ public class UserTextOption : UserInputOption
         base.Start();
         input = GetComponentInChildren<InputField>();
         input.onValueChanged.AddListener(TextChanged);
+        input.onSelect.AddListener(OnSelect);
     }
 
     public override string GetValue()
@@ -67,7 +68,12 @@ public class UserTextOption : UserInputOption
         return valid;
     }
 
-    private void TextChanged(string str)
+    private void OnSelect(string str)
+    {
+        OnSelect();
+    }
+
+    public void TextChanged(string str)
     {
         InputChanged();
     }

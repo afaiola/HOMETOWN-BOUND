@@ -89,7 +89,7 @@ public class FloatingOrigin : MonoBehaviour
             foreach (var character in waypointers)
                 character.SetOffset(-pos);
 
-            Debug.Log($"Recentering origin to {transform.position} affecting {rootGos.Count} objects");
+            //Debug.Log($"Recentering origin by {pos} affecting {rootGos.Count} objects");
         }
     }
 

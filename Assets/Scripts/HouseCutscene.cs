@@ -18,6 +18,15 @@ public class HouseCutscene : MonoBehaviour
     {
         // play on start in the house scene
         Play();
+        if (VRManager.Instance)
+        {
+            var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
+            foreach (var tpArea in crossSceneTPAreas)
+            {
+                tpArea.interactionManager = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
+                tpArea.teleportationProvider = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
+            }
+        }
     }
 
     // Update is called once per frame
@@ -54,7 +63,7 @@ public class HouseCutscene : MonoBehaviour
         player.transform.position = startPos.position;
         player.transform.rotation = startPos.rotation;
 
-        TankController.Instance.GetComponent<FloatingOrigin>()?.RecenterOrigin();
+        //TankController.Instance.GetComponent<FloatingOrigin>()?.RecenterOrigin();
         yield return new WaitForSecondsRealtime(1f);
 
         // do this twice to ensure player is in correct position.

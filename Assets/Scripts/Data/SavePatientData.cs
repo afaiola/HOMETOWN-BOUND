@@ -32,11 +32,11 @@ public class SavePatientData : MonoBehaviour
         }
     }
 
-    [DllImport("__Internal")]
+    /*[DllImport("__Internal")]
     private static extern void SyncFiles();
 
     [DllImport("__Internal")]
-    private static extern void WindowAlert(string message);
+    private static extern void WindowAlert(string message);*/
 
     public static SavePatientData Instance { get { return _instance; } }
     private static SavePatientData _instance;
@@ -63,6 +63,7 @@ public class SavePatientData : MonoBehaviour
     // set up the save file and format it to hold entries for all exercises
     public void Initialize()
     {
+        Debug.Log("save patient data initialized");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -87,7 +88,7 @@ public class SavePatientData : MonoBehaviour
 
     private void FileDownload(bool status)
     {
-        //Debug.Log("File download success? " + status);
+        Debug.Log("File download success? " + status);
         patientData = new List<PatientDataEntry>();
         if (!CreateFile(patientDataFile, out patientData))
             UploadPatientData();
@@ -121,7 +122,7 @@ public class SavePatientData : MonoBehaviour
         {
             if (File.Exists(path))
             {
-                //Debug.Log("load existing " + Path.GetFileName(path));
+                Debug.Log("load existing " + Path.GetFileName(path));
                 data = Load(path);
                 return true;
             }
@@ -130,7 +131,7 @@ public class SavePatientData : MonoBehaviour
                 // Create new data
                 if (path == ciDataFile)
                 {
-                    //Debug.Log("create new: " + Path.GetFileName(ciDataFile));
+                    Debug.Log("create new: " + Path.GetFileName(ciDataFile));
                     data = InitializeCIData();
                 }
                 else
@@ -279,7 +280,7 @@ public class SavePatientData : MonoBehaviour
             {
                 if (patientData != null)
                 {
-                    //Debug.Log("saving: " + patientDataFile);
+                    Debug.Log("saving: " + patientDataFile);
                     //File.WriteAllText(patientDataFile, header);
                     w.WriteLine(header);
                     w.Flush();
@@ -333,14 +334,13 @@ public class SavePatientData : MonoBehaviour
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
             //Debug.Log("syncing files");
-            SyncFiles();
+            //SyncFiles();
         }
-
-        // TODO: Upload to firebase
     }
 
     public void SaveEntry(int exerciseNum, float time, int successes, int misses)
     {
+        Debug.Log($"save entry for ex: {exerciseNum}");
         time = Mathf.Round(time * 1000f) / 1000f;
         bool found = false;
         for (int i = 0; i < patientData.Count; i++)
@@ -468,6 +468,7 @@ public class SavePatientData : MonoBehaviour
 
     public void UploadPatientData()
     {
+        Debug.Log("uploading patient data");
         StorageManager.Instance.StartCSVUpload(patientDataFile);
     }
 
@@ -532,7 +533,7 @@ public class SavePatientData : MonoBehaviour
     {
         if (Application.platform == RuntimePlatform.WebGLPlayer)
         {
-            WindowAlert(message);
+            //WindowAlert(message);
         }
         else
         {

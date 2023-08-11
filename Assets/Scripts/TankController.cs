@@ -259,12 +259,13 @@ public class TankController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-        if (controller)
-            controller.enabled = false;
+        //if (controller)
+        //controller.enabled = false;
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = false;
+
         canMove = false;
         StartCoroutine(FixMouse(CursorLockMode.Confined));
-        if (floatingOrigin)
-            floatingOrigin.canUpdate = true;
 
         if (VRManager.Instance)
         {
@@ -277,5 +278,10 @@ public class TankController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         yield return new WaitForSeconds(Time.deltaTime * 2);
         Cursor.lockState = cursorSetting;
+    }
+
+    public void SetCullDistance(float dist)
+    {
+        playerCam.farClipPlane = dist;
     }
 }

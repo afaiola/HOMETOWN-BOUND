@@ -42,7 +42,7 @@ public class TutorialAction : MonoBehaviour
     public virtual void Run()
     {
         // TODO: start on delay
-        Debug.Log("starting action " + name);
+        //Debug.Log("starting action " + name);
         foreach (var tut in tutorialObjects)
         {
             if (tut.obj)
@@ -52,7 +52,7 @@ public class TutorialAction : MonoBehaviour
                 {
                     tut.obj.transform.position = tut.objLocation.position;
                     tut.obj.transform.rotation = tut.objLocation.rotation;
-                    Debug.Log($"moving {tut.obj.name} to {tut.objLocation.name}");
+                    //Debug.Log($"moving {tut.obj.name} to {tut.objLocation.name}");
                 }
             }
 

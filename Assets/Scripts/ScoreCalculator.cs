@@ -108,8 +108,8 @@ public class ScoreCalculator
     public int GetStars(int numModules=7)
     {
         int stars = Mathf.CeilToInt((float)totalScore / numModules);
-        Debug.Log("Total score: " + totalScore);
-        Debug.Log("Total duration: " + totalDuration);
+        //Debug.Log("Total score: " + totalScore);
+        //Debug.Log("Total duration: " + totalDuration);
         if (stars > 5) stars = 5;
 
         totalDuration = 0;

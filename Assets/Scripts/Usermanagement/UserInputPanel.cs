@@ -32,10 +32,15 @@ public class UserInputPanel : MonoBehaviour
         tabSelector.selectEvent = new UnityEvent<int>();
         tabSelector.selectEvent.AddListener(OptionSelected);
 
+        int id = 0;
         foreach (var option in userInputOptions)
         {
             option.inputChanged = new UnityEvent();
             option.inputChanged.AddListener(CheckAllOptions);
+            option.selected = new UnityEvent<int>();
+            option.selected.AddListener(OptionSelected);
+            option.id = id;
+            id++;
         }
 
         submitButton.onClick.AddListener(OnSubmit);

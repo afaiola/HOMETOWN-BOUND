@@ -49,6 +49,9 @@ public class GoTo : MonoBehaviour
             UIManager.Instance.Resume();
             //UIManager.Instance.LockCursor();
             //ScoreCalculator.instance.controller.transform.position = moduleObject.transform.position;
+            //StartModule();  // here to prevent collider starting the module too early.
+            if (SavePatientData.Instance)
+                SavePatientData.Instance.SaveEntry(module.exercises[0].exerciseID-1, 1, 0, 0);  // -1 covers the walk to exercise
             GameManager.Instance.teleportEvent = new UnityEngine.Events.UnityEvent();
             GameManager.Instance.teleportEvent.AddListener(StartModule);
             Vector3 loc = TankController.Instance.transform.position;
@@ -62,7 +65,6 @@ public class GoTo : MonoBehaviour
     {
         TankController.Instance.DisableMovement();
         ScoreCalculator.instance.GetStars();
-        Debug.Log("starting module: " + module.current);
         ScoreCalculator.instance.StartActivity(module.exercises[module.current].exerciseID);
         module?.Play();
         if (moduleObject)

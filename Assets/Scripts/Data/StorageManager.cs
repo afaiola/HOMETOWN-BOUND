@@ -115,6 +115,7 @@ public class StorageManager : MonoBehaviour
             cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
             yield return cd.coroutine;
             byte[] result = (byte[])cd.result;
+            if (result == null) continue;
             //Debug.Log($"{content.pictureName} size: {result.Length}");
             if (result.Length < 16)
             {
@@ -174,6 +175,8 @@ public class StorageManager : MonoBehaviour
             Debug.LogError($"Failed to upload because {uploadTask.Exception}");
             yield break;
         }
+        else
+            Debug.Log($"{Profiler.Instance.currentUser.username}/{filename} uploaded with status witout exception");
     }
 
     /// <summary>

@@ -31,6 +31,11 @@ public class TutorialUISelectionGoal : TutorialActionSuccessCondition
     public override void Activate()
     {
         base.Activate();
+        TutorialUI[] allTutUIs = linkedUI.transform.parent.GetComponentsInChildren<TutorialUI>();
+        foreach (var ui in allTutUIs)
+            ui.gameObject.SetActive(false);
+
+        linkedUI.gameObject.SetActive(true);
         linkedUI.SetupButton(0, NegativeButtonPressed);
         if (linkedUI.buttons.Length > 1)
             linkedUI.SetupButton(1, PositiveButtonPressed);

@@ -29,12 +29,18 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         rect = GetComponent<RectTransform>();
     }
 
+    private void Start()
+    {
+        rect = GetComponent<RectTransform>();
+    }
+
     private void Update()
     {
         Vector3 inputPos = Input.mousePosition;
         if (canvasHelper)
         {
-            if (!canvasHelper.GetCanvasWorldPosition(ref inputPos, ref grabbedByPrimaryHand, dragged != image)) return;
+            if (dragged == image)
+                if (!canvasHelper.GetCanvasWorldPosition(transform.position, ref inputPos, ref grabbedByPrimaryHand)) return;
         }
         SetDraggedPosition(inputPos);
 
@@ -87,6 +93,9 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
         {
             dragged = image;
             fly.enabled = false;
+            Vector3 inputPos = new Vector3();
+            // set the hand by which this was grabbed
+            canvasHelper.GetCanvasWorldPosition(transform.position, ref inputPos, ref grabbedByPrimaryHand, true);
         }
     }
 

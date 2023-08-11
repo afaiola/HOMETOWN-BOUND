@@ -109,13 +109,17 @@ public class VirtualKeyboard : MonoBehaviour
     private void Backspace()
     {
         if (activeInput)
-            activeInput.text = activeInput.text.Substring(0, activeInput.text.Length - 1);
+            if (activeInput.text.Length > 0)
+                activeInput.text = activeInput.text.Substring(0, activeInput.text.Length - 1);
     }
 
     private void KeyPressed(char key)
     {
         if (activeInput == null) return;
         activeInput.text += key.ToString();
+        UserTextOption textOption = GetComponentInParent<UserTextOption>();
+        if (textOption)
+            textOption.TextChanged(activeInput.text);
     }
 
     public void ChangeCase(bool isUpper)

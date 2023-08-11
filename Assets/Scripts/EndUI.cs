@@ -39,10 +39,12 @@ public class EndUI : MonoBehaviour
         int totalStars = 0;
         int modCt = 0;
 
+        int activeAttempt = SavePatientData.Instance.GetActiveAttempt();
+
         List<SavePatientData.PatientDataEntry> data = SavePatientData.Instance.GetPatientData();
         for (int i = 0; i < data.Count; i++)
         {
-            SavePatientData.PatientDataEntry.PatientAttempt entry = data[i].attempts[0];
+            SavePatientData.PatientDataEntry.PatientAttempt entry = data[i].attempts[activeAttempt];
             int score = ScoreCalculator.instance.GetScore(entry.time, entry.successes, entry.misses, i);
 
             exerciseScores[m] = score;

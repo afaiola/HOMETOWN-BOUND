@@ -59,6 +59,7 @@ public class UserAccountManager : MonoBehaviour
 
     public void StartSignIn(Dictionary<string, string> userOptions)
     {
+        Debug.Log("signing in");
         StartCoroutine(SignIn(userOptions));
     }
 

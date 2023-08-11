@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartRoutine()
     {
+        yield return new WaitForEndOfFrame();
         if (_instance == null)
         {
             _instance = this;
@@ -41,22 +42,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
         VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
-        if (vrHandler)
-        {
-
-            //vrHandler.Initialize();
-            //if (vrHandler)
-            //    Destroy(vrHandler.gameObject);
-        }
-        /*if (vrHandler)
-        {
-            //vrHandler.vrActive = false;
-            Debug.Log("vr already loaded");
-            //vrHandler.Initialize();
-            yield return vrHandler.StartXR();
-            useVR = vrHandler.vrActive;
-            //vrHandler.Initialize();
-        }*/
         VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager)
         {
@@ -66,7 +51,10 @@ public class GameManager : MonoBehaviour
 
         // make sure each of these items are disabled prior to this start call to prevent any unwanted initialization
         for (int i = 0; i < vrObjects.Length; i++)
-            vrObjects[i].SetActive(useVR);
+        {
+            if (vrObjects[i])
+                vrObjects[i].SetActive(useVR);
+        }
         for (int i = 0; i < desktopObjects.Length; i++)
             desktopObjects[i].SetActive(!useVR);
 
@@ -82,10 +70,27 @@ public class GameManager : MonoBehaviour
         //VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager)
         {
-            if (!useVR)
-                Destroy(vrManager.gameObject);
-            else
+            if (useVR)
+            {
+                Debug.Log("manager register groups");
+                UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
+                foreach (var group in interactionGroups)
+                {
+                    group.interactionManager = GameObject.FindObjectOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>();
+                }
+                yield return new WaitForEndOfFrame();
                 vrManager.Initialize();
+                var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
+                foreach (var tpArea in crossSceneTPAreas)
+                {
+                    tpArea.interactionManager = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
+                    tpArea.teleportationProvider = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
+                }
+            }
+            else
+            {
+                Destroy(vrManager.gameObject);
+            }
         }
         foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
             looker.Initialize();
@@ -132,6 +137,8 @@ public class GameManager : MonoBehaviour
         {
             intro.PlayCutscene(firstTime);
         }
+
+        SetCameraClipDist(175f);
     }
 
     private void ContentMapped()
@@ -180,9 +187,11 @@ public class GameManager : MonoBehaviour
     {
         TankController.Instance.DisableMovement();
         yield return new WaitForEndOfFrame();
+        // somehow, floating origin has reset our position and shifted the world before we have set location
         TankController.Instance.transform.position = location;
         yield return new WaitForEndOfFrame();
         //TankController.Instance.EnableMovement();
+        //TankController.Instance.GetComponent<FloatingOrigin>()?.RecenterOrigin();
         if (teleportEvent != null) teleportEvent.Invoke();
     }
 
@@ -192,9 +201,16 @@ public class GameManager : MonoBehaviour
         // 
     }
 
+    public void SetCameraClipDist(float dist)
+    {
+        if (TankController.Instance)
+            TankController.Instance.SetCullDistance(dist);
+    }
     public void Quit()
     {
         //Application.Quit();
+        if (VRManager.Instance)
+            Destroy(VRManager.Instance.gameObject);
         SceneLoader.Instance.LoadMainMenu();
     }
 }

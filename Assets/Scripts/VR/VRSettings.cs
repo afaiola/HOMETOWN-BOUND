@@ -49,7 +49,6 @@ public class VRSettings : MonoBehaviour
             return;
         }
 
-        Debug.Log("load settings");
         _instance = this;
         useTeleportMovement = PlayerPrefs.GetInt(movementSaveKey, 0) == 1;
         useIncrementalRotate = PlayerPrefs.GetInt(rotateSaveKey, 0) == 1;

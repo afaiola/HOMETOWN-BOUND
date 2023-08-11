@@ -64,25 +64,21 @@ public class VRCanvasHelper : MonoBehaviour
         //Debug.Log($"angle {transform.root.eulerAngles.y} gives range {worldMin}-{worldMax} offset: {worldOffset}");
     }
 
-    public bool GetCanvasWorldPosition(ref Vector3 resultPos, ref bool hand, bool requireActive=false)
+    public bool GetCanvasWorldPosition(Vector3 elementPos, ref Vector3 resultPos, ref bool hand, bool requireActive=false)
     {
         // TODO: get whichever pointer is active. 
         // if both active, pick whichever was there first
-        resultPos = VRManager.Instance.GetHitPosition(hand, requireActive);
+        //Debug.Log($"getting canvas pos for {handStr} require active? {requireActive}");
+
+        resultPos = VRManager.Instance.GetHitPosition(elementPos, hand, requireActive);
         if (Single.IsInfinity(resultPos.x))
         {
-            resultPos = VRManager.Instance.GetHitPosition(false, requireActive);
+            resultPos = VRManager.Instance.GetHitPosition(elementPos, !hand, requireActive);
             if (Single.IsInfinity(resultPos.x))
             {
                 return false;
             }
-            hand = false;
-            // active hand failed, but secondary succeeded. switch
-            //usingPrimaryHand = !usingPrimaryHand;
-        }
-        else
-        {
-            hand = true;
+            hand = !hand;
         }
 
         ClampWorldPosToCanvas(ref resultPos);

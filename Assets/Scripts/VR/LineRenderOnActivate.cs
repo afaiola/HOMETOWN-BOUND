@@ -30,6 +30,7 @@ public class LineRenderOnActivate : MonoBehaviour
     public void OnActivate(InputAction.CallbackContext context)
     {
         if (lineRenderer == null) return;
+        var ray = GetComponent<XRRayInteractor>();
         lineRenderer.enabled = true;
         lineVisual.enabled = true;
     }

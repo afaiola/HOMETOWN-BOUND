@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class VRHandler : MonoBehaviour
 {
     public static VRHandler Instance { get { return _instance; } }
     public static VRHandler _instance;
 
-    [SerializeField] GameObject vrRig;
+    [SerializeField] VRManager vrRig;
     [SerializeField] Transform worldUILocaiton;
     [SerializeField] private XRLoader[] loaders;
 
@@ -49,6 +50,13 @@ public class VRHandler : MonoBehaviour
             {
                 Debug.Log("XR already loaded");
                 success = startingSubsystems[0].running;
+                /*if (XRGeneralSettings.Instance.Manager.activeLoader != null)
+                {
+                    XRGeneralSettings.Instance.Manager.StopSubsystems();
+                    XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+                }
+                XRGeneralSettings.Instance.Manager.InitializeLoaderSync();
+                XRGeneralSettings.Instance.Manager.StartSubsystems();*/
             }
 
             if (!success)
@@ -76,10 +84,11 @@ public class VRHandler : MonoBehaviour
                     }
 
                     Debug.Log($"{loaders[i].name} active? " + success);
-                    vrActive = success;
+                    
 
                     if (success)
                     {
+                        vrActive = success;
                         break;
                     }
 
@@ -88,19 +97,29 @@ public class VRHandler : MonoBehaviour
                     XRGeneralSettings.Instance.Manager.DeinitializeLoader();
                 }
             }
+            vrActive = success;
         }
         Initialize();
+        yield return new WaitForEndOfFrame();
+        vrRig.SetCameraSitting();
+        if (gameObject)
+            ForceInteractorRegister();
     }
 
     public void Initialize()
     {
-        Debug.Log("init menu handler");
         if (!vrActive)
         {
             Destroy(gameObject);
-            Destroy(vrRig);
+            Destroy(vrRig.gameObject);
             return;
         }
+
+        TankController tankController = GameObject.FindObjectOfType<TankController>();
+        if (tankController)
+            tankController.Initialize();
+        vrRig.Initialize();
+        //vrRig.DisableMovement();
 
         Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
         foreach (var cam in cameras)
@@ -110,16 +129,51 @@ public class VRHandler : MonoBehaviour
                 cam.gameObject.SetActive(false);
         }
 
+        // THIS DOESN'T WORK. ALL OTHER EVENT SYSTEMS MUST BE DISABLED ON START
         EventSystem[] allSystems = GameObject.FindObjectsOfType<EventSystem>();
         foreach (var system in allSystems)
         {
-            if (system.transform.parent == null)
+            //if (system.GetComponent<UnityEngine.XR.Interaction.Toolkit.UI.XRUIInputModule>())
+            if (system.transform.parent != null)
+            {
+                //Debug.Log("valid event system found " + system.name);
+                EventSystem.current = system;
+            }
+            else
+            {
                 Destroy(system.gameObject);
+            }
+        }
+        ConvertCanvassesToWorldSpace();
+
+        Debug.Log("handler register groups");
+        XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<XRInteractionGroup>();
+        foreach (var group in interactionGroups)
+        {
+            group.interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
         }
 
-        ConvertCanvassesToWorldSpace();
-        //if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "MainMenu")
-        //    MainMenuLoaded();
+        //ForceInteractorRegister();
+    }
+
+    private void ForceInteractorRegister()
+    {
+        Debug.Log("register interactors with handler");
+        XRRayInteractor[] rayInteractors = GameObject.FindObjectsOfType<XRRayInteractor>();
+        foreach (var ray in rayInteractors)
+        {
+            ray.interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+            ray.enableUIInteraction = false;
+            ray.enableUIInteraction = true;
+        }
+
+        XRPokeInteractor[] pokeInteractors = GameObject.FindObjectsOfType<XRPokeInteractor>();
+        for (int i = 0; i < pokeInteractors.Length; i++)
+        {
+            pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+            pokeInteractors[i].enableUIInteraction = false;
+            pokeInteractors[i].enableUIInteraction = true;
+        }
     }
 
     private void ConvertCanvassesToWorldSpace()
@@ -129,9 +183,11 @@ public class VRHandler : MonoBehaviour
             var trackedDeviceRaycaster = canvas.GetComponent<UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
             if (trackedDeviceRaycaster != null || worldUILocaiton == null) continue;
 
-            canvas.gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
-
+            trackedDeviceRaycaster = canvas.gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceGraphicRaycaster>();
+            //var canvasHelp = canvas.gameObject.AddComponent<VRCanvasHelper>();
+           
             canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = GameObject.FindObjectOfType<Camera>(); // only active one at this point should be the vr one
             //canvas.transform.parent = worldUILocaiton;
             canvas.transform.position = worldUILocaiton.position;
             canvas.transform.rotation = worldUILocaiton.rotation;
@@ -141,8 +197,8 @@ public class VRHandler : MonoBehaviour
 
     public void GameLoading()
     {
-        Debug.Log("game loading");
-        Destroy(vrRig);
+        //Debug.Log("game loading");
+        Destroy(vrRig.gameObject);
     }
 
     // Update is called once per frame

@@ -76,16 +76,17 @@ public class IntroScene : MonoBehaviour
     private IEnumerator Cutscene()
     {
         //UIManager.Instance.canPause = false;
+        if (VRManager.Instance)
+            VRManager.Instance.SetCameraSitting();
+
+        dr.GetComponent<Animator>().SetBool("Talking", false);
         UIManager.Instance.inCutscene = true;
         UIManager.Instance.OpenEyes();
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
         StaticEvent.ActivateSpeechBubble();
         TankController.Instance.DisableMovement();
         TankController.Instance.enabled = false;
-
-        if (VRManager.Instance)
-            VRManager.Instance.SetCameraSitting();
-        
+  
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 
         dr.GetComponent<Animator>().SetBool("Talking", true);
