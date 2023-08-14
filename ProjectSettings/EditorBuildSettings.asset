@@ -5,6 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Samples/XR Interaction Toolkit/2.3.2/Starter Assets/XRDemoScene.unity
+    guid: 319dafa5c80f29f428dc1e0d03f04177
   - enabled: 1
     path: Assets/Scenes/SplashScreen.unity
     guid: f3bfee597155a474a8a2b61b1937de42
@@ -27,6 +30,8 @@ EditorBuildSettings:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 5b944caa666bcfa4cac64b3635707047,
       type: 2}
     Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: fb2504f8a4109a2409cd5b36055bf783,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 9414bc06b167e534982102dabab5aa76,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: c155cea949b43ed4f9b7c1a7a74fe10c,
       type: 2}
