@@ -16,6 +16,9 @@ public class VirtualKeyboard : MonoBehaviour
     [SerializeField] private VirtualKey spaceKey;
     [SerializeField] private Button enter, clear, backspace;
 
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip keyPressedClip, enterClip, backspaceClip, shiftClip;
+
     private char[] topRowLower = { '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=' };
     private char[] topRowUpper = { '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+' };
     private char[] firstRowLower = { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\' };
@@ -88,6 +91,13 @@ public class VirtualKeyboard : MonoBehaviour
         }
     }
 
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource == null || clip == null) return;
+        audioSource.clip = clip;
+        audioSource.PlayOneShot(clip);
+    }
+
     public void Open(InputField openedInput)
     {
         activeInput = openedInput;
@@ -98,12 +108,16 @@ public class VirtualKeyboard : MonoBehaviour
     {
         activeInput = null;
         gameObject.SetActive(false);
+
+        PlaySound(enterClip);
     }
 
     private void Clear()
     {
         if (activeInput)
             activeInput.text = "";
+
+        PlaySound(backspaceClip);
     }
 
     private void Backspace()
@@ -111,6 +125,8 @@ public class VirtualKeyboard : MonoBehaviour
         if (activeInput)
             if (activeInput.text.Length > 0)
                 activeInput.text = activeInput.text.Substring(0, activeInput.text.Length - 1);
+
+        PlaySound(backspaceClip);
     }
 
     private void KeyPressed(char key)
@@ -120,6 +136,8 @@ public class VirtualKeyboard : MonoBehaviour
         UserTextOption textOption = GetComponentInParent<UserTextOption>();
         if (textOption)
             textOption.TextChanged(activeInput.text);
+
+        PlaySound(keyPressedClip);
     }
 
     public void ChangeCase(bool isUpper)
@@ -133,5 +151,6 @@ public class VirtualKeyboard : MonoBehaviour
             else
                 key.ToUpper();
         }
+        PlaySound(shiftClip);
     }
 }

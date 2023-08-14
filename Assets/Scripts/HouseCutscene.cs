@@ -52,6 +52,7 @@ public class HouseCutscene : MonoBehaviour
         float timecount = 0;
 
         TankController.Instance.DisableMovement();
+        TankController.Instance.GetComponent<FloatingOrigin>().canUpdate = true;
         UIManager.Instance.CloseEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime*1.5f);
 

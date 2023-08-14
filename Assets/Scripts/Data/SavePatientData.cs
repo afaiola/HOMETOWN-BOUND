@@ -63,7 +63,6 @@ public class SavePatientData : MonoBehaviour
     // set up the save file and format it to hold entries for all exercises
     public void Initialize()
     {
-        Debug.Log("save patient data initialized");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -88,7 +87,6 @@ public class SavePatientData : MonoBehaviour
 
     private void FileDownload(bool status)
     {
-        Debug.Log("File download success? " + status);
         patientData = new List<PatientDataEntry>();
         if (!CreateFile(patientDataFile, out patientData))
             UploadPatientData();
@@ -280,7 +278,6 @@ public class SavePatientData : MonoBehaviour
             {
                 if (patientData != null)
                 {
-                    Debug.Log("saving: " + patientDataFile);
                     //File.WriteAllText(patientDataFile, header);
                     w.WriteLine(header);
                     w.Flush();
@@ -340,7 +337,6 @@ public class SavePatientData : MonoBehaviour
 
     public void SaveEntry(int exerciseNum, float time, int successes, int misses)
     {
-        Debug.Log($"save entry for ex: {exerciseNum}");
         time = Mathf.Round(time * 1000f) / 1000f;
         bool found = false;
         for (int i = 0; i < patientData.Count; i++)

@@ -237,7 +237,6 @@ public class VRManager : MonoBehaviour
 
     public void SetCameraSitting()
     {
-        Debug.Log("Set camera sit pos");
         float camHeight = cameraOffsetHeight;
         if (xrOrigin.CurrentTrackingOriginMode == TrackingOriginModeFlags.Device)
         {
@@ -249,6 +248,7 @@ public class VRManager : MonoBehaviour
             VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
         }
         cameraOffset.transform.localPosition = new Vector3(0, camHeight - 0.3f, 0);
+        Debug.Log($"sitting camera height local: {cameraOffset.transform.localPosition} and global: {cameraOffset.transform.position}");
     }
 
     public void SetCameraStanding()
@@ -264,6 +264,8 @@ public class VRManager : MonoBehaviour
             VRSettings.Instance.transform.localPosition = new Vector3(VRSettings.Instance.transform.localPosition.x, Camera.main.transform.localPosition.y, VRSettings.Instance.transform.localPosition.z);
         }
         cameraOffset.transform.localPosition = new Vector3(0, camHeight, 0);
+        Debug.Log($"standing camera height local: {cameraOffset.transform.localPosition} and global: {cameraOffset.transform.position}");
+        Debug.Log($"main camera height local: {Camera.main.transform.localPosition.y} and global: {Camera.main.transform.position.y}");
     }
 
     public void SetTunnelingSize(float value)
