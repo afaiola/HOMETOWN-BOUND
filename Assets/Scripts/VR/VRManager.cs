@@ -52,6 +52,12 @@ public class VRManager : MonoBehaviour
     {
         
     }
+    public void StopXR()
+    {
+        XRGeneralSettings.Instance.Manager.StopSubsystems();
+        XRGeneralSettings.Instance.Manager.DeinitializeLoader();
+        XRSettings.enabled = false;
+    }
 
     public IEnumerator StartXR()
     {

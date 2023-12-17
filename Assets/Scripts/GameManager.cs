@@ -43,11 +43,14 @@ public class GameManager : MonoBehaviour
         
         VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
         VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
-        if (vrManager)
+        if (vrManager && useVR)
         {
             yield return vrManager.StartXR();
             useVR = vrManager.xrDeviceOn;
         }
+
+        if (!useVR)
+            vrManager.StopXR();
 
         // make sure each of these items are disabled prior to this start call to prevent any unwanted initialization
         for (int i = 0; i < vrObjects.Length; i++)
@@ -128,7 +131,7 @@ public class GameManager : MonoBehaviour
         if (Profiler.Instance)
             firstTime = Profiler.Instance.currentUser.newGame;
 
-        if (VRManager.Instance && firstTime)
+        if (VRManager.Instance && firstTime && useVR)
         {
             TutorialManager tutorial = GameObject.FindObjectOfType<TutorialManager>();
             tutorial.BeginTutorial();
