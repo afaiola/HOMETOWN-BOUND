@@ -79,7 +79,7 @@ public class UIManager : MonoBehaviour
             }
         }
         if (inCutscene) return;
-        if (Input.GetMouseButtonUp(1) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!paused && !requestRefocus)
             {

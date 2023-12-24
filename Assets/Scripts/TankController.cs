@@ -84,13 +84,21 @@ public class TankController : MonoBehaviour
             timeSinceLastMove = Time.time;
         }
 
-        //var y = Input.GetAxis("Mouse Y");
-        RotateCharacterUpDown(Input.GetAxis("Mouse Y"));
-        MoveCharacterForwardBack(Input.GetAxis("Mouse ScrollWheel") * 10f);
-        RotateCharacterLeftRight(Input.GetAxis("Mouse X"));
+        if (SystemInfo.deviceType != DeviceType.Handheld)
+        { 
+            //var y = Input.GetAxis("Mouse Y");
+            RotateCharacterUpDown(Input.GetAxis("Mouse Y"));
+            MoveCharacterForwardBack(Input.GetAxis("Mouse ScrollWheel") * 10f);
+            RotateCharacterLeftRight(Input.GetAxis("Mouse X"));
+        }
 
-        MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.5f);
-        MoveCharacterLeftRight(Input.GetAxisRaw("Horizontal") * 0.35f);
+        MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.3f);
+        float horiz = Input.GetAxisRaw("Horizontal") * 0.35f;
+        if (Input.anyKey)
+            MoveCharacterLeftRight(horiz);
+        else
+            RotateCharacterLeftRight(horiz);
+
         //Fall();
         /*var movDir = transform.forward * Input.GetAxis("Mouse ScrollWheel") * speed * 10;
         if (movDir == Vector3.zero)

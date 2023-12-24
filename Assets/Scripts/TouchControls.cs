@@ -9,7 +9,7 @@ public class TouchControls : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (SystemInfo.deviceType != DeviceType.Handheld && !Debug.isDebugBuild)
+        if (SystemInfo.deviceType != DeviceType.Handheld)// && !Debug.isDebugBuild)
         {
             Destroy(gameObject);
         }
@@ -20,8 +20,8 @@ public class TouchControls : MonoBehaviour
     {
         if (TankController.Instance)
         {
-            TankController.Instance.MoveCharacterForwardBack(moveVal);
-            TankController.Instance.RotateCharacterLeftRight(lookVal);
+            TankController.Instance.MoveCharacterForwardBack(moveVal * 0.4f);
+            TankController.Instance.RotateCharacterLeftRight(lookVal * 0.35f);
         }
     }
 

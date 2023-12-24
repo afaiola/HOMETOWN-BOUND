@@ -49,8 +49,8 @@ public class GameManager : MonoBehaviour
             useVR = vrManager.xrDeviceOn;
         }
 
-        if (!useVR)
-            vrManager.StopXR();
+        //if (!useVR)
+        //    vrManager.StopXR();
 
         // make sure each of these items are disabled prior to this start call to prevent any unwanted initialization
         for (int i = 0; i < vrObjects.Length; i++)
