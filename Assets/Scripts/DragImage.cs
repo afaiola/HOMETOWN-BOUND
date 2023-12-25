@@ -95,7 +95,8 @@ public class DragImage : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
             fly.enabled = false;
             Vector3 inputPos = new Vector3();
             // set the hand by which this was grabbed
-            canvasHelper.GetCanvasWorldPosition(transform.position, ref inputPos, ref grabbedByPrimaryHand, true);
+            if (canvasHelper)
+                canvasHelper.GetCanvasWorldPosition(transform.position, ref inputPos, ref grabbedByPrimaryHand, true);
         }
     }
 
