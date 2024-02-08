@@ -58,6 +58,11 @@ public class GoTo : MonoBehaviour
             if (moduleObject) loc = moduleObject.transform.position;
             GameManager.Instance.TeleportPlayer(loc);
             if (onGo != null) onGo.Invoke();
+            ModuleMapper mapper = GameObject.FindObjectOfType<ModuleMapper>();
+            if (mapper)
+            {
+                mapper.SkipModules(module.ModuleNo);
+            }
         }
     }
 

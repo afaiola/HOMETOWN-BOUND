@@ -162,7 +162,9 @@ public class GameManager : MonoBehaviour
             intro.SetDialogue(true);
             return;
         }
+
         ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
+
         if (!intro.skipped) // cutscene is still running
         {
             intro.onComplete = new UnityEvent();

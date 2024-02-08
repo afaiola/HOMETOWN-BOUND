@@ -161,6 +161,14 @@ public class ModuleMapper : MonoBehaviour
         interactables[modIdx].Reset();
     }
 
+    public void SkipModules(int skipID) // module with skipID should not be skipped
+    {
+        for (int i = 0; i < skipID; i++)
+        {
+            interactables[i].gameObject.SetActive(false);
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
