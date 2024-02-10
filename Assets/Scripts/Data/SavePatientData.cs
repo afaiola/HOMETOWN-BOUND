@@ -25,7 +25,7 @@ public class SavePatientData : MonoBehaviour
         public int exercise;
         public PatientAttempt[] attempts;
 
-        public PatientDataEntry(int e, int numAttempts = 3)
+        public PatientDataEntry(int e, int numAttempts = 20)
         {
             exercise = e;
             attempts = new PatientAttempt[numAttempts];
@@ -47,6 +47,7 @@ public class SavePatientData : MonoBehaviour
     private List<PatientDataEntry> patientData;
     public List<PatientDataEntry> ciData;
     private int recentExercise, currentAttempt;
+    private int maxAttempts = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -270,8 +271,13 @@ public class SavePatientData : MonoBehaviour
 
     private void SaveFile()
     {
-        string header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", "Exercise", "Time 1", "Successes 1", "Misses 1", "Time 2", "Successes 2", "Misses 2", "Time 3", "Successes 3", "Misses 3");
-
+        //string header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", "Exercise", "Time 1", "Successes 1", "Misses 1", "Time 2", "Successes 2", "Misses 2", "Time 3", "Successes 3", "Misses 3");
+        string header = "Exercise";
+        //header = "";
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            header += $",Time {i + 1},Successes {i+1},Misses {i+1}";
+        }
         try
         {
             using (var w = new StreamWriter(patientDataFile))
@@ -284,7 +290,12 @@ public class SavePatientData : MonoBehaviour
                     for (int i = 0; i < patientData.Count; i++)
                     {
                         PatientDataEntry entry = patientData[i];
-                        string line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", entry.exercise, entry.attempts[0].time, entry.attempts[0].successes, entry.attempts[0].misses, entry.attempts[1].time, entry.attempts[1].successes, entry.attempts[1].misses, entry.attempts[2].time, entry.attempts[2].successes, entry.attempts[2].misses);
+                        //string line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", entry.exercise, entry.attempts[0].time, entry.attempts[0].successes, entry.attempts[0].misses, entry.attempts[1].time, entry.attempts[1].successes, entry.attempts[1].misses, entry.attempts[2].time, entry.attempts[2].successes, entry.attempts[2].misses);
+                        string line = entry.exercise.ToString();
+                        for (int a = 0; a < entry.attempts.Length; a++)
+                        {
+                            line += $",{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
+                        }
                         //File.AppendAllText(patientDataFile, line);
                         w.WriteLine(line);
                         w.Flush();
@@ -424,7 +435,7 @@ public class SavePatientData : MonoBehaviour
         int count = 0;
         foreach (var entry in data)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < maxAttempts; i++)
             {
                 if (entry.attempts[i].time > 0 && (i == attempt || attempt == -1))
                 {
@@ -444,7 +455,7 @@ public class SavePatientData : MonoBehaviour
         int count = 0;
         foreach (var entry in data)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < maxAttempts; i++)
             {
                 if (entry.attempts[i].time > 0 && (i == attempt || attempt == -1))
                 {
@@ -500,7 +511,7 @@ public class SavePatientData : MonoBehaviour
 
     public int LastExercisePlayed(int attempt=-1)
     {
-        int[] lastPlayed = new int[3];  // last exercise played on each attempt
+        int[] lastPlayed = new int[maxAttempts];  // last exercise played on each attempt
         if (patientData == null)
             patientData = Load(patientDataFile);
         for (int i = 0; i < patientData.Count; i++)
@@ -513,7 +524,7 @@ public class SavePatientData : MonoBehaviour
                 }
             }
         }
-        if (attempt != -1 && attempt < 3)
+        if (attempt != -1 && attempt < maxAttempts)
             return lastPlayed[attempt];
         int maxExerciseID = 7 * 5 * 2 + 7 * 3 + 4 + 1;
         for (int i = 0; i < lastPlayed.Length; i++)
