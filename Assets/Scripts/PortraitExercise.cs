@@ -41,12 +41,16 @@ public class PortraitExercise : DragExercise
         float portraitWidth = leftObject.texture.width;
         float portraitHeight = leftObject.texture.height;
         float portraitRatio = portraitWidth / portraitHeight;
+        float screenRatio = Screen.width / Screen.height; 
+
         AspectRatioFitter portraitFitter = leftObject.gameObject.AddComponent<AspectRatioFitter>();
         portraitFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
         portraitFitter.aspectRatio = portraitRatio;
 
+        float ratioRatio = 16f / 9f / screenRatio;
+
         RectTransform snapRect = snapPanel.GetComponent<RectTransform>();
-        Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio + 25, snapRect.rect.height);
+        Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio * ratioRatio + 25, snapRect.rect.height);
 
         pictureFrame.SetActive(physicalFrame);
         if (physicalFrame)
@@ -66,6 +70,7 @@ public class PortraitExercise : DragExercise
         }
 
         snapRect.sizeDelta = adjustedSize;
+        snapRect.anchoredPosition = new Vector2(0, 5f); // looks generally good
 
         leftImages = new RawImage[familyMembers.Length];
         flyingImages = new RawImage[familyMembers.Length];
@@ -89,8 +94,8 @@ public class PortraitExercise : DragExercise
             float y = rect.height / 2f;
             if (splitRows && x >= 0)
             {
-                x -= familyMembers.Length / 2; 
-                y *= -1f;
+                x -= familyMembers.Length / 2;
+                y *= -1f;// + 10;// little +10 offset fits frame better
             }
             x *= separationDist;
             x += 10;    // just makes this one fit better. May need to change if image changes

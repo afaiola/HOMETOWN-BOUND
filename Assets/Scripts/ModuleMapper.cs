@@ -165,7 +165,8 @@ public class ModuleMapper : MonoBehaviour
     {
         for (int i = 0; i < skipID; i++)
         {
-            interactables[i].gameObject.SetActive(false);
+            if (interactables[i])
+                interactables[i].gameObject.SetActive(false);
         }
     }
 
