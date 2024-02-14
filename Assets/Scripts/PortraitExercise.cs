@@ -13,7 +13,7 @@ public class PortraitExercise : DragExercise
 
     private bool initialized;
     // flying panel is drag spawn
-    // snap panel is snap spawn 
+    // snap panel is snap spawn
     protected override void OnValidate()
     {
 
@@ -37,16 +37,20 @@ public class PortraitExercise : DragExercise
             }
         }
 
-        
+
         float portraitWidth = leftObject.texture.width;
         float portraitHeight = leftObject.texture.height;
         float portraitRatio = portraitWidth / portraitHeight;
+        float screenRatio = (float)Screen.width / (float)Screen.height;
+
         AspectRatioFitter portraitFitter = leftObject.gameObject.AddComponent<AspectRatioFitter>();
         portraitFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
         portraitFitter.aspectRatio = portraitRatio;
 
-        RectTransform snapRect = snapPanel.GetComponent<RectTransform>();
-        Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio + 25, snapRect.rect.height);
+        float ratioRatio = 16f / 9f / screenRatio;
+        Debug.Log($"screenRatio: {screenRatio} ratioRatio: {ratioRatio} ");
+        RectTransform snapRect = snapPanel.GetComponent<RectTransform>();   // 4:3 = 258.806 --- 16:9 = 154.3284
+        Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio * ratioRatio + 25, snapRect.rect.height);
 
         pictureFrame.SetActive(physicalFrame);
         if (physicalFrame)
@@ -62,7 +66,7 @@ public class PortraitExercise : DragExercise
         else
         {
             adjustedSize *= 0.8f;
-            //adjustedSize = new Vector2((adjustedSize.x - 25f) * 0.75f, adjustedSize.y * 0.75f);  // cut out the frame 
+            //adjustedSize = new Vector2((adjustedSize.x - 25f) * 0.75f, adjustedSize.y * 0.75f);  // cut out the frame
         }
 
         snapRect.sizeDelta = adjustedSize;
@@ -72,7 +76,7 @@ public class PortraitExercise : DragExercise
         snapButtons = new Snap[familyMembers.Length];
 
         Rect rect = snapPanel.GetComponent<RectTransform>().rect;
-        float separationDist = adjustedSize.x / familyMembers.Length; 
+        float separationDist = adjustedSize.x / familyMembers.Length;
         if (splitRows) separationDist *= 2f;
 
         List<string> namesRemaining = new List<string>();
@@ -82,6 +86,7 @@ public class PortraitExercise : DragExercise
         for (int i = 0; i < familyMembers.Length; i++)
         {
             RawImage flyer = Instantiate(dragPrefab, flyingPanel.transform).GetComponent<RawImage>();
+            //flyer.rectTransform.sizeDelta = new Vector2(flyer.rectTransform.sizeDelta.x * ratioRatio, flyer.rectTransform.sizeDelta.y);
             string randName = namesRemaining[Random.Range(0, namesRemaining.Count)];
             namesRemaining.Remove(randName);
 
@@ -89,7 +94,7 @@ public class PortraitExercise : DragExercise
             float y = rect.height / 2f;
             if (splitRows && x >= 0)
             {
-                x -= familyMembers.Length / 2; 
+                x -= familyMembers.Length / 2;
                 y *= -1f;
             }
             x *= separationDist;
