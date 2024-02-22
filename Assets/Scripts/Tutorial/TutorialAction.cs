@@ -50,7 +50,12 @@ public class TutorialAction : MonoBehaviour
                 tut.obj.SetActive(tut.isObjActive);
                 if (tut.objLocation)
                 {
-                    tut.obj.transform.position = tut.objLocation.position;
+                    //Vector3 offset = Vector3.zero;
+                    CharacterController controller = tut.obj.GetComponent<CharacterController>();
+                    //if (controller)
+                        //controller.height = 0.1f;
+                    //offset = (controller.height + controller.radius) * Vector3.up;
+                    tut.obj.transform.position = tut.objLocation.position;// + offset;
                     tut.obj.transform.rotation = tut.objLocation.rotation;
                     //Debug.Log($"moving {tut.obj.name} to {tut.objLocation.name}");
                 }
@@ -58,7 +63,7 @@ public class TutorialAction : MonoBehaviour
 
             if (tut.isAnimated)
             {
-                Animator anim = tut.obj.GetComponent<Animator>();
+                Animator anim = tut.obj.GetComponentInChildren<Animator>();
                 switch (tut.animtionParameterType)
                 {
                     case AnimatorControllerParameterType.Bool:

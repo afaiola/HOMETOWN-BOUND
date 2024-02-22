@@ -36,4 +36,9 @@ public class SkinColor : MonoBehaviour
     {
     }
 
+    public int SkinCt()
+    {
+        return skinColors.Length;
+    }
+
 }

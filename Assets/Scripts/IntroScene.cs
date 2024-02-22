@@ -13,7 +13,7 @@ public class IntroScene : MonoBehaviour
     [SerializeField] SpeechBubble speechBubble;
     [SerializeField] float blinkSpeed;
     [SerializeField] Transform start;
-    [SerializeField] GameObject guy;
+   // [SerializeField] GameObject guy;
     public GameObject point2;
     public bool skipped;
     private IEnumerator activeCoroutine;
@@ -81,7 +81,7 @@ public class IntroScene : MonoBehaviour
         if (VRManager.Instance)
             VRManager.Instance.SetCameraSitting();
 
-        dr.GetComponent<Animator>().SetBool("Talking", false);
+        dr.GetComponentInChildren<Animator>().SetBool("Talking", false);
         UIManager.Instance.inCutscene = true;
         UIManager.Instance.OpenEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
@@ -91,11 +91,11 @@ public class IntroScene : MonoBehaviour
   
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
 
-        dr.GetComponent<Animator>().SetBool("Talking", true);
+        dr.GetComponentInChildren<Animator>().SetBool("Talking", true);
         source.Play();
         yield return new WaitForSecondsRealtime(source.clip.length);
 
-        dr.GetComponent<Animator>().SetBool("Talking", false);
+        dr.GetComponentInChildren<Animator>().SetBool("Talking", false);
         StaticEvent.DeactivateSpeechBubble();
         UIManager.Instance.CloseEyes();
         yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
@@ -106,7 +106,7 @@ public class IntroScene : MonoBehaviour
         if (VRManager.Instance)
             VRManager.Instance.SetCameraStanding();
 
-        guy.SetActive(false);
+        //guy.SetActive(false);
         dr.SetActive(false);
         nurse.SetActive(false);
         yield return new WaitForSecondsRealtime(1f);

@@ -98,12 +98,8 @@ public class VRHandler : MonoBehaviour
                 }
             }
             vrActive = success;
+            Initialize();
         }
-        Initialize();
-        yield return new WaitForEndOfFrame();
-        vrRig.SetCameraSitting();
-        if (gameObject)
-            ForceInteractorRegister();
     }
 
     public void Initialize()
@@ -116,10 +112,14 @@ public class VRHandler : MonoBehaviour
         }
 
         TankController tankController = GameObject.FindObjectOfType<TankController>();
-        if (tankController)
-            tankController.Initialize();
+        //if (tankController)
+            //tankController.Initialize();
         vrRig.Initialize();
         //vrRig.DisableMovement();
+
+        vrRig.SetCameraSitting();
+        if (gameObject)
+            ForceInteractorRegister();
 
         Camera[] cameras = GameObject.FindObjectsOfType<Camera>();
         foreach (var cam in cameras)

@@ -54,6 +54,9 @@ public class ExitHospitalCutscene : MonoBehaviour
         TankController.Instance.EnableMovement();
         UIManager.Instance.inCutscene = false;
         UIManager.Instance.PromptGameWindowFocus();
+
+        yield return new WaitForEndOfFrame();
+        TankController.Instance.ForceControllerCollision();
     }
 
     /*

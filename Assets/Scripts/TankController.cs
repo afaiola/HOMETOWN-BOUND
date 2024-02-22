@@ -26,8 +26,6 @@ public class TankController : MonoBehaviour
     private AudioSource m_AudioSource;
     private FloatingOrigin floatingOrigin;
 
-    public Material[] skinColors;
-
     private float timeSinceLastMove = 0;
 
     void Start()
@@ -60,13 +58,19 @@ public class TankController : MonoBehaviour
 
     public void SetHandModel()
     {
-        int skinID = skinColors.Length-1;// Random.Range(0, skinColors.Length);
-        if (Profiler.Instance)
-            skinID = Profiler.Instance.currentUser.skin_id;
+        var skin = GetComponent<SkinColor>();
+        if (skin)
+        {
+            int skinID = skin.SkinCt()-1;// Random.Range(0, skinColors.Length);
+            if (Profiler.Instance)
+                skinID = Profiler.Instance.currentUser.skin_id;
+            skin.skin = skinID;
+        }
+        /*
         foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())
         {
             rend.sharedMaterial = skinColors[skinID];
-        }
+        }*/
     }
 
     private void Update()
@@ -261,6 +265,7 @@ public class TankController : MonoBehaviour
         {
             VRManager.Instance.ApplySettings();
         }
+        ForceControllerCollision();
     }
 
     public void DisableMovement()
@@ -286,6 +291,20 @@ public class TankController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         yield return new WaitForSeconds(Time.deltaTime * 2);
         Cursor.lockState = cursorSetting;
+        controller.height -= 0.01f;
+
+    }
+
+    public void ForceControllerCollision()
+    {
+        controller.height += 0.01f;
+        Invoke("ShrinkHeight", 0.1f);
+    }
+
+    private void ShrinkHeight()
+    {
+        controller.height -= 0.01f;
+
     }
 
     public void SetCullDistance(float dist)

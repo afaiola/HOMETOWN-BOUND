@@ -7,7 +7,7 @@ public class MusicManager : MonoBehaviour
     public static MusicManager Instance { get { return _instance; } } 
     private static MusicManager _instance;
     public AudioSource musicSource, ambienceSource;
-
+    
     [Header("MUSIC")]
     public AudioClip cityMusic;
     public AudioClip homelandMusic;
@@ -16,7 +16,7 @@ public class MusicManager : MonoBehaviour
     [Header("AMBIENCE")]
     public AudioClip cityAmbience;
     public AudioClip suburbAmbience;
-
+    
     private MusicZone[] musicZones;
     private AmbienceZone[] ambienceZones;
 
@@ -99,7 +99,7 @@ public class MusicManager : MonoBehaviour
 
     public void PlayCityMusic()
     {
-        PlayNewClip(musicSource, cityMusic, 0.4f, 5f);
+        //PlayNewClip(musicSource, cityMusic, 0.4f, 5f);
     }
 
     public void PlayHomelandMusic()

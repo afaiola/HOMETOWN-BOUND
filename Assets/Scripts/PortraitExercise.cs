@@ -48,6 +48,7 @@ public class PortraitExercise : DragExercise
         portraitFitter.aspectRatio = portraitRatio;
 
         float ratioRatio = 16f / 9f / screenRatio;
+        
         Debug.Log($"screenRatio: {screenRatio} ratioRatio: {ratioRatio} ");
         RectTransform snapRect = snapPanel.GetComponent<RectTransform>();   // 4:3 = 258.806 --- 16:9 = 154.3284
         Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio * ratioRatio + 25, snapRect.rect.height);
@@ -69,8 +70,14 @@ public class PortraitExercise : DragExercise
             //adjustedSize = new Vector2((adjustedSize.x - 25f) * 0.75f, adjustedSize.y * 0.75f);  // cut out the frame 
         }
 
-        snapRect.sizeDelta = adjustedSize;
         snapRect.anchoredPosition = new Vector2(0, 5f); // looks generally good
+        if (GameManager.Instance.useVR)
+        {
+            adjustedSize = new Vector2(128, 60);
+            snapRect.anchoredPosition = new Vector2(0, -5f); // looks generally good
+        }
+
+        snapRect.sizeDelta = adjustedSize;
 
         leftImages = new RawImage[familyMembers.Length];
         flyingImages = new RawImage[familyMembers.Length];
@@ -87,6 +94,10 @@ public class PortraitExercise : DragExercise
         for (int i = 0; i < familyMembers.Length; i++)
         {
             RawImage flyer = Instantiate(dragPrefab, flyingPanel.transform).GetComponent<RawImage>();
+            if (GameManager.Instance.useVR)
+            {
+                flyer.rectTransform.sizeDelta = new Vector2(25, 10);
+            }
             //flyer.rectTransform.sizeDelta = new Vector2(flyer.rectTransform.sizeDelta.x * ratioRatio, flyer.rectTransform.sizeDelta.y);
             string randName = namesRemaining[Random.Range(0, namesRemaining.Count)];
             namesRemaining.Remove(randName);
@@ -115,6 +126,7 @@ public class PortraitExercise : DragExercise
             snap.tmpText.text = familyMembers[i]; // be sure the text is not visible
             snap.tmpText.gameObject.SetActive(false);
             snap.rightTexture = flyer.texture as Texture2D;
+            snap.GetComponent<RectTransform>().sizeDelta = flyer.rectTransform.sizeDelta;
 
             flyingImages[i] = flyer;
             snapButtons[i] = snap;

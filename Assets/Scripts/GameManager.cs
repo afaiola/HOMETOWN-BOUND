@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         
         VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
         VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
-        if (vrManager && useVR)
+        if (vrManager)// && useVR)
         {
             yield return vrManager.StartXR();
             useVR = vrManager.xrDeviceOn;
@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
         // wait for objects to activate before initializing them
         yield return new WaitForEndOfFrame();
-
+         
         GameObject.FindObjectOfType<TankController>().Initialize();
         GameObject.FindObjectOfType<Menu>().Initialize();
         GameObject.FindObjectOfType<UIManager>().Initialize();
