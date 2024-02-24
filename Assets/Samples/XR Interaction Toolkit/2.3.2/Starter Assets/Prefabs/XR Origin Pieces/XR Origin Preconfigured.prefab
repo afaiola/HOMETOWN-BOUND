@@ -6392,7 +6392,7 @@ Transform:
   m_GameObject: {fileID: 1717954561962503725}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.25, y: 1.251, z: 1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1680501587}
   m_Father: {fileID: 0}
@@ -6625,12 +6625,6 @@ MonoBehaviour:
   m_FootstepSounds: []
   afkTime: 60
   m_StepInterval: 0
-  skinColors:
-  - {fileID: 2100000, guid: cb1cce9ccd746f849b70339908ea8582, type: 2}
-  - {fileID: 2100000, guid: 5c9082cbabeb6fb4b81f167f6898ff55, type: 2}
-  - {fileID: 2100000, guid: 4d06ab719dfb3f84f81a9b91a90fb07a, type: 2}
-  - {fileID: 2100000, guid: 25e17466be1466e449f59558a83a752d, type: 2}
-  - {fileID: 2100000, guid: 79908a0770959a041a03533e0ecf38e4, type: 2}
 --- !u!1 &1731676450766291175
 GameObject:
   m_ObjectHideFlags: 0
@@ -15257,10 +15251,10 @@ RectTransform:
   m_Father: {fileID: 6075673687042133751}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 185.5, y: -25}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 185.5, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5795829787716572221
 CanvasRenderer:
@@ -21723,8 +21717,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6340525409235289318}
   m_HandleRect: {fileID: 3138719593305717188}
   m_Direction: 2
-  m_Value: 0.9999831
-  m_Size: 0.47619066
+  m_Value: 0.99998444
+  m_Size: 0.47619063
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
