@@ -41,15 +41,15 @@ public class PortraitExercise : DragExercise
         float portraitWidth = leftObject.texture.width;
         float portraitHeight = leftObject.texture.height;
         float portraitRatio = portraitWidth / portraitHeight;
-        float screenRatio = Screen.width / Screen.height; 
+        float screenRatio = (float)Screen.width / (float)Screen.height; 
 
         AspectRatioFitter portraitFitter = leftObject.gameObject.AddComponent<AspectRatioFitter>();
         portraitFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
         portraitFitter.aspectRatio = portraitRatio;
 
         float ratioRatio = 16f / 9f / screenRatio;
-
-        RectTransform snapRect = snapPanel.GetComponent<RectTransform>();
+        Debug.Log($"screenRatio: {screenRatio} ratioRatio: {ratioRatio} ");
+        RectTransform snapRect = snapPanel.GetComponent<RectTransform>();   // 4:3 = 258.806 --- 16:9 = 154.3284
         Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio * ratioRatio + 25, snapRect.rect.height);
 
         pictureFrame.SetActive(physicalFrame);
@@ -87,6 +87,7 @@ public class PortraitExercise : DragExercise
         for (int i = 0; i < familyMembers.Length; i++)
         {
             RawImage flyer = Instantiate(dragPrefab, flyingPanel.transform).GetComponent<RawImage>();
+            //flyer.rectTransform.sizeDelta = new Vector2(flyer.rectTransform.sizeDelta.x * ratioRatio, flyer.rectTransform.sizeDelta.y);
             string randName = namesRemaining[Random.Range(0, namesRemaining.Count)];
             namesRemaining.Remove(randName);
 
