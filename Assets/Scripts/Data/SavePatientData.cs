@@ -331,6 +331,7 @@ public class SavePatientData : MonoBehaviour
                         w.WriteLine(line);
                         w.Flush();
                     }
+                    w.Close();
                 }
             }
             catch (Exception e)
