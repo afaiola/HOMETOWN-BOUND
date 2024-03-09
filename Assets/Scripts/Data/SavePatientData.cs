@@ -52,7 +52,7 @@ public class SavePatientData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Initialize();
+        //Initialize();
     }
 
     // Update is called once per frame
@@ -76,14 +76,16 @@ public class SavePatientData : MonoBehaviour
 
         patientDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "patient_data.csv";
         ciDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "ci_data.csv";
-        if (File.Exists(patientDataFile))
-            File.Delete(patientDataFile);
+        //if (File.Exists(patientDataFile))
+        //    File.Delete(patientDataFile);
         // try fetching patientDataFile.
+        /*
         if (StorageManager.Instance)
         {
             StorageManager.Instance.downloadStatusEvent.AddListener(FileDownload);
             StorageManager.Instance.StartCSVDownload(patientDataFile);
-        }
+        }*/
+        FileDownload(true);
     }
 
     private void FileDownload(bool status)
@@ -259,7 +261,7 @@ public class SavePatientData : MonoBehaviour
         }
 
         // There isn't enough data, so the file must be bad. Get a new one
-        if (data.Count < 15)
+        if (data.Count < 2)
         {
             //Debug.Log("deleting " + path);
             File.Delete(path);
@@ -503,9 +505,10 @@ public class SavePatientData : MonoBehaviour
 
     public int LastModulePlayed(int attempt=-1)
     {
+        Debug.Log("getting last mod played");
         int lastExercise = LastExercisePlayed(attempt);
         int mod = Mathf.FloorToInt(lastExercise / 7);
-        //Debug.Log($"last played M{mod} E{lastExercise}");
+        Debug.Log($"last played M{mod} E{lastExercise}");
 
         return mod;
     }
@@ -528,10 +531,15 @@ public class SavePatientData : MonoBehaviour
         if (attempt != -1 && attempt < maxAttempts)
             return lastPlayed[attempt];
         int maxExerciseID = 7 * 5 * 2 + 7 * 3 + 4 + 1;
+      
         for (int i = 0; i < lastPlayed.Length; i++)
         {
+            Debug.Log($"last played on attempt {i} = {lastPlayed[i]}");
+
             if (lastPlayed[i] < maxExerciseID)
+            {
                 return lastPlayed[i];
+            }
         }
 
         return 0;

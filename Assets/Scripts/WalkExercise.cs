@@ -67,7 +67,7 @@ public class WalkExercise : Exercise
             if (Mathf.Abs(pitch) < 179f)
             {
                 float direction = pitch < 0 ? -0.1f : 0.1f;
-                Debug.Log($"pitch: {pitch} dir: {direction}");
+                //Debug.Log($"pitch: {pitch} dir: {direction}");
 
                 //camTransform.localEulerAngles = new Vector3(pitch - (direction), 0, 0);
                 TankController.Instance.RotateCharacterUpDown(direction);

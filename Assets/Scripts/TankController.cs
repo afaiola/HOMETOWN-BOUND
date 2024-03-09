@@ -26,7 +26,7 @@ public class TankController : MonoBehaviour
     private AudioSource m_AudioSource;
     private FloatingOrigin floatingOrigin;
 
-    public Material[] skinColors;
+    //public Material[] skinColors;
 
     private float timeSinceLastMove = 0;
 
@@ -60,13 +60,11 @@ public class TankController : MonoBehaviour
 
     public void SetHandModel()
     {
-        int skinID = skinColors.Length-1;// Random.Range(0, skinColors.Length);
+        int skinID = 0;// Random.Range(0, skinColors.Length);
         if (Profiler.Instance)
             skinID = Profiler.Instance.currentUser.skin_id;
-        foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            rend.sharedMaterial = skinColors[skinID];
-        }
+        var skin = GetComponent<SkinColor>();
+        skin.skin = skinID;
     }
 
     private void Update()

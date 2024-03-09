@@ -79,7 +79,7 @@ public class StorageManager : MonoBehaviour
             }
             else
             {
-                //Debug.Log($"Downloaded file {firebasePath} size: {download_task.Result.Length}");
+                Debug.Log($"Downloaded file {firebasePath} size: {download_task.Result.Length}");
                 File.WriteAllBytes(localPath, download_task.Result);
                 file_contents = download_task.Result;
             }
@@ -99,6 +99,7 @@ public class StorageManager : MonoBehaviour
 
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
+
         // delete the json string
         // parse the json
         // save the json
@@ -129,7 +130,7 @@ public class StorageManager : MonoBehaviour
             float downloadPercent = 10000f * (float)filesDownloaded / (float)totalFiles / 100f;
             //Debug.Log($"Download progress: {downloadPercent}%");
         }
-        //Debug.Log("extern data download complete");
+
         contentDownloadedEvent.Invoke();
     }
 
@@ -234,10 +235,12 @@ public class StorageManager : MonoBehaviour
             byte[] fileContents = downloadTask.Result;
             status = writeByteArrayToFile(fileContents, filename);
         }*/
+        if (File.Exists(localPath))
+            File.Delete(localPath);
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
-        File.Delete(localPath);
         bool status = writeByteArrayToFile((byte[])cd.result, localPath);
+        Debug.Log($"csv download complete. fb path: {firebasePath} write status? {status} file bytes: {((byte[])cd.result).Length}");
         downloadStatusEvent.Invoke(status);
     }
 
