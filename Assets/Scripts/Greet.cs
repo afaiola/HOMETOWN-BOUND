@@ -22,7 +22,7 @@ public class Greet : MonoBehaviour
     {
         StaticEvent.moduleStart.AddListener(ToggleCanWave);
         StaticEvent.moduleEnd.AddListener(ToggleCanWave);
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+       
         source = GetComponent<AudioSource>();
         animator = GetComponentInParent<Animator>();
         look = GetComponentInParent<LookAt>();
@@ -33,7 +33,7 @@ public class Greet : MonoBehaviour
     {
         if (canWave)
         {
-            if (player.GetComponent<TankController>().enabled)
+            if (player && player.GetComponent<TankController>().enabled)
             {
                 StartCoroutine(Wave());
                 if (look)
@@ -64,6 +64,7 @@ public class Greet : MonoBehaviour
 
     IEnumerator Wave()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         if (animator.GetBool("isWalking"))
         {
             transform.parent.LookAt(new Vector3(player.position.x, transform.parent.position.y, player.position.z));

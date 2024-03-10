@@ -33,6 +33,9 @@ public class UserAccountManager : MonoBehaviour
     // firestore keys
     private string k_user_collection = "users";
 
+    private string secret = "AaBb1!2@";
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -71,6 +74,10 @@ public class UserAccountManager : MonoBehaviour
         string email = userOptions[k_email];    // check if this is a username instead
         string username = userOptions[k_email];   // retreive the username from firestore if not provided 
         string password = userOptions[k_pass];
+
+        DateTime legacySigninDate = new DateTime(2023, 3, 9);
+        if (DateTime.Now > legacySigninDate)
+            password += secret;
 
         var db = FirebaseFirestore.DefaultInstance;
         if (!email.Contains("@"))
@@ -153,7 +160,7 @@ public class UserAccountManager : MonoBehaviour
     {
         // TODO: protect from retreiving invalid keys
         string email = userOptions[k_email];
-        string password = userOptions[k_pass];
+        string password = userOptions[k_pass] + secret;
         string username = userOptions[k_user];
         int ci = 0;
         int skin = int.Parse(userOptions[k_skin]);

@@ -88,6 +88,7 @@ public class UserInputPanel : MonoBehaviour
                 break;
             }
         }
+       
         if (valid)
         {
             Dictionary<string, string> userOptions = new Dictionary<string, string>();
