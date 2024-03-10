@@ -75,10 +75,8 @@ public class UserAccountManager : MonoBehaviour
         string username = userOptions[k_email];   // retreive the username from firestore if not provided 
         string password = userOptions[k_pass];
 
-        DateTime legacySigninDate = new DateTime(2023, 3, 9);
-        if (DateTime.Now > legacySigninDate)
-            password += secret;
-
+        DateTime legacySigninDate = new DateTime(2024, 3, 9);
+        
         var db = FirebaseFirestore.DefaultInstance;
         if (!email.Contains("@"))
         {
@@ -87,6 +85,20 @@ public class UserAccountManager : MonoBehaviour
         }
         else
         {
+            var userRef = db.Collection(k_user_collection).Document(email);
+            var snapshotTask = userRef.GetSnapshotAsync();
+            yield return new WaitUntil(() => snapshotTask.IsCompleted);
+
+            var user = snapshotTask.Result.ToDictionary();
+            if (user != null)
+            {
+                DateTime createDate = DateTime.Now;
+                if (user.ContainsKey(k_start_date)) createDate = DateTime.Parse(user[k_start_date].ToString());
+                if (createDate > legacySigninDate)    // yeah no date needs to be from the account itself
+                    password += secret;
+            }
+
+
             var auth = FirebaseAuth.DefaultInstance;
             var task = auth.SignInWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => task.IsCompleted);
@@ -102,11 +114,7 @@ public class UserAccountManager : MonoBehaviour
 
             if (task.Exception == null)
             {
-                var userRef = db.Collection(k_user_collection).Document(email);
-                var snapshotTask = userRef.GetSnapshotAsync();
-                yield return new WaitUntil(() => snapshotTask.IsCompleted);
-
-                var user = snapshotTask.Result.ToDictionary();
+                
 
                 if (user != null)
                 {
