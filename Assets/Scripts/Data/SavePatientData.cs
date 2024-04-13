@@ -257,6 +257,7 @@ public class SavePatientData : MonoBehaviour
                     data.Add(entry);
                     //Debug.Log("ex: " + entry.exercise + " \n\tt0: " + entry.attempts[0].time + " \tm0: " + entry.attempts[0].misses + " \n\tt1: " + entry.attempts[1].time + " \tm1: " + entry.attempts[1].misses + " \n\tt2: " + entry.attempts[2].time + " \tm2: " + entry.attempts[2].misses);
                 }
+                readFile.Close();
             }
         }
 
@@ -302,6 +303,7 @@ public class SavePatientData : MonoBehaviour
                         w.WriteLine(line);
                         w.Flush();
                     }
+                    w.Close();
                 }
             }
         }
