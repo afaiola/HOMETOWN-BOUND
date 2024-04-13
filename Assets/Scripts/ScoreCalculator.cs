@@ -28,6 +28,7 @@ public class ScoreCalculator
 
     public void SetImpairmentLevel(int value)
     {
+        if (value == 0) value = 14;
         impairment = value;
     }
 
@@ -80,10 +81,12 @@ public class ScoreCalculator
         {
             for (int i = 0; i < 5; i++)
             {
-                if (impairment + i < cientry.attempts.Length)
+                int ciIdx = impairment + i;
+                ciIdx = Mathf.Clamp(ciIdx, 0, cientry.attempts.Length);
+                if (ciIdx < cientry.attempts.Length)
                 {
-                    compareTime = cientry.attempts[impairment + i].time;
-                    compareAcc = 100f * cientry.attempts[impairment + i].successes / (cientry.attempts[impairment + i].successes + cientry.attempts[impairment + i].misses);
+                    compareTime = cientry.attempts[ciIdx].time;
+                    compareAcc = 100f * cientry.attempts[ciIdx].successes / (cientry.attempts[ciIdx].successes + cientry.attempts[ciIdx].misses);
                     compareAcc -= 5f;   // tolerance
                 }
                 else

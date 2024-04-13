@@ -37,14 +37,18 @@ public class UserTextOption : UserInputOption
         bool[] matches = new bool[patterns.Length];
         for (int i = 0; i < patterns.Length; i++)
         {
-            if (patterns[i].Contains("compareTo:"))
+            if (patterns[i].Contains("compareTo"))
             {
-                string comparename = patterns[i].Substring(10);
+                bool ignoreCase = patterns[i].Contains("IgnoreCase");
+                string comparename = patterns[i].Substring(ignoreCase ? 20 : 10);
                 Transform comparer = transform.parent.Find(comparename);
                 if (comparer)
                 {
                     UserTextOption compareOption = comparer.GetComponent<UserTextOption>();
-                    matches[i] = compareOption.GetValue() == GetValue();
+                    if (ignoreCase)
+                        matches[i] = compareOption.GetValue().ToLower() == GetValue().ToLower();
+                    else
+                        matches[i] = compareOption.GetValue() == GetValue();
                 }
             }
             else

@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         // Enable the gotos so the module mapper can find them. Disable after mapping
         Menu.Instance.gotoMenu.SetActive(false);
         //UIManager.Instance.gotoMenu.gameObject.SetActive(false);
-
+        ScoreCalculator.instance.SetImpairmentLevel(Profiler.Instance.currentUser.ciLevel);
         moduleMapper.interactables[moduleMapper.interactables.Length - 1].interactEvent.AddListener(sceneLoader.LoadHouseInterior);
         //moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo = new UnityEvent();
