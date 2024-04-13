@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Text = TMPro.TextMeshProUGUI;
+using InputField = TMPro.TMP_InputField;
 
 public class SecurityEvent : UnityEvent<bool> { }
 
@@ -12,7 +13,7 @@ public class SecurityCode : MonoBehaviour
     public static SecurityCode Instance { get { return _instance; } }
     private static SecurityCode _instance;
 
-    private InputField input;
+    [SerializeField] private InputField inputField;
     [SerializeField] private GameObject canvas;
     [SerializeField] private Text title;
     [SerializeField] private Button submitButton;
@@ -43,7 +44,8 @@ public class SecurityCode : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        input = GetComponentInChildren<InputField>();
+        if (inputField == null)
+            inputField = GetComponentInChildren<InputField>();
         submitButton.onClick.AddListener(CheckCode);
         closebutton.onClick.AddListener(Stop);
         clearButton.onClick.AddListener(ClearCode);
@@ -67,17 +69,17 @@ public class SecurityCode : MonoBehaviour
 
     private void EnterNumber(int value)
     {
-        input.text += value.ToString();
+        inputField.text += value.ToString();
     }
 
     private void ClearCode()
     {
-        input.text = "";
+        inputField.text = "";
     }
 
     private void CheckCode()
     {
-        if (input.text == code)
+        if (inputField.text == code)
         {
             StartCoroutine(ValidResponse());
         }
@@ -112,7 +114,7 @@ public class SecurityCode : MonoBehaviour
         title.text = "Security Code";
         //buttonImage.color = buttonColor;
         title.color = textColor;
-        input.text = "";
+        inputField.text = "";
         Stop();
     }
 
@@ -138,7 +140,7 @@ public class SecurityCode : MonoBehaviour
         title.text = "Security Code";
         //buttonImage.color = buttonColor;
         title.color = textColor;
-        input.text = "";
+        inputField.text = "";
     }
 
     private void Stop()

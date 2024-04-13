@@ -89,6 +89,11 @@ public class GameManager : MonoBehaviour
                     tpArea.interactionManager = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
                     tpArea.teleportationProvider = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
                 }
+
+                // VR is sometimes considered a mobile device. Clean this up if it still exists
+                TouchControls touchControls = GameObject.FindObjectOfType<TouchControls>();
+                if (touchControls)
+                    Destroy(touchControls.gameObject);
             }
             else
             {

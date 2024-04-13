@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.UI;
 
 public class VRHandler : MonoBehaviour
 {
@@ -192,6 +193,12 @@ public class VRHandler : MonoBehaviour
             canvas.transform.position = worldUILocaiton.position;
             canvas.transform.rotation = worldUILocaiton.rotation;
             canvas.transform.localScale = worldUILocaiton.localScale;
+            TMPro.TMP_InputField[] inputFields = canvas.GetComponentsInChildren<TMPro.TMP_InputField>(true);
+            foreach (var input in inputFields)
+            {
+                input.shouldHideSoftKeyboard = true;
+                input.shouldHideMobileInput = true;
+            }
         }
     }
 
