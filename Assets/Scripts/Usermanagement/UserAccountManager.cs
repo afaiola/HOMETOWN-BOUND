@@ -35,6 +35,9 @@ public class UserAccountManager : MonoBehaviour
 
     private string secret = "AaBb1!2@";
 
+    private string adminUser = "hometown.service859@gmail.com";
+    private string adminPass = "hometown B0UND$";
+
 
     // Start is called before the first frame update
     void Start()
@@ -85,6 +88,17 @@ public class UserAccountManager : MonoBehaviour
         }
         else
         {
+            // temporairly sign in for this?
+            var auth = FirebaseAuth.DefaultInstance;
+            var task = auth.SignInWithEmailAndPasswordAsync(adminUser, adminPass);
+            yield return new WaitUntil(() => task.IsCompleted);
+            
+            if (task.Exception != null)
+            {
+                Debug.LogWarning("could not log into admin account to get user list");
+                // assume we are good?
+            }
+
             var userRef = db.Collection(k_user_collection).Document(email);
             var snapshotTask = userRef.GetSnapshotAsync();
             yield return new WaitUntil(() => snapshotTask.IsCompleted);
@@ -98,9 +112,10 @@ public class UserAccountManager : MonoBehaviour
                     password += secret;
             }
 
+            auth.SignOut();
 
-            var auth = FirebaseAuth.DefaultInstance;
-            var task = auth.SignInWithEmailAndPasswordAsync(email, password);
+            //var auth = FirebaseAuth.DefaultInstance;
+            task = auth.SignInWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => task.IsCompleted);
 
             if (task.IsCanceled)
