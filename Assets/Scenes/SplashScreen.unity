@@ -1924,6 +1924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99bb91a8464f4654ca8e786ae22f313a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputField: {fileID: 0}
   canvas: {fileID: 1812668132}
   title: {fileID: 0}
   submitButton: {fileID: 1116044684}
@@ -3694,7 +3695,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1804841791
 MonoBehaviour:
   m_ObjectHideFlags: 0
