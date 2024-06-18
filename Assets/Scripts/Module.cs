@@ -143,8 +143,10 @@ public class Module : MonoBehaviour
     {
         open = true;
         UIManager.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
-        if (TankController.Instance)
+        if (!GameManager.Instance.useVR)
             TankController.Instance.DisableMovement();
+        else
+            TankController.Instance.EnableMovement();
 
         transform.GetChild(0).gameObject.SetActive(true);
         foreach (var layoutGroup in this.GetComponentsInChildren<LayoutGroup>())

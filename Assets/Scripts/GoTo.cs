@@ -68,7 +68,8 @@ public class GoTo : MonoBehaviour
 
     private void StartModule()
     {
-        TankController.Instance.DisableMovement();
+        if (!GameManager.Instance.useVR)
+            TankController.Instance.DisableMovement();
         ScoreCalculator.instance.GetStars();
         ScoreCalculator.instance.StartActivity(module.exercises[module.current].exerciseID);
         module?.Play();

@@ -92,26 +92,29 @@ public class UserAccountManager : MonoBehaviour
             var auth = FirebaseAuth.DefaultInstance;
             var task = auth.SignInWithEmailAndPasswordAsync(adminUser, adminPass);
             yield return new WaitUntil(() => task.IsCompleted);
-            
+            Dictionary<string, object> user = null;
+
             if (task.Exception != null)
             {
                 Debug.LogWarning("could not log into admin account to get user list");
+                password += secret;
                 // assume we are good?
             }
-
-            var userRef = db.Collection(k_user_collection).Document(email);
-            var snapshotTask = userRef.GetSnapshotAsync();
-            yield return new WaitUntil(() => snapshotTask.IsCompleted);
-
-            var user = snapshotTask.Result.ToDictionary();
-            if (user != null)
+            else
             {
-                DateTime createDate = DateTime.Now;
-                if (user.ContainsKey(k_start_date)) createDate = DateTime.Parse(user[k_start_date].ToString());
-                if (createDate > legacySigninDate)    // yeah no date needs to be from the account itself
-                    password += secret;
-            }
+                var userRef = db.Collection(k_user_collection).Document(email);
+                var snapshotTask = userRef.GetSnapshotAsync();
+                yield return new WaitUntil(() => snapshotTask.IsCompleted);
 
+                user = snapshotTask.Result.ToDictionary();
+                if (user != null)
+                {
+                    DateTime createDate = DateTime.Now;
+                    if (user.ContainsKey(k_start_date)) createDate = DateTime.Parse(user[k_start_date].ToString());
+                    if (createDate > legacySigninDate)    // yeah no date needs to be from the account itself
+                        password += secret;
+                }
+            }
             auth.SignOut();
 
             //var auth = FirebaseAuth.DefaultInstance;
