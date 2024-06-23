@@ -140,6 +140,14 @@ public class VRManager : MonoBehaviour
         SetupHands();
 
         Debug.Log("manager register interactors");
+
+        // register containing groups first
+        foreach (var controller in xrControllers)
+        {
+            var group = controller.GetComponent<XRInteractionGroup>();
+            group.registered += RegisterInteractors; ;
+        }
+
         // otherwise, interactors dont interact with anything
         foreach (var ray in rayInteractors)
         {
@@ -148,11 +156,12 @@ public class VRManager : MonoBehaviour
             ray.enableUIInteraction = true;
         }
 
-        for(int i = 0; i < xrControllers.Length; i++)
+        // trying to set xrinteractors, but clearly it fails
+        for(int i = 0; i < pokeInteractors.Length; i++)
         {
-            pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
-            pokeInteractors[i].enableUIInteraction = false;
-            pokeInteractors[i].enableUIInteraction = true;
+            //pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+            //pokeInteractors[i].enableUIInteraction = false;
+            //pokeInteractors[i].enableUIInteraction = true;
 
             //HandAnimatorManagerVR handAnimator = xrControllers[i].GetComponentInChildren<HandAnimatorManagerVR>();
             //pokeInteractors[i].hoverEntered.AddListener(handAnimator.InteractorHoverEnter);
@@ -161,6 +170,20 @@ public class VRManager : MonoBehaviour
 
         tunnelingController.Initialize();
         //SetCameraSitting();
+    }
+
+    private void RegisterInteractors(InteractionGroupRegisteredEventArgs obj)
+    {
+        List<IXRGroupMember> members = new List<IXRGroupMember>();
+        obj.interactionGroupObject.GetGroupMembers(members);
+        foreach (var member in members)
+        {
+            if (member.GetType() == typeof(XRPokeInteractor))
+            {
+                (member as XRPokeInteractor).enableUIInteraction = false;
+                (member as XRPokeInteractor).enableUIInteraction = true;
+            }
+        }
     }
 
     // Update is called once per frame

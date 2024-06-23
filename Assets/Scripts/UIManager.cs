@@ -188,7 +188,7 @@ public class UIManager : MonoBehaviour
 
     public void OpenEyes()
     {
-        StartCoroutine(Blink(Screen.height / 2, 0));
+        StartCoroutine(Blink(Screen.height / 2, 0));    // this should be working but still it is too short
     }
 
     private IEnumerator Blink(int start, int goal)

@@ -25,7 +25,8 @@ public class HouseModules : Module
     public override void Advance()
     {
         base.Advance();
-        helpAudio.clip = exercises[current].instructionsDefault;
+        if (current < exercises.Count)
+            helpAudio.clip = exercises[current].instructionsDefault;
         if (current > 0)
             helpAudio.Play();
         if (current < exercises.Count)

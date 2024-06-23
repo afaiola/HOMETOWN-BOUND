@@ -29,10 +29,23 @@ public class LookAt : MonoBehaviour
 
     void OnAnimatorIK(int layer)
     {
+        if (lookPosition == null)
+        {
+            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        }
         if (lookPosition)
         {
             animator.SetLookAtPosition(lookPosition.position + lookOffset);
+            // this is rotating, but gets really weird looking
+            /*
+            Transform head = animator.GetBoneTransform(HumanBodyBones.Head);
+            Vector3 forward = (lookPosition.position - head.position).normalized;
+            Vector3 up = Vector3.Cross(forward, transform.right);
+            Quaternion rotation = Quaternion.Inverse(transform.rotation) * Quaternion.LookRotation(forward, up);
+            animator.SetBoneLocalRotation(HumanBodyBones.Head, rotation);
+            */
         }
+
         if (lockAt1)
             animator.SetLookAtWeight(1, 0, 1, Mathf.Min(1, 1 * 2), 1);
         else
@@ -45,7 +58,7 @@ public class LookAt : MonoBehaviour
         if (lookPosition == null)
         {
             // find the player
-            lookPosition = TankController.Instance.transform;
+            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
         }
         lookWeight = 1;
         stopping = false;

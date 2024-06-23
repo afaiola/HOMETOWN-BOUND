@@ -151,5 +151,6 @@ public class SecurityCode : MonoBehaviour
     public void Show()
     {
         canvas.SetActive(true);
+        inputField.SetTextWithoutNotify("");
     }
 }

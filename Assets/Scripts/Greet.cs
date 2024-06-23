@@ -33,6 +33,9 @@ public class Greet : MonoBehaviour
     {
         if (canWave)
         {
+            if (player == null)
+                player = GameObject.FindGameObjectWithTag("Player").transform;
+
             if (player && player.GetComponent<TankController>().enabled)
             {
                 StartCoroutine(Wave());

@@ -81,4 +81,11 @@ public class UserTextOption : UserInputOption
     {
         InputChanged();
     }
+
+    public override void Highlight(bool on)
+    {
+        base.Highlight(on);
+        if (patterns.Length == 0 && helper)
+            helper.SetActive(false);
+    }
 }

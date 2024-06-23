@@ -106,6 +106,11 @@ public class UserAccountManager : MonoBehaviour
                 var snapshotTask = userRef.GetSnapshotAsync();
                 yield return new WaitUntil(() => snapshotTask.IsCompleted);
 
+                Debug.Log($"printing result: {snapshotTask.Result.ToString()}");
+                if (!snapshotTask.Result.Exists)
+                {
+                    Debug.LogWarning($"{email} document doesn't exist");
+                }    
                 user = snapshotTask.Result.ToDictionary();
                 if (user != null)
                 {
@@ -121,19 +126,8 @@ public class UserAccountManager : MonoBehaviour
             task = auth.SignInWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => task.IsCompleted);
 
-            if (task.IsCanceled)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
-            }
-            if (task.IsFaulted)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-            }
-
             if (task.Exception == null)
             {
-                
-
                 if (user != null)
                 {
                     string uname = "";
@@ -166,12 +160,17 @@ public class UserAccountManager : MonoBehaviour
                     {
                         newGamePanel.SetActive(true);
                     }
-
                 }
             }
             else
             {
-                signInPanel.SubmitFail(task.Exception.Message);
+                string helpfulMessage = task.Exception.InnerExceptions[task.Exception.InnerExceptions.Count - 1].InnerException.Message;
+
+                foreach (var e in task.Exception.Flatten().InnerExceptions)
+                {
+                    Debug.Log(e);
+                }
+                signInPanel.SubmitFail(helpfulMessage);
                 // need to find where the useful content is in the exception
             }
         }
@@ -194,12 +193,19 @@ public class UserAccountManager : MonoBehaviour
         string message = "";
         bool success = true;
         var db = FirebaseFirestore.DefaultInstance;
+
+        // I think I need to sign into the admin acct before I can check if the email exists
+        var auth = FirebaseAuth.DefaultInstance;
+        var task = auth.SignInWithEmailAndPasswordAsync(adminUser, adminPass);
+        yield return new WaitUntil(() => task.IsCompleted);
+
         // Query for the new email already existing
         var usersRef = db.Collection(k_user_collection);
         Query query = usersRef.WhereEqualTo(k_email, email);
         var queryTask = query.GetSnapshotAsync();
         yield return new WaitUntil(() => queryTask.IsCompleted);
 
+        if (queryTask.IsCanceled )
         foreach (var doc in queryTask.Result.Documents)
         {
             Dictionary<string, object> user = doc.ToDictionary();
@@ -210,10 +216,12 @@ public class UserAccountManager : MonoBehaviour
             }
         }
 
+        auth.SignOut();
+
         if (success)
         {
-            var auth = FirebaseAuth.DefaultInstance;
-            var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            auth = FirebaseAuth.DefaultInstance;
+            task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => task.IsCompleted);
 
             if (task.IsCanceled)
@@ -256,7 +264,6 @@ public class UserAccountManager : MonoBehaviour
             userRef.SetAsync(user);
             Profiler.Instance.UserSignedIn(email, ci, skin, 0, 0, date, date, 0, username);
 
-            //loginSuccessEvent.Invoke();
             registerPanel.gameObject.SetActive(false);
             emailPanel.gameObject.SetActive(true);
             emailPanel.SendEmail(email);
