@@ -115,6 +115,9 @@ public class VRHandler : MonoBehaviour
             Destroy(vrRig.gameObject);
             return;
         }
+        VRSettings vrSet = GameObject.FindObjectOfType<VRSettings>();
+        if (vrSet)
+            vrSet.Initialize();
 
         TankController tankController = GameObject.FindObjectOfType<TankController>();
         if (tankController)

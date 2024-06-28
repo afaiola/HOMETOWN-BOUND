@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject scavengerObjects;
     public SceneLoader sceneLoader;
 
+    public VRManager vrManager;
     public bool useVR;
     // includes player, menu, and security code
     [SerializeField] GameObject[] vrObjects, desktopObjects;
@@ -42,7 +43,6 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
         VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
-        VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager && useVR)
         {
             yield return vrManager.StartXR();
@@ -76,13 +76,15 @@ public class GameManager : MonoBehaviour
             if (useVR)
             {
                 Debug.Log("manager register groups");   
+                /*
                 UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
                 foreach (var group in interactionGroups)
                 {
                     group.interactionManager = GameObject.FindObjectOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>();
                 }
                 yield return new WaitForEndOfFrame();
-                vrManager.Initialize();
+                */
+                yield return vrManager.Initialize();
                 var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
                 foreach (var tpArea in crossSceneTPAreas)
                 {
@@ -94,12 +96,17 @@ public class GameManager : MonoBehaviour
                 TouchControls touchControls = GameObject.FindObjectOfType<TouchControls>();
                 if (touchControls)
                     Destroy(touchControls.gameObject);
+                yield return new WaitForEndOfFrame();
+                vrManager.xrOrigin.gameObject.SetActive(true);
             }
             else
             {
                 Destroy(vrManager.gameObject);
             }
         }
+        yield return new WaitForEndOfFrame();   // so tank controller can be found
+
+
         foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
             looker.Initialize();
 

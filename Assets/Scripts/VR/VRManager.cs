@@ -19,7 +19,7 @@ public class VRManager : MonoBehaviour
     [SerializeField] private XRLoader[] loaders;
     private int activeLoader;
 
-    [SerializeField] private XROrigin xrOrigin;
+    [SerializeField] public XROrigin xrOrigin;
     [SerializeField] private Transform cameraOffset;
     [SerializeField] private VRBlink tunnelingController;
 
@@ -109,17 +109,22 @@ public class VRManager : MonoBehaviour
     }
 
 
-    public void Initialize()
+    //public void Initialize()
+    public IEnumerator Initialize()
     {
+        bool doInit = true;
         if (makeSingleton)
         {
             if (_instance != null && _instance != this)
             {
+                doInit = false;
                 Destroy(gameObject);
-                return;
             }
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
+            else
+            {
+                _instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
         }
 
         VRSettings vrSettings = GameObject.FindObjectOfType<VRSettings>();
@@ -135,43 +140,60 @@ public class VRManager : MonoBehaviour
             vrSettings.LoadSettings();
         }
 
-        ApplySettings();
-
-        SetupHands();
-
-        Debug.Log("manager register interactors");
-
-        // register containing groups first
-        foreach (var controller in xrControllers)
+        if (doInit)
         {
-            var group = controller.GetComponent<XRInteractionGroup>();
-            group.registered += RegisterInteractors; ;
+            ApplySettings();
+
+            SetupHands();
+            tunnelingController.Initialize();
+
+            Debug.Log("manager register interactors");
+
+            // register containing groups first
+            foreach (var controller in xrControllers)
+            {
+                var group = controller.GetComponent<XRInteractionGroup>();
+                //group.gameObject.SetActive(false);
+                //yield return new WaitForEndOfFrame();
+                //group.gameObject.SetActive(true);
+                //group.registered += RegisterInteractors; ;
+            }
+            yield return new WaitForEndOfFrame();   // allow a frame of the groups being active
+
+            
+            // otherwise, interactors dont interact with anything
+            foreach (var ray in rayInteractors)
+            {
+                ray.interactionManager = ray.GetComponentInParent<XRInteractionManager>();
+                
+                ray.gameObject.SetActive(false);
+                yield return new WaitForEndOfFrame();
+                ray.gameObject.SetActive(true);
+                ray.enableUIInteraction = false;
+                yield return new WaitForEndOfFrame();
+                ray.enableUIInteraction = true;
+            }
+            
+            /*
+            // trying to set xrinteractors, but clearly it fails
+            for (int i = 0; i < pokeInteractors.Length; i++)
+            {
+                pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
+                pokeInteractors[i].gameObject.SetActive(false);
+                yield return new WaitForEndOfFrame();
+                pokeInteractors[i].gameObject.SetActive(true);
+                //pokeInteractors[i].enableUIInteraction = false;
+                pokeInteractors[i].enableUIInteraction = true;
+
+                //HandAnimatorManagerVR handAnimator = xrControllers[i].GetComponentInChildren<HandAnimatorManagerVR>();
+                //pokeInteractors[i].hoverEntered.AddListener(handAnimator.InteractorHoverEnter);
+                //pokeInteractors[i].hoverExited.AddListener(handAnimator.InteractHoverExit);
+            }*/
         }
-
-        // otherwise, interactors dont interact with anything
-        foreach (var ray in rayInteractors)
-        {
-            ray.interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
-            ray.enableUIInteraction = false;
-            ray.enableUIInteraction = true;
-        }
-
-        // trying to set xrinteractors, but clearly it fails
-        for(int i = 0; i < pokeInteractors.Length; i++)
-        {
-            //pokeInteractors[i].interactionManager = GameObject.FindObjectOfType<XRInteractionManager>();
-            //pokeInteractors[i].enableUIInteraction = false;
-            //pokeInteractors[i].enableUIInteraction = true;
-
-            //HandAnimatorManagerVR handAnimator = xrControllers[i].GetComponentInChildren<HandAnimatorManagerVR>();
-            //pokeInteractors[i].hoverEntered.AddListener(handAnimator.InteractorHoverEnter);
-            //pokeInteractors[i].hoverExited.AddListener(handAnimator.InteractHoverExit);
-        }
-
-        tunnelingController.Initialize();
         //SetCameraSitting();
     }
 
+    /*
     private void RegisterInteractors(InteractionGroupRegisteredEventArgs obj)
     {
         List<IXRGroupMember> members = new List<IXRGroupMember>();
@@ -184,7 +206,7 @@ public class VRManager : MonoBehaviour
                 (member as XRPokeInteractor).enableUIInteraction = true;
             }
         }
-    }
+    }*/
 
     // Update is called once per frame
     void Update()

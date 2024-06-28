@@ -106,6 +106,7 @@ public class VRBlink : MonoBehaviour
 
     public void SetAperatureSize(float value)
     {
+        if (m_CurrentParameters == null) m_CurrentParameters = new VignetteParameters();
         m_CurrentParameters.apertureSize = value;
         m_CurrentParameters.featheringEffect = value;
         UpdateTunnelingVignette(m_CurrentParameters);

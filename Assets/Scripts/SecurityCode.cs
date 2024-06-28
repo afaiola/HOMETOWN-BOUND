@@ -56,6 +56,12 @@ public class SecurityCode : MonoBehaviour
             keypadNumbers[i].Setup(i);
             keypadNumbers[i].sendIntEvent.AddListener(EnterNumber);
         }
+
+        if (SystemInfo.deviceType == DeviceType.Handheld)
+        {
+            inputField.shouldHideMobileInput = false;
+            inputField.shouldHideSoftKeyboard = false;
+        }
     }
 
     // Update is called once per frame
