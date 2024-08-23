@@ -67,12 +67,23 @@ public class StorageManager : MonoBehaviour
         if (!fileExists || file_contents.Length < 16)
         {
             var content_ref = storage.GetReference(firebasePath);
+            Debug.Log(content_ref.Bucket.Length);
             //var download_task = content_ref.GetFileAsync(localPath);    // may want to check if file already exists
             const long maxDownloadSize = 1024 * 1024 * 16;      // 16MB (form limit is 10MB)
             var download_task = content_ref.GetBytesAsync(maxDownloadSize);    // may want to check if file already exists
-            yield return new WaitUntil(() => download_task.IsCompleted);
+            float timeout = 3f;
+            while (!download_task.IsCompleted && timeout > 0)
+            {
+                timeout -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            //yield return new WaitUntil(() => download_task.IsCompleted);
 
-            if (download_task.Exception != null)
+            if (timeout < 0)
+            {
+                Debug.LogWarning("download timeout : " + firebasePath);
+            }
+            else if (download_task.Exception != null)
             {
                 Debug.LogWarning($"ERROR downloading {firebasePath}: {download_task.Exception}");
                 File.WriteAllBytes(localPath, file_contents);   // creates file to prevent errors later
@@ -80,7 +91,10 @@ public class StorageManager : MonoBehaviour
             else
             {
                 Debug.Log($"Downloaded file {firebasePath} size: {download_task.Result.Length}");
-                File.WriteAllBytes(localPath, download_task.Result);
+                if (download_task.Result.Length > 0)
+                {
+                    File.WriteAllBytes(localPath, download_task.Result);
+                }
                 file_contents = download_task.Result;
             }
         }
@@ -93,6 +107,10 @@ public class StorageManager : MonoBehaviour
         filesDownloaded = 0;
         totalFiles = playerContents.Length + 1;
         var storage = FirebaseStorage.DefaultInstance;
+
+        // waiting for csv to download
+        while (SavePatientData.Instance == null)
+            yield return new WaitForEndOfFrame();
 
         string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/content_map";
         string localPath = $"{contentDir}{Path.DirectorySeparatorChar}content_map.json";
@@ -239,7 +257,10 @@ public class StorageManager : MonoBehaviour
             File.Delete(localPath);
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
-        bool status = writeByteArrayToFile((byte[])cd.result, localPath);
+        bool status = false;
+        var data = (byte[])cd.result;
+        if (data.Length > 1)
+            status = writeByteArrayToFile(data, localPath);
         Debug.Log($"csv download complete. fb path: {firebasePath} write status? {status} file bytes: {((byte[])cd.result).Length}");
         downloadStatusEvent.Invoke(status);
     }

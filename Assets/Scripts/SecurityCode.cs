@@ -33,14 +33,14 @@ public class SecurityCode : MonoBehaviour
 
     public void Initialize()
     {
-        if (_instance == null)
+        if (_instance != null && _instance != this)
         {
-            _instance = this;
-        }
-        else
-        {
+            Debug.LogWarning("Destroy security code");
             Destroy(gameObject);
+            return;
+            
         }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
 

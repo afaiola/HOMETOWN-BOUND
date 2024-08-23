@@ -132,7 +132,7 @@ public class UserAccountManager : MonoBehaviour
                 {
                     string uname = "";
                     int ci = 0;
-                    int skin = 0;
+                    int skin = 3;   // 3 is yellow
                     int login_ct = 0;
                     double playTime = 0;
                     DateTime startDate = DateTime.Today;
@@ -188,7 +188,8 @@ public class UserAccountManager : MonoBehaviour
         string password = userOptions[k_pass] + secret;
         string username = userOptions[k_user];
         int ci = 0;
-        int skin = int.Parse(userOptions[k_skin]);
+        int skin = 3;
+        //int.TryParse(userOptions[k_skin], out skin);
 
         string message = "";
         bool success = true;

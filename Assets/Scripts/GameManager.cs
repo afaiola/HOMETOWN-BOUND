@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-public enum Levels { LOLLIPOP, DOWN, HOME};
+public enum Levels { LOLLIPOP, DOWN, HOME };
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get { return _instance; } }
@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public SceneLoader sceneLoader;
 
     public VRManager vrManager;
+
     public bool useVR;
     // includes player, menu, and security code
     [SerializeField] GameObject[] vrObjects, desktopObjects;
@@ -41,10 +42,14 @@ public class GameManager : MonoBehaviour
         if (scavengerObjects)
             DontDestroyOnLoad(scavengerObjects);
         DontDestroyOnLoad(gameObject);
-        
-        VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
+
+        //VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
+        //VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager && useVR)
         {
+            //vrHandler.vrActive = useVR;
+            //yield return vrHandler.StartXR();
+            //useVR = vrHandler.vrActive;
             yield return vrManager.StartXR();
             useVR = vrManager.xrDeviceOn;
         }
@@ -60,11 +65,15 @@ public class GameManager : MonoBehaviour
         }
         for (int i = 0; i < desktopObjects.Length; i++)
             desktopObjects[i].SetActive(!useVR);
+        Debug.Log("using VR? " + useVR);
 
         // wait for objects to activate before initializing them
         yield return new WaitForEndOfFrame();
 
-        GameObject.FindObjectOfType<TankController>().Initialize();
+        Debug.Log("init managers");
+
+        if (TankController.Instance == null)
+            GameObject.FindObjectOfType<TankController>().Initialize();    // TODO: Player is getting destroyed here... meaning the VR player controller is not set active and the normal player IS set active
         GameObject.FindObjectOfType<Menu>().Initialize();
         GameObject.FindObjectOfType<UIManager>().Initialize();
         GameObject.FindObjectOfType<SecurityCode>().Initialize();
@@ -75,16 +84,14 @@ public class GameManager : MonoBehaviour
         {
             if (useVR)
             {
-                Debug.Log("manager register groups");   
-                /*
+                Debug.Log("manager register groups");
                 UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
                 foreach (var group in interactionGroups)
                 {
                     group.interactionManager = GameObject.FindObjectOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>();
                 }
                 yield return new WaitForEndOfFrame();
-                */
-                yield return vrManager.Initialize();
+                vrManager.Initialize();
                 var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
                 foreach (var tpArea in crossSceneTPAreas)
                 {
@@ -96,20 +103,17 @@ public class GameManager : MonoBehaviour
                 TouchControls touchControls = GameObject.FindObjectOfType<TouchControls>();
                 if (touchControls)
                     Destroy(touchControls.gameObject);
-                yield return new WaitForEndOfFrame();
-                vrManager.xrOrigin.gameObject.SetActive(true);
             }
             else
             {
                 Destroy(vrManager.gameObject);
             }
         }
-        yield return new WaitForEndOfFrame();   // so tank controller can be found
+        Debug.Log("init lookers");
+        //foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
+        //    looker.Initialize(player.transform);
 
-
-        foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
-            looker.Initialize();
-
+        Debug.Log("map modules");
         // Each scene has its own modules. Wait until all are loaded before matching modules up to their respective interactibles.
         ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
         if (moduleMapper)
@@ -117,14 +121,17 @@ public class GameManager : MonoBehaviour
             moduleMapper.MapModules();
         }
         // Enable the gotos so the module mapper can find them. Disable after mapping
-        Menu.Instance.gotoMenu.SetActive(false);
+        if (Menu.Instance)
+            Menu.Instance.gotoMenu.SetActive(false);
         //UIManager.Instance.gotoMenu.gameObject.SetActive(false);
+        Debug.Log("score man");
         ScoreCalculator.instance.SetImpairmentLevel(Profiler.Instance.currentUser.ciLevel);
         moduleMapper.interactables[moduleMapper.interactables.Length - 1].interactEvent.AddListener(sceneLoader.LoadHouseInterior);
         //moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo = new UnityEvent();
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo.AddListener(sceneLoader.LoadHouseInterior);
 
+        Debug.Log("downloading user content;");
         // load the downloaded images into the exercises
         if (StorageManager.Instance == null)
         {
@@ -140,6 +147,7 @@ public class GameManager : MonoBehaviour
         StorageManager.Instance.contentDownloadedEvent.AddListener(ContentMapped);
         //StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
         StorageManager.Instance.StartContentDownload();
+        Debug.Log("stuff downloaded");
 
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
 
@@ -202,7 +210,7 @@ public class GameManager : MonoBehaviour
             if (!intro.skipped)
                 intro.Interrupt();
         }
-
+        Debug.Log("teleporting...");
         StartCoroutine(TeleportRoutine(location));
     }
 
@@ -213,8 +221,10 @@ public class GameManager : MonoBehaviour
         // somehow, floating origin has reset our position and shifted the world before we have set location
         TankController.Instance.transform.position = location;
         yield return new WaitForEndOfFrame();
-        //TankController.Instance.EnableMovement();
+        // gives a moment for floating origin to recenter
+        TankController.Instance.EnableMovement();
         //TankController.Instance.GetComponent<FloatingOrigin>()?.RecenterOrigin();
+        yield return new WaitForEndOfFrame();
         if (teleportEvent != null) teleportEvent.Invoke();
     }
 
@@ -234,6 +244,9 @@ public class GameManager : MonoBehaviour
         //Application.Quit();
         if (VRManager.Instance)
             Destroy(VRManager.Instance.gameObject);
+        if (TankController.Instance)
+            Destroy(TankController.Instance.gameObject);
+        // there may be more
         SceneLoader.Instance.LoadMainMenu();
     }
 }

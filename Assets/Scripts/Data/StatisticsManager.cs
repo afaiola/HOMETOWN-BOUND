@@ -50,14 +50,14 @@ public class StatisticsManager : MonoBehaviour
 
     public void Initialize()
     {
-        if (_instance == null)
+        if (_instance != null && _instance != this)
         {
-            _instance = this;
-        }
-        else
-        {
+            Debug.LogWarning("Destroy stats man");
             Destroy(gameObject);
+            return;
+
         }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
 

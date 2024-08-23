@@ -75,6 +75,7 @@ public class VirtualKeyboard : MonoBehaviour
         }
 
         Close();
+        ChangeCase(false);
     }
 
     private void PopulateRow(char[] lowers, char[] uppers)

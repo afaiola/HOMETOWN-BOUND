@@ -173,7 +173,7 @@ public class Module : MonoBehaviour
             StartCoroutine(Wrap());
         }
         
-        if (VRManager.Instance)
+        if (GameManager.Instance.useVR)
             MoveVRCanvas();
     }
 

@@ -79,8 +79,8 @@ public class HouseCutscene : MonoBehaviour
             timecount += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        if (MusicManager.Instance)
-            MusicManager.Instance.PlayHouseMusic();
+        //if (MusicManager.Instance)
+        //    MusicManager.Instance.PlayHouseMusic();
 
         //yield return new WaitForSecondsRealtime(0.5f);
 

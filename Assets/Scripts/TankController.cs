@@ -39,6 +39,7 @@ public class TankController : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
+            Debug.LogWarning("Destroy player");
             Destroy(gameObject);
             return;
         }

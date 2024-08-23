@@ -15,10 +15,10 @@ public class LookAt : MonoBehaviour
     {
     }
 
-    public void Initialize()
+    public void Initialize(Transform player=null)
     {
         if (lookOnStart)
-            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+            lookPosition = player;//GameObject.FindGameObjectWithTag("Player").transform;
 
     }
 
@@ -31,7 +31,7 @@ public class LookAt : MonoBehaviour
     {
         if (lookPosition == null)
         {
-            lookPosition = GameObject.FindGameObjectWithTag("Player").transform;
+            lookPosition = GameObject.FindGameObjectWithTag("Player")?.transform;
         }
         if (lookPosition)
         {

@@ -46,6 +46,7 @@ public class GoTo : MonoBehaviour
         }
         if (!module.open)
         {
+            Debug.Log("goto " + module.ModuleNo);
             UIManager.Instance.Resume();
             //UIManager.Instance.LockCursor();
             //ScoreCalculator.instance.controller.transform.position = moduleObject.transform.position;
@@ -68,8 +69,8 @@ public class GoTo : MonoBehaviour
 
     private void StartModule()
     {
-        if (!GameManager.Instance.useVR)
-            TankController.Instance.DisableMovement();
+        //if (!GameManager.Instance.useVR)
+        //    TankController.Instance.DisableMovement();
         ScoreCalculator.instance.GetStars();
         ScoreCalculator.instance.StartActivity(module.exercises[module.current].exerciseID);
         module?.Play();

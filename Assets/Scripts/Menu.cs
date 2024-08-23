@@ -27,9 +27,11 @@ public class Menu : MonoBehaviour
 
     public void Initialize()
     {
-        if (_instance != null)
+        if (_instance != null && _instance != this)
         {
+            Debug.LogWarning("Destroy menu");
             Destroy(gameObject);
+            return;
         }
         _instance = this;
         audio = GetComponent<AudioSource>();

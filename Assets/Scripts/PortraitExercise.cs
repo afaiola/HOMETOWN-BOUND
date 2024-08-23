@@ -41,7 +41,9 @@ public class PortraitExercise : DragExercise
         float portraitWidth = leftObject.texture.width;
         float portraitHeight = leftObject.texture.height;
         float portraitRatio = portraitWidth / portraitHeight;
-        float screenRatio = (float)Screen.width / (float)Screen.height; 
+        float screenRatio = (float)Screen.width / (float)Screen.height;
+        if (GameManager.Instance.useVR)
+            screenRatio = 16f / 9f;
 
         AspectRatioFitter portraitFitter = leftObject.gameObject.AddComponent<AspectRatioFitter>();
         portraitFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
@@ -51,7 +53,7 @@ public class PortraitExercise : DragExercise
         Debug.Log($"screenRatio: {screenRatio} ratioRatio: {ratioRatio} ");
         RectTransform snapRect = snapPanel.GetComponent<RectTransform>();   // 4:3 = 258.806 --- 16:9 = 154.3284
         Vector2 adjustedSize = new Vector2(snapRect.rect.height * portraitRatio * ratioRatio + 25, snapRect.rect.height);
-
+        // got 200x80 when i needed 140x68
         pictureFrame.SetActive(physicalFrame);
         if (physicalFrame)
         {
@@ -70,7 +72,10 @@ public class PortraitExercise : DragExercise
         }
 
         snapRect.sizeDelta = adjustedSize;
-        snapRect.anchoredPosition = new Vector2(0, 5f); // looks generally good
+        float heightOffset = 5f;
+        if (GameManager.Instance.useVR)
+            heightOffset = -10f;
+        snapRect.anchoredPosition = new Vector2(0, heightOffset); // looks generally good
 
         leftImages = new RawImage[familyMembers.Length];
         flyingImages = new RawImage[familyMembers.Length];

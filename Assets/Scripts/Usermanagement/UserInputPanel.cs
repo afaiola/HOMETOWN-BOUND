@@ -43,6 +43,12 @@ public class UserInputPanel : MonoBehaviour
             id++;
         }
 
+        if (name == "SignIn" && PlayerPrefs.HasKey("USERNAME"))
+        {
+            var signInField = userInputOptions[0].GetComponentInChildren<TMPro.TMP_InputField>();
+            signInField.SetTextWithoutNotify(PlayerPrefs.GetString("USERNAME"));
+        }
+
         submitButton.onClick.AddListener(OnSubmit);
         buttonText = submitButton.GetComponentInChildren<Text>().text;
 

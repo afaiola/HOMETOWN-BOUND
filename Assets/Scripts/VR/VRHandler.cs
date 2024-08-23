@@ -16,6 +16,8 @@ public class VRHandler : MonoBehaviour
     [SerializeField] Transform worldUILocaiton;
     [SerializeField] private XRLoader[] loaders;
 
+    public TankController vrPlayer;
+
     public bool vrActive;
 
     // Start is called before the first frame update
@@ -119,9 +121,9 @@ public class VRHandler : MonoBehaviour
         if (vrSet)
             vrSet.Initialize();
 
-        TankController tankController = GameObject.FindObjectOfType<TankController>();
-        if (tankController)
-            tankController.Initialize();
+        if (vrPlayer == null)
+            vrPlayer = GameObject.FindObjectOfType<TankController>();
+        vrPlayer.Initialize();
         vrRig.Initialize();
         //vrRig.DisableMovement();
 

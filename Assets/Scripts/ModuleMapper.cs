@@ -37,10 +37,14 @@ public class ModuleMapper : MonoBehaviour
     {
         modules = GameObject.FindObjectsOfType<Module>();
         interactables = GameObject.FindObjectsOfType<Interact>();
-        gotos = GameObject.FindObjectsOfType<GoTo>();
+        gotos = Menu.Instance.GetComponentsInChildren<GoTo>(true);//GameObject.FindObjectsOfType<GoTo>();  // this is finding the wrong UIMan
+        Debug.Log("got gotos from " + Menu.Instance.name);
         Array.Sort(modules, new ModuleComparer());
         Array.Sort(interactables, new InteractableComparer());
         Array.Sort(gotos, new GoToComparer());
+        Debug.Log("modues: " + modules.Length);
+        Debug.Log("interactables: " + interactables.Length);
+        Debug.Log("gotos: " + gotos.Length);
         int id = 0;
         for (int i = 0; i < modules.Length; i++)
         {
