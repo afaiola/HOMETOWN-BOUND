@@ -1024,6 +1024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   makeSingleton: 0
+  vrSettings: {fileID: 0}
   loaders:
   - {fileID: 11400000, guid: d958c26244556e24d8deb4a0628b6b60, type: 2}
   xrOrigin: {fileID: 8892174749384223994}
@@ -1033,6 +1034,7 @@ MonoBehaviour:
   snapTurnProvider: {fileID: 4414541100629077955}
   continuousMoverProvider: {fileID: 7535207736718921828}
   continuousTurnProvider: {fileID: 4414541100629077967}
+  moveMultiplier: 1
   cameraOffsetHeight: 0.7
   xrControllers:
   - {fileID: 7727245975432303778}
