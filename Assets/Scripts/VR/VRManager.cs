@@ -30,6 +30,7 @@ public class VRManager : MonoBehaviour
     [SerializeField] private ActionBasedContinuousMoveProvider continuousMoverProvider;
     [SerializeField] private ActionBasedContinuousTurnProvider continuousTurnProvider;
 
+    public float moveMultiplier = 1;
     private float smoothMoveSpeed = 5.25f;
     private float smoothRotateSpeed = 90;
     private float snapTurnAngle = 45;
@@ -199,7 +200,7 @@ public class VRManager : MonoBehaviour
 
         snapTurnProvider.turnAmount = VRSettings.Instance.UseIncrementalRotate ? snapTurnAngle : 0;
         if (Debug.isDebugBuild) smoothMoveSpeed = 10;
-        continuousMoverProvider.moveSpeed = VRSettings.Instance.UseTeleportMovement ? 0 : smoothMoveSpeed;
+        continuousMoverProvider.moveSpeed = VRSettings.Instance.UseTeleportMovement ? 0 : smoothMoveSpeed * moveMultiplier;
         continuousTurnProvider.turnSpeed = VRSettings.Instance.UseIncrementalRotate ? 0 : smoothRotateSpeed;
 
         continuousMoverProvider.enabled = true;

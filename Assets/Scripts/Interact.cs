@@ -30,6 +30,15 @@ public class Interact : MonoBehaviour/*, IPointerEnterHandler, IPointerExitHandl
     {
         if (resetting) return;
         ActivatorZone zone = GetComponent<ActivatorZone>();
+
+        // TODO: prevent interact when another module is playing
+        if (GameManager.Instance.inModule)
+        {
+            Menu.Instance.UpdateModuleName("Please complete the current module before attempting the next one.");
+            zone.oneTime = false;
+            return;
+        }
+
         // if previous module not played, prompt user to play the correct previous module
         // TODO: figure out if we want to use last module with saved info or for the current play session
         int currAttempt = SavePatientData.Instance.GetActiveAttempt();

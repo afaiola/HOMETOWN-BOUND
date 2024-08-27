@@ -38,6 +38,7 @@ public class ExitHospitalCutscene : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        /*
         timecount = 0;
         playerMoveTime = 8.73333333333333f;
         while (timecount < playerMoveTime)
@@ -46,7 +47,7 @@ public class ExitHospitalCutscene : MonoBehaviour
             timecount += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-
+        */
         //yield return new WaitForSeconds((float)director.duration);
 
         ScoreCalculator.instance.StartActivity(0);

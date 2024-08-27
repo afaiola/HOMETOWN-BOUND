@@ -117,6 +117,14 @@ public class Module : MonoBehaviour
 
     public virtual void End()
     {
+        GameManager.Instance.inModule = false;
+
+        if (GameManager.Instance.useVR)
+        {
+            VRManager.Instance.moveMultiplier = 1;
+            VRManager.Instance.ApplySettings();
+        }
+
         UIManager.Instance.PromptGameWindowFocus();
         // Destroy all goal objects if they exist
         foreach (var ex in exercises)
@@ -141,13 +149,17 @@ public class Module : MonoBehaviour
     /// </summary>
     public virtual void Play()
     {
+        GameManager.Instance.inModule = true;
         open = true;
         UIManager.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
         if (!GameManager.Instance.useVR)
             TankController.Instance.DisableMovement();
         else
+        {
             TankController.Instance.EnableMovement();
-
+            VRManager.Instance.moveMultiplier = 0.5f;
+            VRManager.Instance.ApplySettings();
+        }
         transform.GetChild(0).gameObject.SetActive(true);
         foreach (var layoutGroup in this.GetComponentsInChildren<LayoutGroup>())
         {

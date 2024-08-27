@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     // includes player, menu, and security code
     [SerializeField] GameObject[] vrObjects, desktopObjects;
 
+    [HideInInspector] public bool inModule;
+
     // Start is called before the first frame update
     void Start()
     {

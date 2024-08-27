@@ -22,7 +22,9 @@ public class UIManager : MonoBehaviour
     bool prevVisible;
 
     public Vector3 vrOffset;    // 30.57 - 29.93 = 0.55
-    public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);  
+    public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);
+
+    private bool isMovingToPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +56,8 @@ public class UIManager : MonoBehaviour
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = worldScale;
+            RectTransform uiRect = GetComponent<RectTransform>();        
+            uiRect.sizeDelta = new Vector2(1920, 1080);
         }
 
         // start with eyes closed
@@ -89,6 +93,32 @@ public class UIManager : MonoBehaviour
             {
                 //Resume();
                 // when button is pressed down, resume, lock cursor on release
+            }
+        }
+
+        if (GameManager.Instance.useVR)
+        {
+            if (TankController.Instance == null) return;
+
+            // rotate to face the player
+            Vector3 playerPos = TankController.Instance.transform.position;
+            playerPos.y = transform.position.y;
+            transform.LookAt(playerPos);
+            transform.eulerAngles += Vector3.up * 180;  // to face the correct dir
+            Vector3 goalPos = playerPos + TankController.Instance.transform.forward * vrOffset.z;
+
+            // should also follow the player around
+            float dist = Vector3.Distance(goalPos, transform.position);
+            if (dist > 10)
+            {
+                isMovingToPlayer = true;
+            }
+
+            if (isMovingToPlayer)
+            {
+                if (dist < vrOffset.z)
+                    isMovingToPlayer = false;
+                transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime * 2f);
             }
         }
     }
