@@ -63,6 +63,7 @@ public class SceneLoader : MonoBehaviour
     {
         //GameManager.Instance.LevelLoaded(3);
         UIManager.Instance.CloseEyes();
+        UIManager.Instance.followPlayer = false;
         SceneManager.LoadSceneAsync("House", LoadSceneMode.Additive);
     }
 

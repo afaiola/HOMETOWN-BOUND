@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);
 
     private bool isMovingToPlayer;
+    public bool followPlayer = true;
 
     // Start is called before the first frame update
     void Start()
@@ -57,7 +58,7 @@ public class UIManager : MonoBehaviour
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = worldScale;
             RectTransform uiRect = GetComponent<RectTransform>();        
-            uiRect.sizeDelta = new Vector2(1920, 1080);
+            uiRect.sizeDelta = new Vector2(1920, 1080) / 2;
         }
 
         // start with eyes closed
@@ -98,7 +99,7 @@ public class UIManager : MonoBehaviour
 
         if (GameManager.Instance.useVR)
         {
-            if (TankController.Instance == null) return;
+            if (TankController.Instance == null || !followPlayer) return;
 
             // rotate to face the player
             Vector3 playerPos = TankController.Instance.transform.position;
