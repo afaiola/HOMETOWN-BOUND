@@ -43,10 +43,12 @@ public class UserInputPanel : MonoBehaviour
             id++;
         }
 
-        if (name == "SignIn" && PlayerPrefs.HasKey("USERNAME"))
+        if (name == "SignIn")
         {
             var signInField = userInputOptions[0].GetComponentInChildren<TMPro.TMP_InputField>();
-            signInField.SetTextWithoutNotify(PlayerPrefs.GetString("USERNAME"));
+            signInField.SetTextWithoutNotify(PlayerPrefs.GetString("USERNAME", ""));
+            var passwordField = userInputOptions[1].GetComponentInChildren<TMPro.TMP_InputField>();
+            passwordField.SetTextWithoutNotify(PlayerPrefs.GetString("PASSWORD", ""));
         }
 
         submitButton.onClick.AddListener(OnSubmit);
@@ -84,6 +86,7 @@ public class UserInputPanel : MonoBehaviour
     protected void OnSubmit()
     {
         PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
+        PlayerPrefs.SetString("PASSWORD", userInputOptions[1].GetValue());
         bool valid = true;
         foreach (UserInputOption u in userInputOptions)
         {
@@ -94,7 +97,7 @@ public class UserInputPanel : MonoBehaviour
                 break;
             }
         }
-       
+
         if (valid)
         {
             Dictionary<string, string> userOptions = new Dictionary<string, string>();
