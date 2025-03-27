@@ -9,25 +9,31 @@ public enum InputStatus { VALID, INVALID, ENABLED, DISABLED }   // GREEN, RED, B
 
 public class UserInputPanel : MonoBehaviour
 {
+    public enum MenuType
+    {
+        SignIn,
+        Register
+    }
+
     public Button submitButton;
     public Button registerButton;
-    [System.NonSerialized] public UnityEvent<Dictionary<string, string>> submitAction;
-    [SerializeField] private UserInputOption[] userInputOptions;
+    [SerializeField]
+    private Toggle saveLoginInfoToggle = null;
+    [SerializeField]
+    private UserInputOption[] userInputOptions;
     public Color[] statusColors;
+    [SerializeField]
+    private MenuType menuType = MenuType.SignIn;
 
     private TabSelector tabSelector;
     private string buttonText;
 
+    [System.NonSerialized]
+    public UnityEvent<Dictionary<string, string>> submitAction;
 
-    private void OnValidate()
+
+    protected void Start()
     {
-        userInputOptions = GetComponentsInChildren<UserInputOption>();
-    }
-
-    void Start()
-    {
-        userInputOptions = GetComponentsInChildren<UserInputOption>();
-
         tabSelector = GetComponentInChildren<TabSelector>();
         tabSelector.selectEvent = new UnityEvent<int>();
         tabSelector.selectEvent.AddListener(OptionSelected);
@@ -43,7 +49,7 @@ public class UserInputPanel : MonoBehaviour
             id++;
         }
 
-        if (name == "SignIn")
+        if (menuType == MenuType.SignIn && saveLoginInfoToggle && saveLoginInfoToggle.isOn)
         {
             var signInField = userInputOptions[0].GetComponentInChildren<TMPro.TMP_InputField>();
             signInField.SetTextWithoutNotify(PlayerPrefs.GetString("USERNAME", ""));
@@ -53,6 +59,10 @@ public class UserInputPanel : MonoBehaviour
 
         submitButton.onClick.AddListener(OnSubmit);
         buttonText = submitButton.GetComponentInChildren<Text>().text;
+        if (saveLoginInfoToggle)
+        {
+            saveLoginInfoToggle.onValueChanged.AddListener(FullyLogout);
+        }
 
         CheckAllOptions();
     }
@@ -85,8 +95,16 @@ public class UserInputPanel : MonoBehaviour
 
     protected void OnSubmit()
     {
-        PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
-        PlayerPrefs.SetString("PASSWORD", userInputOptions[1].GetValue());
+        if (menuType == MenuType.SignIn && saveLoginInfoToggle && saveLoginInfoToggle.isOn)
+        {
+            PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
+            PlayerPrefs.SetString("PASSWORD", userInputOptions[1].GetValue());
+        }
+        else if (menuType == MenuType.Register)
+        {
+            PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
+            PlayerPrefs.SetString("PASSWORD", userInputOptions[3].GetValue());
+        }
         bool valid = true;
         foreach (UserInputOption u in userInputOptions)
         {
@@ -119,13 +137,25 @@ public class UserInputPanel : MonoBehaviour
         {
             registerButton.gameObject.SetActive(true);
         }
-        Invoke("Reset", 2f);
+        Invoke("PanelReset", 2f);
     }
 
-    private void Reset()
+    public void FullyLogout(bool toggleState)
     {
-        Debug.Log(name + " reset");
+        if (!toggleState)
+        {
+            PlayerPrefs.DeleteKey("USERNAME");
+            PlayerPrefs.DeleteKey("PASSWORD");
+        }
+        else
+        {
+            PlayerPrefs.SetString("USERNAME", userInputOptions[0].GetValue());
+            PlayerPrefs.SetString("PASSWORD", userInputOptions[1].GetValue());
+        }
+    }
 
+    private void PanelReset()
+    {
         CheckAllOptions();
         foreach (var option in userInputOptions)
         {
