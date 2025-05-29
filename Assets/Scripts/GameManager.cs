@@ -7,6 +7,10 @@ using UnityEngine.Events;
 public enum Levels { LOLLIPOP, DOWN, HOME };
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    private ModuleMapper moduleMapper;
+
+
     public static GameManager Instance { get { return _instance; } }
     private static GameManager _instance;
 
@@ -22,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public bool inModule;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         StartCoroutine(StartRoutine());
@@ -42,11 +46,12 @@ public class GameManager : MonoBehaviour
 
         transform.parent = null;
         if (scavengerObjects)
+        {
             DontDestroyOnLoad(scavengerObjects);
+        }
         DontDestroyOnLoad(gameObject);
 
         //VRHandler vrHandler = GameObject.FindObjectOfType<VRHandler>();
-        //VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
         if (vrManager && useVR)
         {
             //vrHandler.vrActive = useVR;
@@ -63,77 +68,63 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < vrObjects.Length; i++)
         {
             if (vrObjects[i])
+            {
                 vrObjects[i].SetActive(useVR);
+            }
         }
         for (int i = 0; i < desktopObjects.Length; i++)
+        {
             desktopObjects[i].SetActive(!useVR);
-        Debug.Log("using VR? " + useVR);
+        }
 
         // wait for objects to activate before initializing them
         yield return new WaitForEndOfFrame();
 
-        Debug.Log("init managers");
-
-        if (TankController.Instance == null)
-            GameObject.FindObjectOfType<TankController>().Initialize();    // TODO: Player is getting destroyed here... meaning the VR player controller is not set active and the normal player IS set active
+        if (TankController.Instance == null) { GameObject.FindObjectOfType<TankController>().Initialize(); } // TODO: Player is getting destroyed here... meaning the VR player controller is not set active and the normal player IS set active
         GameObject.FindObjectOfType<Menu>().Initialize();
         GameObject.FindObjectOfType<UIManager>().Initialize();
         GameObject.FindObjectOfType<SecurityCode>().Initialize();
         GameObject.FindObjectOfType<StatisticsManager>().Initialize();
 
-        //VRManager vrManager = GameObject.FindObjectOfType<VRManager>();
-        if (vrManager)
+        if (vrManager && useVR)
         {
-            if (useVR)
+            UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
+            foreach (var group in interactionGroups)
             {
-                Debug.Log("manager register groups");
-                UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup[] interactionGroups = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionGroup>();
-                foreach (var group in interactionGroups)
-                {
-                    group.interactionManager = GameObject.FindObjectOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>();
-                }
-                yield return new WaitForEndOfFrame();
-                vrManager.Initialize();
-                var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
-                foreach (var tpArea in crossSceneTPAreas)
-                {
-                    tpArea.interactionManager = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
-                    tpArea.teleportationProvider = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
-                }
+                group.interactionManager = GameObject.FindObjectOfType<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>();
+            }
+            yield return new WaitForEndOfFrame();
+            vrManager.Initialize();
+            var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
+            foreach (var tpArea in crossSceneTPAreas)
+            {
+                tpArea.interactionManager = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
+                tpArea.teleportationProvider = vrManager.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
+            }
 
-                // VR is sometimes considered a mobile device. Clean this up if it still exists
-                TouchControls touchControls = GameObject.FindObjectOfType<TouchControls>();
-                if (touchControls)
-                    Destroy(touchControls.gameObject);
-            }
-            else
-            {
-                Destroy(vrManager.gameObject);
-            }
+            // VR is sometimes considered a mobile device. Clean this up if it still exists
+            TouchControls touchControls = GameObject.FindObjectOfType<TouchControls>();
+            if (touchControls) { Destroy(touchControls.gameObject); }
+
         }
-        Debug.Log("init lookers");
+        else
+        {
+            Destroy(vrManager.gameObject);
+        }
         //foreach (var looker in GameObject.FindObjectsOfType<LookAt>())
         //    looker.Initialize(player.transform);
 
-        Debug.Log("map modules");
         // Each scene has its own modules. Wait until all are loaded before matching modules up to their respective interactibles.
-        ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
-        if (moduleMapper)
-        {
-            moduleMapper.MapModules();
-        }
+        moduleMapper.MapModules();
         // Enable the gotos so the module mapper can find them. Disable after mapping
-        if (Menu.Instance)
-            Menu.Instance.gotoMenu.SetActive(false);
+        if (Menu.Instance) { Menu.Instance.gotoMenu.SetActive(false); }
         //UIManager.Instance.gotoMenu.gameObject.SetActive(false);
-        Debug.Log("score man");
         ScoreCalculator.instance.SetImpairmentLevel(Profiler.Instance.currentUser.ciLevel);
         moduleMapper.interactables[moduleMapper.interactables.Length - 1].interactEvent.AddListener(sceneLoader.LoadHouseInterior);
         //moduleMapper.interactables[moduleMapper.interactables.Length - 1].GetComponent<ActivatorZone>().enterEvent.AddListener(sceneLoader.LoadHouseInterior);
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo = new UnityEvent();
         moduleMapper.gotos[moduleMapper.gotos.Length - 1].onGo.AddListener(sceneLoader.LoadHouseInterior);
 
-        Debug.Log("downloading user content;");
         // load the downloaded images into the exercises
         if (StorageManager.Instance == null)
         {
@@ -142,20 +133,17 @@ public class GameManager : MonoBehaviour
         }
 
         StorageManager.Instance.downloadStatusEvent = new UnityEvent<bool>();
-        StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
+        StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule); //
         StorageManager.Instance.StartCSVDownload(Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "patient_data.csv");
 
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
-        StorageManager.Instance.contentDownloadedEvent.AddListener(ContentMapped);
-        //StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
+        // StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
         StorageManager.Instance.StartContentDownload();
-        Debug.Log("stuff downloaded");
 
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
 
         bool firstTime = true;
-        if (Profiler.Instance)
-            firstTime = Profiler.Instance.currentUser.newGame;
+        if (Profiler.Instance) { firstTime = Profiler.Instance.currentUser.newGame; }
 
         if (VRManager.Instance && firstTime && useVR)
         {
@@ -170,33 +158,25 @@ public class GameManager : MonoBehaviour
         SetCameraClipDist(175f);
     }
 
-    private void ContentMapped()
-    {
-        //SavePatientData.Instance.Initialize();  // ensure patient data is downloaded
-        //StorageManager.Instance.downloadStatusEvent = new UnityEngine.Events.UnityEvent<bool>();
-        //GameObject.FindObjectOfType<SavePatientData>().Initialize();
-        //LoadModule(true);
-        //StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
-    }
-
     private void LoadModule(bool status)
     {
-        GameObject.FindObjectOfType<SavePatientData>().Initialize();
+        Debug.Log("inside LoadModule");
+        bool newGame = Profiler.Instance.currentUser.newGame;
+        GameObject.FindObjectOfType<SavePatientData>().Initialize(newGame, moduleMapper.TotalExercises);
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
-        int lastModulePlayed = SavePatientData.Instance.LastModulePlayed();
-        if (Profiler.Instance.currentUser.newGame) lastModulePlayed = 0;
+        int lastModulePlayed = SavePatientData.Instance.LastModulePlayed(); // TODO : pass in correct attempt?
+        if (newGame) lastModulePlayed = 0;
+        Debug.Log("lastModulePlayed: " + lastModulePlayed + " name: " + moduleMapper.gotos[lastModulePlayed].module.gameObject.name);
         if (lastModulePlayed == 0)
         {
             intro.SetDialogue(true);
             return;
         }
 
-        ModuleMapper moduleMapper = GameObject.FindObjectOfType<ModuleMapper>();
-
         if (!intro.skipped) // cutscene is still running
         {
             intro.onComplete = new UnityEvent();
-            intro.onComplete.AddListener(moduleMapper.gotos[lastModulePlayed].Go);
+            intro.onComplete.AddListener(moduleMapper.gotos[lastModulePlayed].Go); // This is where we go to our module!
         }
         else
         {
@@ -212,7 +192,6 @@ public class GameManager : MonoBehaviour
             if (!intro.skipped)
                 intro.Interrupt();
         }
-        Debug.Log("teleporting...");
         StartCoroutine(TeleportRoutine(location));
     }
 
@@ -238,16 +217,13 @@ public class GameManager : MonoBehaviour
 
     public void SetCameraClipDist(float dist)
     {
-        if (TankController.Instance)
-            TankController.Instance.SetCullDistance(dist);
+        if (TankController.Instance) { TankController.Instance.SetCullDistance(dist); }
     }
     public void Quit()
     {
         //Application.Quit();
-        if (VRManager.Instance)
-            Destroy(VRManager.Instance.gameObject);
-        if (TankController.Instance)
-            Destroy(TankController.Instance.gameObject);
+        if (VRManager.Instance) { Destroy(VRManager.Instance.gameObject); }
+        if (TankController.Instance) { Destroy(TankController.Instance.gameObject); }
         // there may be more
         SceneLoader.Instance.LoadMainMenu();
     }

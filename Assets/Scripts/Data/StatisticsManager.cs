@@ -28,7 +28,7 @@ public class StatisticsManager : MonoBehaviour
     // Text objects in the summary
     public DataFilterOptions dataFilterOptions;
     public Text patientIDText, dayStartedText, timesLoggedOnText, moduleCompletedText, exerciseCompletedText, fromModule1, fromExercise1, meanTimeText, fromModule2, fromExercise2, meanAccuracyText;
-    
+
     // TODO: Add text objects in patient projections
 
     private List<SavePatientData.PatientDataEntry> patientData, ciData;
@@ -42,11 +42,6 @@ public class StatisticsManager : MonoBehaviour
     private int activeAttempt;
     private int ciLevel;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void Initialize()
     {
@@ -82,24 +77,16 @@ public class StatisticsManager : MonoBehaviour
         accuracyBase.Initialize();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OpenMenu()
     {
         StartCoroutine(OpenRoutine());
     }
+
+    // TODO : fix null ref here if try to open without having done an exercise.
     private IEnumerator OpenRoutine()
     {
-        // TODO: load player data and:
-        // 1. see when they started the game
-        // 2. see how many times they logged on
-
-        List<SavePatientData.PatientDataEntry> allData = SavePatientData.Instance.GetPatientData();
-        int lastExercise = allData.Count-1;
+        List<SavePatientData.PatientDataEntry> allData = SavePatientData.Instance.PatientData;
+        int lastExercise = allData.Count - 1;
         int lastModule = lastExercise / 7 + 1;
         lastExercise = lastExercise % 7;
         moduleCompletedText.text = lastModule.ToString();
@@ -154,7 +141,7 @@ public class StatisticsManager : MonoBehaviour
 
         timeBase.DrawGraph(cidata, "", "", "");
         timeGraph.DrawGraph(data, "", "Cog. Exercise Number", "Time in Seconds");
-    
+
         // scale the graphs to one another
 
         if (timeGraph.YMax > timeBase.YMax)
@@ -171,7 +158,6 @@ public class StatisticsManager : MonoBehaviour
         string title = "Module " + (numberOption + 1) + " Exercise Times (Session: " + (activeAttempt + 1) + ")";
         timeBase.DrawGraph(cidata, "", "", "");
         timeGraph.DrawGraph(data, title, "Cog. Exercise Number", "Time in Seconds");
-
     }
 
     public void DrawAccuracyGraph()
@@ -206,14 +192,13 @@ public class StatisticsManager : MonoBehaviour
         string title = "Module " + (numberOption + 1) + " Exercise Accuracy (Session: " + (activeAttempt + 1) + ")";
         accuracyBase.DrawGraph(cidata, "", "", "");
         accuracyGraph.DrawGraph(data, title, "Cog. Exercise Number", "Percent Accuracy");
-
     }
 
     public void SpecificExerciseGraph()
     {
         ChooseDataRange();
-        patientData = SavePatientData.Instance.GetPatientData();
-        ciData = SavePatientData.Instance.GetCiData();
+        patientData = SavePatientData.Instance.PatientData;
+        ciData = SavePatientData.Instance.CIData;
 
         if (numberOption > patientData.Count) return;
 
@@ -265,14 +250,15 @@ public class StatisticsManager : MonoBehaviour
         timeBase.DrawGraph(ciTimes, "", "", "");
         accuracyBase.DrawGraph(ciAcc, "", "", "");
 
-        timeGraph.DrawGraph(timeData, "Comparison of Exersice #" + (numberOption + 1) + " Times Over Several Play Sessions", "Play Session", "Time in Seconds", true); 
+        timeGraph.DrawGraph(timeData, "Comparison of Exersice #" + (numberOption + 1) + " Times Over Several Play Sessions", "Play Session", "Time in Seconds", true);
         accuracyGraph.DrawGraph(accData, "Comparison of Exersice #" + (numberOption + 1) + " Accuracy Over Several Play Sessions", "Play Session", "Percent Accuracy", true);
     }
 
+    // TODO : remove magic numbers. Causes incorrect data due to not all modules having 7 exercises.
     public void ChooseDataRange()
     {
-        patientData = SavePatientData.Instance.GetPatientData();
-        ciData = SavePatientData.Instance.GetCiData();
+        patientData = SavePatientData.Instance.PatientData;
+        ciData = SavePatientData.Instance.CIData;
 
         int start = 0;
         int end = patientData.Count;
@@ -303,19 +289,18 @@ public class StatisticsManager : MonoBehaviour
                 cidata.Add(ciData[i]);
             }
         }
-        //Debug.Log("range: " + start + ", " + end);
         patientData = data;
         ciData = cidata;
 
         // Fill out the patient summary fields
         int exNo = start;
         int modNo = exNo / 7 + 1;
-        exNo = exNo  % 7;
+        exNo = exNo % 7;
 
         fromModule1.text = modNo.ToString();
         fromExercise1.text = exNo.ToString();
 
-        exNo = end-1;
+        exNo = end - 1;
         modNo = exNo / 7 + 1;
         exNo = exNo % 7;
 
@@ -327,9 +312,9 @@ public class StatisticsManager : MonoBehaviour
 
         float accAvg = SavePatientData.Instance.AverageAccuracy(patientData, activeAttempt);
         meanAccuracyText.text = accAvg.ToString("0.00") + "%";
-
     }
 
+    // TODO : remove magic numbers. Causes incorrect data due to not all modules having 7 exercises.
     private void OptionsUpdated()
     {
         numberOption = dataFilterOptions.numberDropdown.value;
@@ -368,5 +353,4 @@ public class StatisticsManager : MonoBehaviour
         dataFilterOptions.UpdateDropdownOptions(range, numberOption);
         OpenMenu();
     }
-
 }

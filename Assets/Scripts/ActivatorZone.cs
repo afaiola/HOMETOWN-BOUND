@@ -6,20 +6,18 @@ using UnityEngine.Events;
 
 public class ActivatorZone : MonoBehaviour
 {
-    [SerializeField] public UnityEvent enterEvent;
-    [SerializeField] public UnityEvent exitEvent;
-    [SerializeField] public bool oneTime;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private UnityEvent enterEvent;
+    [SerializeField]
+    private UnityEvent exitEvent;
+    [SerializeField]
+    private bool oneTime;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
+    public UnityEvent EnterEvent { get => enterEvent; set => enterEvent = value; }
+    public UnityEvent ExitEvent { get => exitEvent; set => exitEvent = value; }
+    public bool OneTime { get => oneTime; set => oneTime = value; }
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -28,8 +26,7 @@ public class ActivatorZone : MonoBehaviour
             if (other.tag == "Player")
             {
                 enterEvent.Invoke();
-                if (oneTime)
-                    gameObject.SetActive(false);
+                if (oneTime) { gameObject.SetActive(false); }
             }
         }
     }
@@ -41,8 +38,7 @@ public class ActivatorZone : MonoBehaviour
             if (other.tag == "Player")
             {
                 exitEvent.Invoke();
-                if (oneTime)
-                    gameObject.SetActive(false);
+                if (oneTime) { gameObject.SetActive(false); }
             }
         }
     }

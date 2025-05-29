@@ -33,6 +33,13 @@ public class ModuleMapper : MonoBehaviour
     public Interact[] interactables;
     public GoTo[] gotos;
 
+
+    private int totalExercises = 0;
+
+
+    public int TotalExercises { get => totalExercises; }
+
+
     public void MapModules()
     {
         modules = GameObject.FindObjectsOfType<Module>();
@@ -45,20 +52,20 @@ public class ModuleMapper : MonoBehaviour
         Debug.Log("modues: " + modules.Length);
         Debug.Log("interactables: " + interactables.Length);
         Debug.Log("gotos: " + gotos.Length);
-        int id = 0;
+        totalExercises = 0;
         for (int i = 0; i < modules.Length; i++)
         {
-            id++;   // first exercise is walking to the module
+            totalExercises++;   // first exercise is walking to the module
             interactables[i].correspondingModule = modules[i];
             interactables[i].interactEvent = new UnityEngine.Events.UnityEvent();
             interactables[i].interactEvent.AddListener(interactables[i].ModuleInteract);
             gotos[i].module = modules[i];// null ref here
             gotos[i].moduleObject = interactables[i].gameObject;
-            
+
             for (int j = 0; j < modules[i].exercises.Count; j++)
             {
-                modules[i].exercises[j].exerciseID = id;
-                id++;
+                modules[i].exercises[j].exerciseID = totalExercises;
+                totalExercises++;
             }
         }
         gotos[gotos.Length - 1].moduleObject = null;    // allows house cutscene to take control of player
@@ -87,12 +94,12 @@ public class ModuleMapper : MonoBehaviour
             exercise.customContent = true;
 
             //Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
-            string contentDetails = ""; 
+            string contentDetails = "";
             if (content_map.ContainsKey(content.pictureName))
             {
                 contentDetails = content_map[content.pictureName].ToString();
             }
-            
+
             if (content == StorageManager.Instance.portraitContent)
             {
                 PortraitExercise portraitExercise = exercise as PortraitExercise;
@@ -103,7 +110,7 @@ public class ModuleMapper : MonoBehaviour
                 {
                     names[i] = char.ToUpper(names[i][0]) + names[i].Substring(1);
                 }
-                
+
                 portraitExercise.leftObject.texture = content.image;
                 portraitExercise.Initialize(names);
             }
@@ -116,7 +123,7 @@ public class ModuleMapper : MonoBehaviour
             string pictureName = content.pictureName;
 
             if (content.pictureName == "other") pictureName = "significant other";
-            
+
             if (pictureName[pictureName.Length - 1] == '1' || pictureName[pictureName.Length - 1] == '2') pictureName = pictureName.Substring(0, pictureName.Length - 1);
 
             if (contentDetails != "")
@@ -161,7 +168,8 @@ public class ModuleMapper : MonoBehaviour
 
     public void ResetModule(Module module)
     {
-        int modIdx = (module.lvl - 1) * 5 + module.ModuleNo-1;
+        // TODO : fix this, magic number
+        int modIdx = (module.lvl - 1) * 5 + module.ModuleNo - 1;
         interactables[modIdx].Reset();
     }
 
@@ -172,11 +180,5 @@ public class ModuleMapper : MonoBehaviour
             if (interactables[i])
                 interactables[i].gameObject.SetActive(false);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
