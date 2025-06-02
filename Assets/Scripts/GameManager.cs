@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     public UnityEvent teleportEvent;
     public GameObject scavengerObjects;
     public SceneLoader sceneLoader;
-
     public VRManager vrManager;
 
     public bool useVR;
@@ -27,7 +26,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool inModule;
 
 
-    void Start()
+    public ModuleMapper ModuleMapper { get => moduleMapper; }
+
+
+    protected void Start()
     {
         StartCoroutine(StartRoutine());
     }
@@ -80,7 +82,8 @@ public class GameManager : MonoBehaviour
         // wait for objects to activate before initializing them
         yield return new WaitForEndOfFrame();
 
-        if (TankController.Instance == null) { GameObject.FindObjectOfType<TankController>().Initialize(); } // TODO: Player is getting destroyed here... meaning the VR player controller is not set active and the normal player IS set active
+        // TODO: Player is getting destroyed here... meaning the VR player controller is not set active and the normal player IS set active
+        if (TankController.Instance == null) { GameObject.FindObjectOfType<TankController>().Initialize(); }
         GameObject.FindObjectOfType<Menu>().Initialize();
         GameObject.FindObjectOfType<UIManager>().Initialize();
         GameObject.FindObjectOfType<SecurityCode>().Initialize();
@@ -133,11 +136,10 @@ public class GameManager : MonoBehaviour
         }
 
         StorageManager.Instance.downloadStatusEvent = new UnityEvent<bool>();
-        StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule); //
+        StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
         StorageManager.Instance.StartCSVDownload(Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "patient_data.csv");
 
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
-        // StorageManager.Instance.contentDownloadedEvent.AddListener(LoadModule);
         StorageManager.Instance.StartContentDownload();
 
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
@@ -160,13 +162,18 @@ public class GameManager : MonoBehaviour
 
     private void LoadModule(bool status)
     {
-        Debug.Log("inside LoadModule");
         bool newGame = Profiler.Instance.currentUser.newGame;
         GameObject.FindObjectOfType<SavePatientData>().Initialize(newGame, moduleMapper.TotalExercises);
         IntroScene intro = GameObject.FindObjectOfType<IntroScene>();
-        int lastModulePlayed = SavePatientData.Instance.LastModulePlayed(); // TODO : pass in correct attempt?
-        if (newGame) lastModulePlayed = 0;
-        Debug.Log("lastModulePlayed: " + lastModulePlayed + " name: " + moduleMapper.gotos[lastModulePlayed].module.gameObject.name);
+        int lastModulePlayed = 0;
+        if (!newGame)
+        {
+            lastModulePlayed = GetModuleIndexLastPlayed();
+            for (int i = lastModulePlayed - 1; i >= 0; i--)
+            {
+                moduleMapper.modules[i].IsComplete = true;
+            }
+        }
         if (lastModulePlayed == 0)
         {
             intro.SetDialogue(true);
@@ -176,12 +183,32 @@ public class GameManager : MonoBehaviour
         if (!intro.skipped) // cutscene is still running
         {
             intro.onComplete = new UnityEvent();
-            intro.onComplete.AddListener(moduleMapper.gotos[lastModulePlayed].Go); // This is where we go to our module!
+            intro.onComplete.AddListener(moduleMapper.gotos[lastModulePlayed].Go);
         }
         else
         {
             moduleMapper.gotos[lastModulePlayed].Go();
         }
+    }
+
+    public int GetModuleIndexLastPlayed()
+    {
+        int lastExercise = SavePatientData.Instance.LastExercisePlayed();
+        return moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
+    }
+
+    public int GetModuleIndexLastCompleted()
+    {
+        int lastExercise = SavePatientData.Instance.LastExercisePlayed();
+        int moduleIndex = moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
+        var modules = moduleMapper.modules;
+        if (modules[moduleIndex].IsComplete) { return moduleIndex; }
+        for (int i = moduleIndex - 1; i >= 0; i--)
+        {
+            if (!modules[i].IsComplete) { continue; }
+            return i;
+        }
+        return -1;
     }
 
     public void TeleportPlayer(Vector3 location)
@@ -209,16 +236,12 @@ public class GameManager : MonoBehaviour
         if (teleportEvent != null) teleportEvent.Invoke();
     }
 
-    // need function for handling when a new level is loaded. map the modules to the newly found interactables
-    public void LevelLoaded(int level)
-    {
-        // 
-    }
 
     public void SetCameraClipDist(float dist)
     {
         if (TankController.Instance) { TankController.Instance.SetCullDistance(dist); }
     }
+
     public void Quit()
     {
         //Application.Quit();

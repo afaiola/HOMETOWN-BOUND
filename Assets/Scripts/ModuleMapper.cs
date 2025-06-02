@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,14 +45,10 @@ public class ModuleMapper : MonoBehaviour
     {
         modules = GameObject.FindObjectsOfType<Module>();
         interactables = GameObject.FindObjectsOfType<Interact>();
-        gotos = Menu.Instance.GetComponentsInChildren<GoTo>(true);//GameObject.FindObjectsOfType<GoTo>();  // this is finding the wrong UIMan
-        Debug.Log("got gotos from " + Menu.Instance.name);
+        gotos = Menu.Instance.GetComponentsInChildren<GoTo>(true);
         Array.Sort(modules, new ModuleComparer());
         Array.Sort(interactables, new InteractableComparer());
         Array.Sort(gotos, new GoToComparer());
-        Debug.Log("modues: " + modules.Length);
-        Debug.Log("interactables: " + interactables.Length);
-        Debug.Log("gotos: " + gotos.Length);
         totalExercises = 0;
         for (int i = 0; i < modules.Length; i++)
         {
@@ -80,20 +77,17 @@ public class ModuleMapper : MonoBehaviour
         {
             json = r.ReadToEnd();
         }
-        //Debug.Log("length of json content: " + json.Length);
         if (json.Length < 10) return;
         var content_map = JObject.Parse(json);
         // TODO: check if picture is valid before applying it
         foreach (var content in StorageManager.Instance.playerContents)
         {
-            //Debug.Log("trying content: " + content.pictureName);
             if (!content.valid) continue;
             int mod = Mathf.FloorToInt(content.exerciseID / 7);
             int ex = content.exerciseID % 7;
             Exercise exercise = modules[mod].exercises[ex];
             exercise.customContent = true;
 
-            //Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
             string contentDetails = "";
             if (content_map.ContainsKey(content.pictureName))
             {
@@ -139,9 +133,8 @@ public class ModuleMapper : MonoBehaviour
         {
             content.valid = content_map.ContainsKey(content.pictureName);
             if (!content.valid) continue;
-            int mod = Mathf.FloorToInt(content.exerciseID / 7);
-            int ex = content.exerciseID % 7;
-            Exercise exercise = modules[mod].exercises[ex];
+            var (moduleIndex, exerciseIndex) = GetModuleAndExerciseIndexFromExcerciseId(content.exerciseID);
+            Exercise exercise = modules[moduleIndex].exercises[exerciseIndex];
             exercise.customContent = true;
             int optionSelected = int.Parse(content_map[content.pictureName].ToString());
             content.details = optionSelected.ToString();
@@ -168,9 +161,8 @@ public class ModuleMapper : MonoBehaviour
 
     public void ResetModule(Module module)
     {
-        // TODO : fix this, magic number
-        int modIdx = (module.lvl - 1) * 5 + module.ModuleNo - 1;
-        interactables[modIdx].Reset();
+        int moduleIndex = Array.IndexOf(modules, module);
+        interactables[moduleIndex].Reset();
     }
 
     public void SkipModules(int skipID) // module with skipID should not be skipped
@@ -178,7 +170,43 @@ public class ModuleMapper : MonoBehaviour
         for (int i = 0; i < skipID; i++)
         {
             if (interactables[i])
+            {
                 interactables[i].gameObject.SetActive(false);
+            }
         }
+    }
+
+    public int GetModuleIndexFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        for (int i = 0; i < modules.Length; i++)
+        {
+            currentExercise++; // +1 for walk exercise
+            currentExercise += modules[i].exercises.Count;
+            if (excerciseId <= currentExercise)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
+    private (int, int) GetModuleAndExerciseIndexFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        for (int i = 0; i < modules.Length; i++)
+        {
+            currentExercise++; // +1 for walk exercise
+            for (int j = 0; j < modules[i].exercises.Count; j++)
+            {
+                if (excerciseId == currentExercise)
+                {
+                    return (i, j);
+                }
+                currentExercise++;
+            }
+        }
+        return (0, 0);
     }
 }

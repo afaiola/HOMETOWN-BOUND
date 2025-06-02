@@ -1,4 +1,5 @@
 ﻿using cakeslice;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,23 +8,26 @@ using UnityEngine.EventSystems;
 
 public class Interact : MonoBehaviour
 {
-    public UnityEvent<GameObject> onSelected;
+    [SerializeField]
+    private ActivatorZone zone;
+    [SerializeField]
+    private AudioSource audioSource;
     [SerializeField]
     private Outline outline;
+    public UnityEvent<GameObject> onSelected;
     public Module correspondingModule;
     public UnityEvent interactEvent;
 
 
     private GameObject player;
-    private bool hovering, resetting;
+    private bool hovering;
+    private bool resetting;
 
 
     protected void Start()
     {
-        outline = GetComponentInChildren<Outline>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
-
 
     protected void Update()
     {
@@ -54,27 +58,22 @@ public class Interact : MonoBehaviour
     public void ModuleInteract()
     {
         if (resetting) return;
-        ActivatorZone zone = GetComponent<ActivatorZone>();
-
-        // TODO: prevent interact when another module is playing
         if (GameManager.Instance.inModule)
         {
             Menu.Instance.UpdateModuleName("Please complete the current module before attempting the next one.");
             zone.OneTime = false;
             return;
         }
-
-        // if previous module not played, prompt user to play the correct previous module
-        // TODO: figure out if we want to use last module with saved info or for the current play session
-        int currAttempt = SavePatientData.Instance.CurrentAttempt;
-        int lastModule = SavePatientData.Instance.LastModulePlayed(currAttempt); // TODO : passing in the correct attempt?
-        int lastLevel = lastModule / 5; // TODO : magic number
-        int modNum = correspondingModule.ModuleNo + (correspondingModule.lvl - 1) * 5; // TODO : magic number
-        Debug.Log($"Interact with {modNum}. Last module on attempt {currAttempt} was {lastModule}");
-        if (modNum - lastModule > 1)
+        int lastModuleCompletedIndex = GameManager.Instance.GetModuleIndexLastCompleted();
+        int moduleIndex = Array.IndexOf(GameManager.Instance.ModuleMapper.modules, correspondingModule);
+        int skippedModuleIndex = lastModuleCompletedIndex + 1;
+        var skippedModule = GameManager.Instance.ModuleMapper.modules[skippedModuleIndex];
+        if (moduleIndex - lastModuleCompletedIndex > 1)
         {
-            Menu.Instance.UpdateModuleName($"Sorry. You missed Module <b>{(lastModule + 1) % 5}</b> in <b>{((Levels)lastLevel).ToString()} TOWN</b>. Please go back and complete before you proceed");
-            Menu.Instance.MissedModuleWarning((lastModule + 1) % 5, (Levels)lastLevel);
+            int skippedModuleLevelIndex = skippedModule.lvl - 1;
+            int skippedModuleNumber = skippedModule.ModuleNo;
+            Menu.Instance.UpdateModuleName($"Sorry. You missed Module <b>{skippedModuleNumber}</b> in <b>{((Levels)skippedModuleLevelIndex).ToString()} TOWN</b>. Please go back and complete before you proceed");
+            Menu.Instance.MissedModuleWarning(skippedModuleNumber, (Levels)skippedModuleLevelIndex);
             zone.OneTime = false;
             return;
         }
@@ -83,7 +82,7 @@ public class Interact : MonoBehaviour
             SceneLoader.Instance.LoadHouseInterior();
         }
         zone.OneTime = true;
-        GetComponent<AudioSource>().Play();
+        audioSource.Play();
         correspondingModule.Play();
         StaticEvent.moduleStarted();
         gameObject.SetActive(false);
@@ -103,7 +102,6 @@ public class Interact : MonoBehaviour
     public void Reset()
     {
         resetting = true;
-        ActivatorZone zone = GetComponent<ActivatorZone>();
         zone.OneTime = false;
         zone.ExitEvent.AddListener(ResetOnExit);
         gameObject.SetActive(true);
@@ -113,7 +111,6 @@ public class Interact : MonoBehaviour
     private void ResetOnExit()
     {
         resetting = false;
-        ActivatorZone zone = GetComponent<ActivatorZone>();
         zone.OneTime = false;
     }
 }

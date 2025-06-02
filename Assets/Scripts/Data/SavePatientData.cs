@@ -102,7 +102,7 @@ public class SavePatientData : MonoBehaviour
         return data;
     }
 
-    // TODO : are we using the returned bool?, return true if file existed prior to creation
+    // return true if file existed prior to creation
     private bool CreateFile(string path, out List<PatientDataEntry> data, bool newGame, int numAttempts = 3)
     {
         data = new List<PatientDataEntry>();
@@ -169,7 +169,8 @@ public class SavePatientData : MonoBehaviour
                  */
                 bool validRow = true;
 
-                if (path == patientDataFile) // TODO : change if allowing more than three attempts
+                // TODO : update with new columns on next PR
+                if (path == patientDataFile)
                 {
                     validRow = int.TryParse(parts[0], out entry.exercise) &&
                                    float.TryParse(parts[1], out entry.attempts[0].time) &&
@@ -255,9 +256,8 @@ public class SavePatientData : MonoBehaviour
 
     private void SaveFile()
     {
-        //string header = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", "Exercise", "Time 1", "Successes 1", "Misses 1", "Time 2", "Successes 2", "Misses 2", "Time 3", "Successes 3", "Misses 3");
+        Debug.Log("Inside save file");
         string header = "Exercise";
-        //header = "";
         for (int i = 0; i < maxAttempts; i++)
         {
             header += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
@@ -268,19 +268,16 @@ public class SavePatientData : MonoBehaviour
             {
                 if (patientData != null)
                 {
-                    //File.WriteAllText(patientDataFile, header);
                     w.WriteLine(header);
                     w.Flush();
                     for (int i = 0; i < patientData.Count; i++)
                     {
                         PatientDataEntry entry = patientData[i];
-                        //string line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", entry.exercise, entry.attempts[0].time, entry.attempts[0].successes, entry.attempts[0].misses, entry.attempts[1].time, entry.attempts[1].successes, entry.attempts[1].misses, entry.attempts[2].time, entry.attempts[2].successes, entry.attempts[2].misses);
                         string line = entry.exercise.ToString();
                         for (int a = 0; a < entry.attempts.Length; a++)
                         {
                             line += $",{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
                         }
-                        //File.AppendAllText(patientDataFile, line);
                         w.WriteLine(line);
                         w.Flush();
                     }
@@ -299,7 +296,6 @@ public class SavePatientData : MonoBehaviour
             {
                 using (var w = new StreamWriter(ciDataFile))
                 {
-                    //File.WriteAllText(ciDataFile, header);
                     w.WriteLine(header);
                     w.Flush();
                     for (int i = 0; i < ciData.Count; i++)
@@ -310,8 +306,6 @@ public class SavePatientData : MonoBehaviour
                         {
                             line += "," + entry.attempts[j].time + "," + entry.attempts[j].successes + "," + entry.attempts[j].misses;
                         }
-                        //line += "\n";
-                        //File.AppendAllText(ciDataFile, line);
                         w.WriteLine(line);
                         w.Flush();
                     }
@@ -355,11 +349,10 @@ public class SavePatientData : MonoBehaviour
                 }
                 if (!newEntry)
                 {
-                    // overwrite row 3
-                    patientData[i].attempts[2].time = time;
-                    patientData[i].attempts[2].successes = successes;
-                    patientData[i].attempts[2].misses = misses;
-                    currentAttempt = 2; // TODO : probs don't need to reset here but test, then replace 2 above with this
+                    // overwrite last row
+                    patientData[i].attempts[currentAttempt].time = time;
+                    patientData[i].attempts[currentAttempt].successes = successes;
+                    patientData[i].attempts[currentAttempt].misses = misses;
                 }
                 break;
             }
@@ -450,27 +443,10 @@ public class SavePatientData : MonoBehaviour
 
     public void UploadPatientData()
     {
-        Debug.Log("uploading patient data");
         StorageManager.Instance.StartCSVUpload(patientDataFile);
     }
 
-    // returns most recently played module this session
-    public int RecentModule()
-    {
-        return recentExercise / 7;
-    }
-
-    public int LastModulePlayed(int attempt = -1) //
-    {
-        Debug.Log("getting last mod played");
-        int lastExercise = LastExercisePlayed(attempt);
-        // TODO : make function for this, cant just divide by 7
-        int mod = Mathf.FloorToInt(lastExercise / 7); // TODO : dividing by 7 bc (6 exercises + walking to module) // 3 levels * 5 modules * (6 exercises + walking to module) 
-        Debug.Log($"last played M{mod} E{lastExercise}");
-        return mod;
-    }
-
-    public int LastExercisePlayed(int attempt = -1)
+    public int LastExercisePlayed()
     {
         int[] lastPlayed = new int[maxAttempts];  // last exercise played on each attempt
         if (patientData == null)
@@ -481,21 +457,18 @@ public class SavePatientData : MonoBehaviour
         {
             for (int j = 0; j < patientData[i].attempts.Length; j++)
             {
-                if (patientData[i].attempts[j].time != 0) // TODO : better way to detect this?
+                if (patientData[i].attempts[j].time != 0)
                 {
                     lastPlayed[j] = patientData[i].exercise + 1; // +1 accounts for leaving the hospital
                 }
             }
         }
-        if (attempt != -1 && attempt < maxAttempts)
+        if (currentAttempt != -1 && currentAttempt < maxAttempts)
         {
-            return lastPlayed[attempt];
+            return lastPlayed[currentAttempt];
         }
-
         for (int i = 0; i < lastPlayed.Length; i++)
         {
-            Debug.Log($"last played on attempt {i} = {lastPlayed[i]}");
-
             if (lastPlayed[i] < totalExercises)
             {
                 return lastPlayed[i];
@@ -503,6 +476,7 @@ public class SavePatientData : MonoBehaviour
         }
         return 0;
     }
+
 
     private static void PlatformSafeMessage(string message)
     {

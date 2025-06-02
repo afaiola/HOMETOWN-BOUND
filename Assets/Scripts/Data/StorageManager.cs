@@ -15,17 +15,18 @@ public class StorageManager : MonoBehaviour
     public static StorageManager Instance { get => _instance; }
     private static StorageManager _instance;
 
-    [System.NonSerialized] public UnityEvent<bool> downloadStatusEvent = new UnityEvent<bool>();
 
+    [System.NonSerialized] public UnityEvent<bool> downloadStatusEvent = new UnityEvent<bool>();
     public PlayerContent[] playerContents, dropdownContents;
     public PlayerContent portraitContent;
     public UnityEvent contentDownloadedEvent = new UnityEvent();
 
+
     private string contentDir;
     private int totalFiles, filesDownloaded;
-    
-    // Start is called before the first frame update
-    void Start()
+
+
+    protected void Start()
     {
         Initialize();
     }
@@ -41,12 +42,6 @@ public class StorageManager : MonoBehaviour
         _instance = this;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void StartContentDownload()
@@ -67,7 +62,6 @@ public class StorageManager : MonoBehaviour
         if (!fileExists || file_contents.Length < 16)
         {
             var content_ref = storage.GetReference(firebasePath);
-            Debug.Log(content_ref.Bucket.Length);
             //var download_task = content_ref.GetFileAsync(localPath);    // may want to check if file already exists
             const long maxDownloadSize = 1024 * 1024 * 16;      // 16MB (form limit is 10MB)
             var download_task = content_ref.GetBytesAsync(maxDownloadSize);    // may want to check if file already exists
@@ -148,7 +142,6 @@ public class StorageManager : MonoBehaviour
             float downloadPercent = 10000f * (float)filesDownloaded / (float)totalFiles / 100f;
             //Debug.Log($"Download progress: {downloadPercent}%");
         }
-
         contentDownloadedEvent.Invoke();
     }
 
@@ -156,7 +149,7 @@ public class StorageManager : MonoBehaviour
     private IEnumerator DownloadPictures()
     {
         //var storage = FirebaseStorage.DefaultInstance;
- 
+
         foreach (var content in playerContents)
         {
             string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/{content.pictureName}";
@@ -167,7 +160,7 @@ public class StorageManager : MonoBehaviour
             CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
             yield return cd.coroutine;
             content.image.LoadImage((byte[])cd.result);
-            content.image.Apply(); 
+            content.image.Apply();
         }
         contentDownloadedEvent.Invoke();
     }
