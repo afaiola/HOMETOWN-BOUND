@@ -9,12 +9,22 @@ using Text = TMPro.TextMeshProUGUI;
 using Firebase.Auth;
 using Firebase.Firestore;
 
+
 public class UserAccountManager : MonoBehaviour
 {
-    public UserInputPanel signInPanel, registerPanel;
-    public GameObject loadingBar, newGamePanel;
-    public Emailer emailPanel;
-    public UnityEvent loginSuccessEvent = new UnityEvent();
+    [SerializeField]
+    private UserInputPanel signInPanel;
+    [SerializeField]
+    private UserInputPanel registerPanel;
+    [SerializeField]
+    private GameObject loadingBar;
+    [SerializeField]
+    private GameObject newGamePanel;
+    [SerializeField]
+    private Emailer emailPanel;
+    [SerializeField]
+    private UnityEvent loginSuccessEvent = new UnityEvent();
+
 
     // user option keys
     private string k_email = "email";
@@ -32,15 +42,12 @@ public class UserAccountManager : MonoBehaviour
 
     // firestore keys
     private string k_user_collection = "users";
-
     private string secret = "AaBb1!2@";
-
     private string adminUser = "hometown.service859@gmail.com";
     private string adminPass = "hometown B0UND$";
 
 
-    // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         signInPanel.submitAction = new UnityEvent<Dictionary<string, string>>();
         signInPanel.submitAction.AddListener(StartSignIn);
@@ -57,17 +64,27 @@ public class UserAccountManager : MonoBehaviour
         newGamePanel.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void StartSignIn(Dictionary<string, string> userOptions)
     {
-        Debug.Log("signing in");
         StartCoroutine(SignIn(userOptions));
     }
+
+    public void StartRegistration(Dictionary<string, string> userOptions)
+    {
+        StartCoroutine(Register(userOptions));
+    }
+
+    public void StartNewGame(bool newGame)
+    {
+        Profiler.Instance.currentUser.newGame = newGame;
+        signInPanel.gameObject.SetActive(false);
+        registerPanel.gameObject.SetActive(false);
+        newGamePanel.SetActive(false);
+        loadingBar.SetActive(true);
+        loginSuccessEvent.Invoke();
+    }
+
 
     // Using WaitUntils rather than the task.ContinueWith becuase that was causing the function to terminate 
     // after the task completed which caused chained coroutines to not execute.
@@ -79,7 +96,7 @@ public class UserAccountManager : MonoBehaviour
         string password = userOptions[k_pass];
 
         DateTime legacySigninDate = new DateTime(2024, 3, 9);
-        
+
         var db = FirebaseFirestore.DefaultInstance;
         if (!email.Contains("@"))
         {
@@ -110,7 +127,7 @@ public class UserAccountManager : MonoBehaviour
                 if (!snapshotTask.Result.Exists)
                 {
                     Debug.LogWarning($"{email} document doesn't exist");
-                }    
+                }
                 user = snapshotTask.Result.ToDictionary();
                 if (user != null)
                 {
@@ -176,11 +193,6 @@ public class UserAccountManager : MonoBehaviour
         }
     }
 
-    public void StartRegistration(Dictionary<string, string> userOptions)
-    {
-        StartCoroutine(Register(userOptions));
-    }
-
     private IEnumerator Register(Dictionary<string, string> userOptions)
     {
         // TODO: protect from retreiving invalid keys
@@ -206,7 +218,7 @@ public class UserAccountManager : MonoBehaviour
         var queryTask = query.GetSnapshotAsync();
         yield return new WaitUntil(() => queryTask.IsCompleted);
 
-        if (queryTask.IsCanceled )
+        // TODO : need this? if (queryTask.IsCanceled)
         foreach (var doc in queryTask.Result.Documents)
         {
             Dictionary<string, object> user = doc.ToDictionary();
@@ -275,14 +287,5 @@ public class UserAccountManager : MonoBehaviour
             registerPanel.SubmitFail(message);
             // TODO: Update the proper helper messages on fail ie: username unavailable
         }
-    }
-    
-    public void StartNewGame(bool newGame)
-    {
-        Profiler.Instance.currentUser.newGame = newGame;
-        signInPanel.gameObject.SetActive(false);
-        registerPanel.gameObject.SetActive(false);
-        loadingBar.SetActive(true);
-        loginSuccessEvent.Invoke();
     }
 }

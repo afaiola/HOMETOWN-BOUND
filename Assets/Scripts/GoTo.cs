@@ -46,13 +46,14 @@ public class GoTo : MonoBehaviour
         }
         if (!module.open)
         {
-            Debug.Log("goto " + module.ModuleNo);
             UIManager.Instance.Resume();
             //UIManager.Instance.LockCursor();
             //ScoreCalculator.instance.controller.transform.position = moduleObject.transform.position;
             //StartModule();  // here to prevent collider starting the module too early.
             if (SavePatientData.Instance)
-                SavePatientData.Instance.SaveEntry(module.exercises[0].exerciseID-1, 1, 0, 0);  // -1 covers the walk to exercise
+            {
+                SavePatientData.Instance.SaveEntry(module.exercises[0].exerciseID - 1, 1, 0, 0);  // -1 covers the walk to exercise
+            }
             GameManager.Instance.teleportEvent = new UnityEngine.Events.UnityEvent();
             GameManager.Instance.teleportEvent.AddListener(StartModule);
             Vector3 loc = TankController.Instance.transform.position;
@@ -60,10 +61,7 @@ public class GoTo : MonoBehaviour
             GameManager.Instance.TeleportPlayer(loc);
             if (onGo != null) onGo.Invoke();
             ModuleMapper mapper = GameObject.FindObjectOfType<ModuleMapper>();
-            if (mapper)
-            {
-                mapper.SkipModules(module.ModuleNo);
-            }
+            if (mapper) { mapper.SkipModules(module.ModuleNo); }
         }
     }
 

@@ -9,27 +9,12 @@ public class WalkExercise : Exercise
     public string nameOfLocation;
     public ActivatorZone zone;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    protected override void OnValidate()
-    {
-
-    }
 
     public override void Arrange()
     {
         zone.enabled = true;
-        zone.enterEvent = new UnityEngine.Events.UnityEvent();
-        zone.enterEvent.AddListener(EnterArea);
+        zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+        zone.EnterEvent.AddListener(EnterArea);
     }
 
     public override bool CheckSuccess
@@ -78,6 +63,4 @@ public class WalkExercise : Exercise
         _correctCount++;
         Success();
     }
-
-
 }

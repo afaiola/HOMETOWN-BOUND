@@ -13,20 +13,8 @@ public class EndUI : MonoBehaviour
     private int[] levelScores;
     private int[] levelCount;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (exitButton != null)
-            exitButton.onClick.AddListener(Close);
-        gameObject.SetActive(false);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // TODO : Remove magic numbers. Cannot assume each module has 7 exercises.
     public void GetScores()
     {
         statsButton.onClick = new Button.ButtonClickedEvent();
@@ -38,10 +26,8 @@ public class EndUI : MonoBehaviour
         int m = 0;
         int totalStars = 0;
         int modCt = 0;
-
-        int activeAttempt = SavePatientData.Instance.GetActiveAttempt();
-
-        List<SavePatientData.PatientDataEntry> data = SavePatientData.Instance.GetPatientData();
+        int activeAttempt = SavePatientData.Instance.CurrentAttempt;
+        List<SavePatientData.PatientDataEntry> data = SavePatientData.Instance.PatientData;
         for (int i = 0; i < data.Count; i++)
         {
             SavePatientData.PatientDataEntry.PatientAttempt entry = data[i].attempts[activeAttempt];
@@ -63,12 +49,11 @@ public class EndUI : MonoBehaviour
         }
 
         // last module is not a multiple of 7.
-        int hosueStars = exerciseScores.Sum() / 4;
-        levelScores[2] += hosueStars;
+        int houseStars = exerciseScores.Sum() / 4;
+        levelScores[2] += houseStars;
         levelCount[2]++;
-        totalStars += Mathf.CeilToInt(hosueStars);
+        totalStars += Mathf.CeilToInt(houseStars);
         modCt++;
-        Debug.Log(modCt + " modlues scored");
 
         //int totalStars = Mathf.FloorToInt(levelScores.Sum() / 14);
         for (int i = 0; i < 3; i++)
@@ -79,7 +64,6 @@ public class EndUI : MonoBehaviour
         }
         // num modules = 14
         totalStarsText.text = totalStars + "/" + 14 * 5;
-     
     }
 
     public void Close()

@@ -86,7 +86,7 @@ public class Exercise : MonoBehaviour
 
         if (CheckSuccess)
         {
-            StartCoroutine(Wait(2, Success));
+            StartCoroutine(Wait(2, Success)); // TODO : edit here for determining attempts
         }
 
         return true;
@@ -104,14 +104,16 @@ public class Exercise : MonoBehaviour
 
     private void ActivateButtons()
     {
-        foreach(ModuleButton mb in buttons){
+        foreach (ModuleButton mb in buttons)
+        {
             mb.ActivateButton();
         }
     }
 
     private void DeactivateButtons()
     {
-         foreach(ModuleButton mb in buttons){
+        foreach (ModuleButton mb in buttons)
+        {
             mb.DeactivateButton();
         }
     }

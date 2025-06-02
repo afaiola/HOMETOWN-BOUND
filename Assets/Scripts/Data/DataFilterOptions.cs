@@ -10,18 +10,12 @@ public class DataFilterOptions : MonoBehaviour
 
     [System.NonSerialized] public UnityEvent optionsUpdatedEvent;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         lodDropdown.onValueChanged.AddListener(DropdownChanged);
         numberDropdown.onValueChanged.AddListener(DropdownChanged);
         attemptDropdown.onValueChanged.AddListener(DropdownChanged);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void UpdateDropdownOptions(int numberRange, int newValue)
@@ -84,10 +78,10 @@ public class DataFilterOptions : MonoBehaviour
         int level = ciDropdown.value;
 
         yield return new WaitForEndOfFrame();
-        List<SavePatientData.PatientDataEntry> ciData = SavePatientData.Instance.GetCiData();
+        List<SavePatientData.PatientDataEntry> ciData = SavePatientData.Instance.CIData;
         int ciLevels = ciData[0].attempts.Length;
         if (ciDropdown.options.Count != ciLevels)
-        { 
+        {
             ciDropdown.ClearOptions();
 
             List<Dropdown.OptionData> dropdownOptions = new List<Dropdown.OptionData>();
@@ -96,7 +90,7 @@ public class DataFilterOptions : MonoBehaviour
                 dropdownOptions.Add(new Dropdown.OptionData(i.ToString()));
 
             ciDropdown.AddOptions(dropdownOptions);
- 
+
             yield return new WaitForEndOfFrame();
             if (Profiler.Instance)
             {
