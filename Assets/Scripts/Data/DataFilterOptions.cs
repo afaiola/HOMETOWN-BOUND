@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+// TODO : remove this from scene? + remove script?
 public class DataFilterOptions : MonoBehaviour
 {
     public Dropdown lodDropdown, numberDropdown, attemptDropdown, ciDropdown;
@@ -23,6 +24,7 @@ public class DataFilterOptions : MonoBehaviour
         StartCoroutine(RefreshNumberDropdown(numberRange, newValue));
     }
 
+    // TODO : magic numbers
     private IEnumerator RefreshNumberDropdown(int numberRange, int newValue)
     {
         numberDropdown.onValueChanged = new Dropdown.DropdownEvent();
@@ -79,7 +81,7 @@ public class DataFilterOptions : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
         List<SavePatientData.PatientDataEntry> ciData = SavePatientData.Instance.CIData;
-        int ciLevels = ciData[0].attempts.Length;
+        /* int ciLevels = ciData[0].attempt.Length;
         if (ciDropdown.options.Count != ciLevels)
         {
             ciDropdown.ClearOptions();
@@ -106,7 +108,7 @@ public class DataFilterOptions : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
         ciDropdown.RefreshShownValue();
-        ciDropdown.onValueChanged.AddListener(DropdownChanged);
+        ciDropdown.onValueChanged.AddListener(DropdownChanged); */
 
     }
 

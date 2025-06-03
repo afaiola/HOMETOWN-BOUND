@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,11 +9,12 @@ public class EndUI : MonoBehaviour
     public Text totalStarsText;
     public Button statsButton, menuButton, exitButton;
 
+
     private int[] levelScores;
     private int[] levelCount;
 
 
-    // TODO : Remove magic numbers. Cannot assume each module has 7 exercises.
+    // TODO : Remove magic numbers
     public void GetScores()
     {
         statsButton.onClick = new Button.ButtonClickedEvent();
@@ -26,28 +26,29 @@ public class EndUI : MonoBehaviour
         int m = 0;
         int totalStars = 0;
         int modCt = 0;
-        int activeAttempt = SavePatientData.Instance.CurrentAttempt;
         List<SavePatientData.PatientDataEntry> data = SavePatientData.Instance.PatientData;
         for (int i = 0; i < data.Count; i++)
         {
-            SavePatientData.PatientDataEntry.PatientAttempt entry = data[i].attempts[activeAttempt];
+            SavePatientData.PatientDataEntry entry = data[i];
             int score = ScoreCalculator.instance.GetScore(entry.time, entry.successes, entry.misses, i);
 
             exerciseScores[m] = score;
             m++;
+            // TODO : magic number
             if (m >= 7)     // 7 exercises in a modules
             {
                 m = 0;
                 int mStars = exerciseScores.Sum() / exerciseScores.Length;
-                int level = Mathf.FloorToInt(i / 35);
+                int level = Mathf.FloorToInt(i / 35); // TODO : magic number
                 levelScores[level] += mStars;
                 levelCount[level]++;
-                totalStars += Mathf.CeilToInt(mStars);
-                exerciseScores = new int[7];
+                totalStars += Mathf.CeilToInt(mStars); // TODO : magic number
+                exerciseScores = new int[7]; // TODO : magic number
                 modCt++;
             }
         }
 
+        // TODO : combine with above so we don't have to seperate out count
         // last module is not a multiple of 7.
         int houseStars = exerciseScores.Sum() / 4;
         levelScores[2] += houseStars;
@@ -63,7 +64,7 @@ public class EndUI : MonoBehaviour
             stars[i].localScale = new Vector3(avgStar / 5f, 1);
         }
         // num modules = 14
-        totalStarsText.text = totalStars + "/" + 14 * 5;
+        totalStarsText.text = totalStars + "/" + 14 * 5; // TODO : magic number
     }
 
     public void Close()
@@ -71,5 +72,4 @@ public class EndUI : MonoBehaviour
         TankController.Instance.EnableMovement();
         gameObject.SetActive(false);
     }
-
 }

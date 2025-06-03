@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -35,28 +33,22 @@ public class ModuleMapper : MonoBehaviour
     public GoTo[] gotos;
 
 
-    private int totalExercises = 0;
-
-
-    public int TotalExercises { get => totalExercises; }
-
-
     public void MapModules()
     {
-        modules = GameObject.FindObjectsOfType<Module>();
-        interactables = GameObject.FindObjectsOfType<Interact>();
+        modules = FindObjectsOfType<Module>();
+        interactables = FindObjectsOfType<Interact>();
         gotos = Menu.Instance.GetComponentsInChildren<GoTo>(true);
         Array.Sort(modules, new ModuleComparer());
         Array.Sort(interactables, new InteractableComparer());
         Array.Sort(gotos, new GoToComparer());
-        totalExercises = 0;
+        int totalExercises = 0;
         for (int i = 0; i < modules.Length; i++)
         {
-            totalExercises++;   // first exercise is walking to the module
+            totalExercises++; // first exercise is walking to the module
             interactables[i].correspondingModule = modules[i];
             interactables[i].interactEvent = new UnityEngine.Events.UnityEvent();
             interactables[i].interactEvent.AddListener(interactables[i].ModuleInteract);
-            gotos[i].module = modules[i];// null ref here
+            gotos[i].goToModule = modules[i];// null ref here
             gotos[i].moduleObject = interactables[i].gameObject;
 
             for (int j = 0; j < modules[i].exercises.Count; j++)
@@ -133,7 +125,7 @@ public class ModuleMapper : MonoBehaviour
         {
             content.valid = content_map.ContainsKey(content.pictureName);
             if (!content.valid) continue;
-            var (moduleIndex, exerciseIndex) = GetModuleAndExerciseIndexFromExcerciseId(content.exerciseID);
+            var (moduleIndex, exerciseIndex) = GetModuleAndExerciseIndicesFromExcerciseId(content.exerciseID);
             Exercise exercise = modules[moduleIndex].exercises[exerciseIndex];
             exercise.customContent = true;
             int optionSelected = int.Parse(content_map[content.pictureName].ToString());
@@ -191,8 +183,33 @@ public class ModuleMapper : MonoBehaviour
         return 0;
     }
 
+    public (int level, int module, int exercise) GetIndicesFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        foreach (var module in modules)
+        {
+            currentExercise++; // +1 for walk exercise
+            if (excerciseId == currentExercise)
+            {
+                Debug.Log("currentExercise: " + currentExercise + " looking for: " + excerciseId + " go to exercise");
+                return (module.lvl, module.ModuleNo, currentExercise);
+            }
+            foreach (var _ in module.exercises)
+            {
+                Debug.Log("currentExercise: " + currentExercise + " looking for: " + excerciseId);
+                currentExercise++;
+                if (excerciseId == currentExercise)
+                {
+                    return (module.lvl, module.ModuleNo, currentExercise);
+                }
+            }
+        }
+        Debug.LogError("Could not find module from exercise id.");
+        return (0, 0, 0);
+    }
 
-    private (int, int) GetModuleAndExerciseIndexFromExcerciseId(int excerciseId)
+
+    private (int, int) GetModuleAndExerciseIndicesFromExcerciseId(int excerciseId)
     {
         int currentExercise = -1;
         for (int i = 0; i < modules.Length; i++)

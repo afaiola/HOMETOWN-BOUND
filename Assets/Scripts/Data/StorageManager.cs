@@ -224,30 +224,11 @@ public class StorageManager : MonoBehaviour
 
     private IEnumerator DownloadCSV(string localPath)
     {
-        var storage = FirebaseStorage.DefaultInstance;
-        //var csv_reference = storage.GetReference($"/data/{Profiler.Instance.currentUser.username}/patient_data.csv");
         string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/patient_data.csv";
-
-        // dowload the file
-        /*
-        const long maxDownloadSize = 1024 * 1024;
-        var downloadTask = csv_reference.GetBytesAsync(maxDownloadSize);
-        yield return new WaitUntil(() => downloadTask.IsCompleted);
-
-        bool status = true;
-        if (downloadTask.Exception != null)
-        {
-            Debug.LogError($"CSV Download failed: {downloadTask.Exception}");
-            status = false;
-        }
-        else
-        {
-            // save csv locally
-            byte[] fileContents = downloadTask.Result;
-            status = writeByteArrayToFile(fileContents, filename);
-        }*/
         if (File.Exists(localPath))
+        {
             File.Delete(localPath);
+        }
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
         bool status = false;

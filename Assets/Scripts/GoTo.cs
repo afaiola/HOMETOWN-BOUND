@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GoTo : MonoBehaviour
 {
-    public Module module;
+    public Module goToModule;
     public GameObject moduleObject;
     static Module[] _modules;
     public UnityEngine.Events.UnityEvent onGo;
@@ -38,21 +36,25 @@ public class GoTo : MonoBehaviour
 
     public void Go()
     {
-        foreach (var m in modules)
+        foreach (var module in modules)
         {
-            if (m != module)
-                if (m != null)
-                    m.Hide();
+            if (module != goToModule && module != null)
+            {
+                module.Hide();
+            }
         }
-        if (!module.open)
+        if (!goToModule.open)
         {
             UIManager.Instance.Resume();
             //UIManager.Instance.LockCursor();
             //ScoreCalculator.instance.controller.transform.position = moduleObject.transform.position;
             //StartModule();  // here to prevent collider starting the module too early.
+
             if (SavePatientData.Instance)
             {
-                SavePatientData.Instance.SaveEntry(module.exercises[0].exerciseID - 1, 1, 0, 0);  // -1 covers the walk to exercise
+                int exerciseId = goToModule.exercises[0].exerciseID - 1;  // -1 covers the walk to exercise
+                string exerciseName = GameManager.Instance.CreateExerciseNameFromExerciseId(exerciseId);
+                SavePatientData.Instance.SaveEntry(exerciseId, exerciseName, DateTimeOffset.Now, 1, 0, 0);
             }
             GameManager.Instance.teleportEvent = new UnityEngine.Events.UnityEvent();
             GameManager.Instance.teleportEvent.AddListener(StartModule);
@@ -60,8 +62,8 @@ public class GoTo : MonoBehaviour
             if (moduleObject) loc = moduleObject.transform.position;
             GameManager.Instance.TeleportPlayer(loc);
             if (onGo != null) onGo.Invoke();
-            ModuleMapper mapper = GameObject.FindObjectOfType<ModuleMapper>();
-            if (mapper) { mapper.SkipModules(module.ModuleNo); }
+            ModuleMapper mapper = FindObjectOfType<ModuleMapper>();
+            if (mapper) { mapper.SkipModules(goToModule.ModuleNo); }
         }
     }
 
@@ -70,9 +72,12 @@ public class GoTo : MonoBehaviour
         //if (!GameManager.Instance.useVR)
         //    TankController.Instance.DisableMovement();
         ScoreCalculator.instance.GetStars();
-        ScoreCalculator.instance.StartActivity(module.exercises[module.current].exerciseID);
-        module?.Play();
+        // TODO : got null ref here after having completed module then trying to jump pack to said module
+        ScoreCalculator.instance.StartActivity(goToModule.exercises[goToModule.current].exerciseID);
+        goToModule?.Play();
         if (moduleObject)
+        {
             moduleObject.SetActive(false);
+        }
     }
 }

@@ -40,6 +40,7 @@ public class Menu : MonoBehaviour
         //DontDestroyOnLoad(gameObject);
     }
 
+    // TODO : sometimes being set incorrect, look into
     public void UpdateModuleName(string str)
     {
         moduleName.text = str;

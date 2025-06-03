@@ -17,6 +17,7 @@ public struct DataPoint
     }
 }
 
+
 public class StatisticsManager : MonoBehaviour
 {
     public static StatisticsManager Instance { get { return _instance; } }
@@ -39,7 +40,6 @@ public class StatisticsManager : MonoBehaviour
     private enum LevelOfDetail { Level, Module, Exercise };
     private LevelOfDetail lod;
     private int numberOption;
-    private int activeAttempt;
     private int ciLevel;
 
 
@@ -86,15 +86,14 @@ public class StatisticsManager : MonoBehaviour
     private IEnumerator OpenRoutine()
     {
         List<SavePatientData.PatientDataEntry> allData = SavePatientData.Instance.PatientData;
-        int lastExercise = allData.Count - 1;
-        int lastModule = lastExercise / 7 + 1;
-        lastExercise = lastExercise % 7;
+        int lastExercise = allData.Count - 1; // TODO : magic number
+        int lastModule = lastExercise / 7 + 1; // TODO : magic number
+        lastExercise = lastExercise % 7; // TODO : magic number
         moduleCompletedText.text = lastModule.ToString();
         exerciseCompletedText.text = lastExercise.ToString();
         dayStartedText.text = Profiler.Instance.currentUser.startDate.ToString("d");
         timesLoggedOnText.text = Profiler.Instance.currentUser.timesLoggedIn.ToString();
         dateOfRecentDataText.text = Profiler.Instance.currentUser.lastLoginDate.ToString("d");
-
 
         // refresh all the graphs
         canvas.SetActive(true);
@@ -102,12 +101,13 @@ public class StatisticsManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         dataFilterOptions.UpdateCIDropdown();
-        DrawExerciseGraph();
-        DrawAccuracyGraph();
+        int sessionId = allData[0].sessionId;
+        DrawExerciseGraph(sessionId);
+        DrawAccuracyGraph(sessionId);
 
     }
 
-    public void DrawExerciseGraph()
+    public void DrawExerciseGraph(int sessionId)
     {
         if (lod == LevelOfDetail.Exercise)
         {
@@ -125,12 +125,12 @@ public class StatisticsManager : MonoBehaviour
             float x = 0;
             float y = 0;
             x = patientData[i].exercise;
-            y = patientData[i].attempts[activeAttempt].time;
+            y = patientData[i].time;
 
             DataPoint point = new DataPoint(x, y);
             data.Add(point);
 
-            y = ciData[i].attempts[ciLevel].time;
+            y = ciData[i].time;
 
             point = new DataPoint(x, y);
             cidata.Add(point);
@@ -143,7 +143,6 @@ public class StatisticsManager : MonoBehaviour
         timeGraph.DrawGraph(data, "", "Cog. Exercise Number", "Time in Seconds");
 
         // scale the graphs to one another
-
         if (timeGraph.YMax > timeBase.YMax)
         {
             timeBase.forceMax = true;
@@ -155,12 +154,12 @@ public class StatisticsManager : MonoBehaviour
             timeGraph.forcedYMax = timeBase.YMax;
         }
 
-        string title = "Module " + (numberOption + 1) + " Exercise Times (Session: " + (activeAttempt + 1) + ")";
+        string title = "Module " + (numberOption + 1) + " Exercise Times (Session: " + sessionId + ")";
         timeBase.DrawGraph(cidata, "", "", "");
         timeGraph.DrawGraph(data, title, "Cog. Exercise Number", "Time in Seconds");
     }
 
-    public void DrawAccuracyGraph()
+    public void DrawAccuracyGraph(int sessionId)
     {
         if (lod == LevelOfDetail.Exercise)
         {
@@ -172,28 +171,22 @@ public class StatisticsManager : MonoBehaviour
 
         List<DataPoint> data = new List<DataPoint>();
         List<DataPoint> cidata = new List<DataPoint>();
-
         for (int i = 0; i < patientData.Count; i++)
         {
-            float x = 0;
-            float y = 0;
-            x = patientData[i].exercise;
-            y = (float)patientData[i].attempts[activeAttempt].successes / (patientData[i].attempts[activeAttempt].successes + patientData[i].attempts[activeAttempt].misses) * 100f;
-
+            float x = patientData[i].exercise;
+            float y = (float)patientData[i].successes / (patientData[i].successes + patientData[i].misses) * 100f;
             DataPoint point = new DataPoint(x, y);
             data.Add(point);
-
-            y = (float)ciData[i].attempts[ciLevel].successes / (ciData[i].attempts[ciLevel].successes + ciData[i].attempts[ciLevel].misses) * 100f;
+            y = (float)ciData[i].successes / (ciData[i].successes + ciData[i].misses) * 100f;
             point = new DataPoint(x, y);
-
             cidata.Add(point);
         }
-
-        string title = "Module " + (numberOption + 1) + " Exercise Accuracy (Session: " + (activeAttempt + 1) + ")";
+        string title = "Module " + (numberOption + 1) + " Exercise Accuracy (Session: " + sessionId + ")";
         accuracyBase.DrawGraph(cidata, "", "", "");
         accuracyGraph.DrawGraph(data, title, "Cog. Exercise Number", "Percent Accuracy");
     }
 
+    // TODO : do we need this graph anymore since we removed attempts?
     public void SpecificExerciseGraph()
     {
         ChooseDataRange();
@@ -207,27 +200,20 @@ public class StatisticsManager : MonoBehaviour
         List<DataPoint> accData = new List<DataPoint>();
         List<DataPoint> ciAcc = new List<DataPoint>();
 
+        int x = 0;
+        float y = patientData[numberOption].time;
+        DataPoint timePoint = new DataPoint(x, y);
+        y = ciData[numberOption].time;
+        DataPoint baseTimePoint = new DataPoint(x, y);
+        y = (float)patientData[numberOption].successes / (patientData[numberOption].successes + patientData[numberOption].misses) * 100f;
+        DataPoint accPoint = new DataPoint(x, y);
+        y = (float)ciData[numberOption].successes / (ciData[numberOption].successes + ciData[numberOption].misses) * 100f;
+        DataPoint baseAccPoint = new DataPoint(x, y);
 
-        for (int i = 0; i < 3; i++)
-        {
-            int x = i;
-            float y = patientData[numberOption].attempts[i].time;
-            DataPoint timePoint = new DataPoint(x, y);
-
-            y = ciData[numberOption].attempts[ciLevel].time;
-            DataPoint baseTimePoint = new DataPoint(x, y);
-
-            y = (float)patientData[numberOption].attempts[i].successes / (patientData[numberOption].attempts[i].successes + patientData[numberOption].attempts[i].misses) * 100f;
-            DataPoint accPoint = new DataPoint(x, y);
-
-            y = (float)ciData[numberOption].attempts[ciLevel].successes / (ciData[numberOption].attempts[ciLevel].successes + ciData[numberOption].attempts[ciLevel].misses) * 100f;
-            DataPoint baseAccPoint = new DataPoint(x, y);
-
-            timeData.Add(timePoint);
-            ciTimes.Add(baseTimePoint);
-            accData.Add(accPoint);
-            ciAcc.Add(baseAccPoint);
-        }
+        timeData.Add(timePoint);
+        ciTimes.Add(baseTimePoint);
+        accData.Add(accPoint);
+        ciAcc.Add(baseAccPoint);
 
         timeBase.forceMax = false;
         timeGraph.forceMax = false;
@@ -249,12 +235,10 @@ public class StatisticsManager : MonoBehaviour
 
         timeBase.DrawGraph(ciTimes, "", "", "");
         accuracyBase.DrawGraph(ciAcc, "", "", "");
-
         timeGraph.DrawGraph(timeData, "Comparison of Exersice #" + (numberOption + 1) + " Times Over Several Play Sessions", "Play Session", "Time in Seconds", true);
         accuracyGraph.DrawGraph(accData, "Comparison of Exersice #" + (numberOption + 1) + " Accuracy Over Several Play Sessions", "Play Session", "Percent Accuracy", true);
     }
 
-    // TODO : remove magic numbers. Causes incorrect data due to not all modules having 7 exercises.
     public void ChooseDataRange()
     {
         patientData = SavePatientData.Instance.PatientData;
@@ -265,18 +249,18 @@ public class StatisticsManager : MonoBehaviour
 
         if (lod == LevelOfDetail.Level)
         {
-            start = numberOption * 7 * 5;
-            end = start + 7 * 5;
+            start = numberOption * 7 * 5; // TODO : magic number
+            end = start + 7 * 5; // TODO : magic number
         }
         else if (lod == LevelOfDetail.Module)
         {
-            start = numberOption * 7;
-            end = start + 7;
+            start = numberOption * 7; // TODO : magic number
+            end = start + 7; // TODO : magic number
         }
         else if (lod == LevelOfDetail.Exercise)
         {
-            start = numberOption;
-            end = numberOption + 1;
+            start = numberOption; // TODO : magic number
+            end = numberOption + 1; // TODO : magic number
         }
 
         List<SavePatientData.PatientDataEntry> data = new List<SavePatientData.PatientDataEntry>();
@@ -293,32 +277,31 @@ public class StatisticsManager : MonoBehaviour
         ciData = cidata;
 
         // Fill out the patient summary fields
-        int exNo = start;
-        int modNo = exNo / 7 + 1;
-        exNo = exNo % 7;
+        int exNo = start; // TODO : magic number
+        int modNo = exNo / 7 + 1; // TODO : magic number
+        exNo = exNo % 7; // TODO : magic number
 
         fromModule1.text = modNo.ToString();
         fromExercise1.text = exNo.ToString();
 
-        exNo = end - 1;
-        modNo = exNo / 7 + 1;
-        exNo = exNo % 7;
+        exNo = end - 1; // TODO : magic number
+        modNo = exNo / 7 + 1; // TODO : magic number
+        exNo = exNo % 7; // TODO : magic number
 
         fromModule2.text = modNo.ToString();
         fromExercise2.text = exNo.ToString();
 
-        float timeAvg = SavePatientData.Instance.AverageTime(patientData, activeAttempt);
+        float timeAvg = SavePatientData.Instance.AverageTime(patientData);
         meanTimeText.text = timeAvg.ToString("0.00") + " seconds";
 
-        float accAvg = SavePatientData.Instance.AverageAccuracy(patientData, activeAttempt);
+        float accAvg = SavePatientData.Instance.AverageAccuracy(patientData);
         meanAccuracyText.text = accAvg.ToString("0.00") + "%";
     }
 
-    // TODO : remove magic numbers. Causes incorrect data due to not all modules having 7 exercises.
+    // TODO : remove magic numbers
     private void OptionsUpdated()
     {
         numberOption = dataFilterOptions.numberDropdown.value;
-        activeAttempt = dataFilterOptions.attemptDropdown.value;
         ciLevel = dataFilterOptions.ciDropdown.value;
 
         LevelOfDetail prevLOD = lod;
@@ -346,7 +329,6 @@ public class StatisticsManager : MonoBehaviour
             range = 3 * 5 * 7;      // TODO: Change to 7*5*3
             timeGraph.xTickCount = 3;
             accuracyGraph.xTickCount = 3;
-            activeAttempt = -1;
         }
 
         dataFilterOptions.UpdateCIDropdown();
