@@ -37,7 +37,7 @@ Scores are calculated by `ScoreCalculator.cs`.
 
 On the statistics page (captured below) there are options to filter the data shown on the graphs. The cognitive impairment level dropdown lets one compare the Patient Data to a specific cognitive level baseline (that was specified in the `ci_data.csv` file as mentioned above).
 
-![StatisticsMenu](docs/patient-data-statistics-ui.png)
+![StatisticsMenu](docs/images/patient-data-statistics-ui.png)
 
 # Future Considerations
 
