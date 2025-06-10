@@ -1,13 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
-using System.Runtime.InteropServices;
-using System.Net;
-using System.Net.Mail;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
 
 public class SavePatientData : MonoBehaviour
 {
@@ -25,18 +19,12 @@ public class SavePatientData : MonoBehaviour
         public int exercise;
         public PatientAttempt[] attempts;
 
-        public PatientDataEntry(int e, int numAttempts = 3)
+        public PatientDataEntry(int e, int numAttempts = 150)
         {
             exercise = e;
             attempts = new PatientAttempt[numAttempts];
         }
     }
-
-    /*[DllImport("__Internal")]
-    private static extern void SyncFiles();
-
-    [DllImport("__Internal")]
-    private static extern void WindowAlert(string message);*/
 
     public static SavePatientData Instance { get { return _instance; } }
     private static SavePatientData _instance;
@@ -45,10 +33,13 @@ public class SavePatientData : MonoBehaviour
     private string ciDataFile;
     private List<PatientDataEntry> patientData;
     public List<PatientDataEntry> ciData;
-    private int recentExercise;
     private int currentAttempt = 0;
-    private int maxAttempts = 3;
+    private int maxAttempts = 150;
     private int totalExercises = 0;
+    private bool newGame = false;
+
+
+    private const int ciCognitiveLevels = 15;
 
 
     public List<PatientDataEntry> PatientData { get => patientData; }
@@ -65,37 +56,37 @@ public class SavePatientData : MonoBehaviour
             return;
         }
         _instance = this;
+        this.newGame = newGame;
         this.totalExercises = totalExercises;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
         patientDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "patient_data.csv";
         ciDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "ci_data.csv";
-        FileDownload(newGame);
+        FileDownload();
     }
 
-    private void FileDownload(bool newGame)
+    private void FileDownload()
     {
         patientData = new List<PatientDataEntry>();
-        if (!CreateFile(patientDataFile, out patientData, newGame))
+        if (!CreateFile(patientDataFile, out patientData))
         {
             UploadPatientData();
         }
         ciData = new List<PatientDataEntry>();
-        CreateFile(ciDataFile, out ciData, true, 15);
+        CreateFile(ciDataFile, out ciData);
     }
 
-    // TODO : make sure our CIData matches up with levels, modules, exercises
     private List<PatientDataEntry> InitializeCIData()
     {
         List<PatientDataEntry> data = new List<PatientDataEntry>();
         for (int i = 0; i < initialCIData.data.Count; i++)
         {
-            PatientDataEntry entry = new PatientDataEntry(i, 15);
-            for (int level = 0; level < 15; level++)
+            PatientDataEntry entry = new PatientDataEntry(i, ciCognitiveLevels);
+            for (int level = 0; level < ciCognitiveLevels; level++)
             {
-                entry.attempts[level].time = Mathf.Round(initialCIData.data[i].attempts[0].time * (1f + (float)level / 10f));
+                entry.attempts[level].time = Mathf.Round(initialCIData.data[i].attempts[0].time * (1f + level / 10f));
                 entry.attempts[level].successes = initialCIData.data[i].attempts[0].successes;
-                entry.attempts[level].misses = Mathf.CeilToInt(initialCIData.data[i].attempts[0].successes * (0.05f + (float)level / 15f)); // when level is 15, minimum acc = 50. Meaning misses = successes
+                entry.attempts[level].misses = Mathf.CeilToInt(initialCIData.data[i].attempts[0].successes * (0.05f + level / 15f)); // when level is 15, minimum acc = 50. Meaning misses = successes
             }
             data.Add(entry);
         }
@@ -103,12 +94,12 @@ public class SavePatientData : MonoBehaviour
     }
 
     // return true if file existed prior to creation
-    private bool CreateFile(string path, out List<PatientDataEntry> data, bool newGame, int numAttempts = 3)
+    private bool CreateFile(string path, out List<PatientDataEntry> data)
     {
         data = new List<PatientDataEntry>();
         try
         {
-            if (!newGame && File.Exists(path))
+            if (File.Exists(path))
             {
                 data = Load(path);
                 return true;
@@ -118,15 +109,6 @@ public class SavePatientData : MonoBehaviour
                 if (path == ciDataFile)
                 {
                     data = InitializeCIData();
-                }
-                else
-                {
-                    // Dont fill file with empty data because it misrepresents how many modules the user has completed in dashboard
-                    for (int i = 0; i < totalExercises; i++)
-                    {
-                        PatientDataEntry entry = new PatientDataEntry(i, numAttempts);
-                        data.Add(entry);
-                    }
                 }
                 SaveFile();
             }
@@ -153,39 +135,37 @@ public class SavePatientData : MonoBehaviour
             {
                 parts = line.Split(',');
                 index += 1;
-
                 PatientDataEntry entry = new PatientDataEntry(index);
-
                 if (parts == null)
                 {
                     break;
                 }
-
                 index += 1;
                 // Skip first row which in this case is a header with column names
                 if (index <= 1) continue;
-                /*
-                 * These columns are checked for proper types
-                 */
                 bool validRow = true;
-
-                // TODO : update with new columns on next PR
                 if (path == patientDataFile)
                 {
-                    validRow = int.TryParse(parts[0], out entry.exercise) &&
-                                   float.TryParse(parts[1], out entry.attempts[0].time) &&
-                                   int.TryParse(parts[2], out entry.attempts[0].successes) &&
-                                   int.TryParse(parts[3], out entry.attempts[0].misses) &&
-                                   float.TryParse(parts[4], out entry.attempts[1].time) &&
-                                   int.TryParse(parts[5], out entry.attempts[1].successes) &&
-                                   int.TryParse(parts[6], out entry.attempts[1].misses) &&
-                                   float.TryParse(parts[7], out entry.attempts[2].time) &&
-                                   int.TryParse(parts[8], out entry.attempts[2].successes) &&
-                                   int.TryParse(parts[9], out entry.attempts[2].misses);
+                    validRow = int.TryParse(parts[0], out entry.exercise);
+                    int partsIndex = 1;
+                    for (int i = 0; i < maxAttempts; i++)
+                    {
+                        int secondIndex = partsIndex + 1;
+                        int thirdIndex = partsIndex + 2;
+                        validRow = float.TryParse(parts[partsIndex], out entry.attempts[i].time) &&
+                                   int.TryParse(parts[secondIndex], out entry.attempts[i].successes) &&
+                                   int.TryParse(parts[thirdIndex], out entry.attempts[i].misses);
+
+                        if (!validRow)
+                        {
+                            break;
+                        }
+                        partsIndex = partsIndex + 3;
+                    }
                 }
                 else if (path == ciDataFile)
                 {
-                    entry = new PatientDataEntry(index, 15);
+                    entry = new PatientDataEntry(index, ciCognitiveLevels);
                     validRow = int.TryParse(parts[0], out entry.exercise) &&
                                float.TryParse(parts[1], out entry.attempts[0].time) &&
                                int.TryParse(parts[2], out entry.attempts[0].successes) &&
@@ -237,8 +217,12 @@ public class SavePatientData : MonoBehaviour
                 if (validRow)
                 {
                     data.Add(entry);
-                    //Debug.Log("ex: " + entry.exercise + " \n\tt0: " + entry.attempts[0].time + " \tm0: " + entry.attempts[0].misses + " \n\tt1: " + entry.attempts[1].time + " \tm1: " + entry.attempts[1].misses + " \n\tt2: " + entry.attempts[2].time + " \tm2: " + entry.attempts[2].misses);
                 }
+
+            }
+            if (patientData != null)
+            {
+                FindCurrentAttempt();
             }
             readFile.Close();
         }
@@ -246,21 +230,44 @@ public class SavePatientData : MonoBehaviour
         // There isn't enough data, so the file must be bad. Get a new one
         if (data.Count < 2)
         {
-            //Debug.Log("deleting " + path);
             File.Delete(path);
-            CreateFile(path, out data, true, path == ciDataFile ? 15 : 3);
+            CreateFile(path, out data);
             return data;
         }
         return data;
     }
 
-    private void SaveFile()
+    private void FindCurrentAttempt()
     {
-        Debug.Log("Inside save file");
-        string header = "Exercise";
+        int firstEmptyAttempt = FindFirstEmptyAttempt();
+        currentAttempt = Mathf.Clamp(newGame ? firstEmptyAttempt : firstEmptyAttempt - 1, 0, maxAttempts - 1);
+    }
+
+    private int FindFirstEmptyAttempt()
+    {
         for (int i = 0; i < maxAttempts; i++)
         {
-            header += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
+            // Check each exercise is empty for current attempt
+            bool isEmptyAttempt = true;
+            for (int j = 0; j < patientData.Count; j++)
+            {
+                if (patientData[j].attempts[i].time != 0)
+                {
+                    isEmptyAttempt = false;
+                    break;
+                }
+            }
+            if (isEmptyAttempt) { return i; }
+        }
+        return maxAttempts - 1; // overwrite last attempt if all attempts all filled
+    }
+
+    private void SaveFile()
+    {
+        string patientDataHeader = "Exercise";
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            patientDataHeader += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
         }
         try
         {
@@ -268,13 +275,13 @@ public class SavePatientData : MonoBehaviour
             {
                 if (patientData != null)
                 {
-                    w.WriteLine(header);
+                    w.WriteLine(patientDataHeader);
                     w.Flush();
                     for (int i = 0; i < patientData.Count; i++)
                     {
                         PatientDataEntry entry = patientData[i];
                         string line = entry.exercise.ToString();
-                        for (int a = 0; a < entry.attempts.Length; a++)
+                        for (int a = 0; a < maxAttempts; a++)
                         {
                             line += $",{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
                         }
@@ -290,19 +297,24 @@ public class SavePatientData : MonoBehaviour
             Debug.Log("fail write to patient file: " + e.Message);
         }
 
+        string ciDataHeader = "Exercise";
+        for (int i = 0; i < ciCognitiveLevels; i++)
+        {
+            ciDataHeader += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
+        }
         if (ciData != null)
         {
             try
             {
                 using (var w = new StreamWriter(ciDataFile))
                 {
-                    w.WriteLine(header);
+                    w.WriteLine(ciDataHeader);
                     w.Flush();
                     for (int i = 0; i < ciData.Count; i++)
                     {
                         PatientDataEntry entry = ciData[i];
                         string line = entry.exercise.ToString();
-                        for (int j = 0; j < entry.attempts.Length; j++)
+                        for (int j = 0; j < ciCognitiveLevels; j++)
                         {
                             line += "," + entry.attempts[j].time + "," + entry.attempts[j].successes + "," + entry.attempts[j].misses;
                         }
@@ -334,44 +346,15 @@ public class SavePatientData : MonoBehaviour
             if (patientData[i].exercise == exerciseNum)
             {
                 found = true;
-                bool newEntry = false;
-                for (int j = 0; j < patientData[i].attempts.Length; j++)
+                for (int j = 0; j < maxAttempts; j++)
                 {
-                    if (patientData[i].attempts[j].time == 0)
-                    {
-                        patientData[i].attempts[j].time = time;
-                        patientData[i].attempts[j].successes = successes;
-                        patientData[i].attempts[j].misses = misses;
-                        newEntry = true;
-                        currentAttempt = j;
-                        break;
-                    }
-                }
-                if (!newEntry)
-                {
-                    // overwrite last row
                     patientData[i].attempts[currentAttempt].time = time;
                     patientData[i].attempts[currentAttempt].successes = successes;
                     patientData[i].attempts[currentAttempt].misses = misses;
                 }
-                break;
             }
         }
-        if (!found)
-        {
-            // add all new rows
-            int dataCt = patientData.Count;
-            for (int i = dataCt; i < exerciseNum; i++)
-            {
-                patientData.Add(new PatientDataEntry(i));
-            }
-            PatientDataEntry entry = new PatientDataEntry(exerciseNum);
-            entry.attempts[0].time = time;
-            entry.attempts[0].successes = successes;
-            entry.attempts[0].misses = misses;
-            patientData.Add(entry);
-        }
-        recentExercise = exerciseNum;
+
         SaveFile();
     }
 
@@ -455,7 +438,7 @@ public class SavePatientData : MonoBehaviour
         }
         for (int i = 0; i < patientData.Count; i++)
         {
-            for (int j = 0; j < patientData[i].attempts.Length; j++)
+            for (int j = 0; j < maxAttempts; j++)
             {
                 if (patientData[i].attempts[j].time != 0)
                 {
