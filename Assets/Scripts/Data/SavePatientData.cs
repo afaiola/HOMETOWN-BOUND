@@ -11,6 +11,7 @@ public class SavePatientData : MonoBehaviour
         [Serializable]
         public struct PatientAttempt
         {
+            public DateTimeOffset timeStart;
             public float time;
             public int misses;
             public int successes;
@@ -161,15 +162,17 @@ public class SavePatientData : MonoBehaviour
                     {
                         int secondIndex = partsIndex + 1;
                         int thirdIndex = partsIndex + 2;
-                        validRow = float.TryParse(parts[partsIndex], out entry.attempts[i].time) &&
-                                   int.TryParse(parts[secondIndex], out entry.attempts[i].successes) &&
-                                   int.TryParse(parts[thirdIndex], out entry.attempts[i].misses);
+                        int fourthIndex = partsIndex + 3;
+                        validRow = DateTimeOffset.TryParse(parts[partsIndex], out entry.attempts[i].timeStart) &&
+                                   float.TryParse(parts[secondIndex], out entry.attempts[i].time) &&
+                                   int.TryParse(parts[thirdIndex], out entry.attempts[i].successes) &&
+                                   int.TryParse(parts[fourthIndex], out entry.attempts[i].misses);
 
                         if (!validRow)
                         {
                             break;
                         }
-                        partsIndex = partsIndex + 3;
+                        partsIndex = partsIndex + 4;
                     }
                 }
                 else if (path == ciDataFile)
@@ -276,7 +279,7 @@ public class SavePatientData : MonoBehaviour
         string patientDataHeader = "Exercise, Exercise Name";
         for (int i = 0; i < maxAttempts; i++)
         {
-            patientDataHeader += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
+            patientDataHeader += $",Time Start {i + 1},Time {i + 1},Successes {i + 1},Misses {i + 1}";
         }
         try
         {
@@ -292,7 +295,7 @@ public class SavePatientData : MonoBehaviour
                         string line = $"{entry.exercise},{entry.exerciseName}";
                         for (int a = 0; a < maxAttempts; a++)
                         {
-                            line += $",{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
+                            line += $",{entry.attempts[a].timeStart},{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
                         }
                         w.WriteLine(line);
                         w.Flush();
@@ -388,7 +391,7 @@ public class SavePatientData : MonoBehaviour
     }
 
 
-    public void SaveEntry(int exerciseNum, float time, int successes, int misses)
+    public void SaveEntry(int exerciseNum, DateTimeOffset timeStart, float time, int successes, int misses)
     {
         time = Mathf.Round(time * 1000f) / 1000f;
         for (int i = 0; i < patientData.Count; i++)
@@ -397,6 +400,7 @@ public class SavePatientData : MonoBehaviour
             {
                 for (int j = 0; j < maxAttempts; j++)
                 {
+                    patientData[i].attempts[currentAttempt].timeStart = timeStart;
                     patientData[i].attempts[currentAttempt].time = time;
                     patientData[i].attempts[currentAttempt].successes = successes;
                     patientData[i].attempts[currentAttempt].misses = misses;
