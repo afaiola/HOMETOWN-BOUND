@@ -17,11 +17,13 @@ public class SavePatientData : MonoBehaviour
         }
 
         public int exercise;
+        public string exerciseName;
         public PatientAttempt[] attempts;
 
-        public PatientDataEntry(int e, int numAttempts = 150)
+        public PatientDataEntry(int exercise, string exerciseName, int numAttempts = 150)
         {
-            exercise = e;
+            this.exercise = exercise;
+            this.exerciseName = exerciseName;
             attempts = new PatientAttempt[numAttempts];
         }
     }
@@ -34,11 +36,11 @@ public class SavePatientData : MonoBehaviour
     private List<PatientDataEntry> patientData;
     public List<PatientDataEntry> ciData;
     private int currentAttempt = 0;
-    private int maxAttempts = 150;
-    private int totalExercises = 0;
     private bool newGame = false;
+    private ModuleMapper moduleMapper = null;
 
 
+    private const int maxAttempts = 150;
     private const int ciCognitiveLevels = 15;
 
 
@@ -48,7 +50,7 @@ public class SavePatientData : MonoBehaviour
 
 
     // set up the save file and format it to hold entries for all exercises
-    public void Initialize(bool newGame, int totalExercises)
+    public void Initialize(bool newGame, ModuleMapper moduleMapper)
     {
         if (_instance != null && _instance != this)
         {
@@ -57,7 +59,7 @@ public class SavePatientData : MonoBehaviour
         }
         _instance = this;
         this.newGame = newGame;
-        this.totalExercises = totalExercises;
+        this.moduleMapper = moduleMapper;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
         patientDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "patient_data.csv";
@@ -81,7 +83,7 @@ public class SavePatientData : MonoBehaviour
         List<PatientDataEntry> data = new List<PatientDataEntry>();
         for (int i = 0; i < initialCIData.data.Count; i++)
         {
-            PatientDataEntry entry = new PatientDataEntry(i, ciCognitiveLevels);
+            PatientDataEntry entry = new PatientDataEntry(i, "", ciCognitiveLevels);
             for (int level = 0; level < ciCognitiveLevels; level++)
             {
                 entry.attempts[level].time = Mathf.Round(initialCIData.data[i].attempts[0].time * (1f + level / 10f));
@@ -110,6 +112,14 @@ public class SavePatientData : MonoBehaviour
                 {
                     data = InitializeCIData();
                 }
+                else if (path == patientDataFile)
+                {
+                    for (int i = 0; i < moduleMapper.TotalExercises; i++)
+                    {
+                        PatientDataEntry entry = new PatientDataEntry(i, CreateExerciseNameFromExerciseId(i));
+                        data.Add(entry);
+                    }
+                }
                 SaveFile();
             }
         }
@@ -131,23 +141,22 @@ public class SavePatientData : MonoBehaviour
             string[] parts;
             int index = 0;
 
-            while ((line = readFile.ReadLine()) != null)
+            while ((line = readFile.ReadLine()) != null && index++ < (moduleMapper.TotalExercises - 1))
             {
                 parts = line.Split(',');
-                index += 1;
-                PatientDataEntry entry = new PatientDataEntry(index);
                 if (parts == null)
                 {
                     break;
                 }
-                index += 1;
                 // Skip first row which in this case is a header with column names
-                if (index <= 1) continue;
+                if (index == 0) { continue; }
+                PatientDataEntry entry = new PatientDataEntry(index, CreateExerciseNameFromExerciseId(index));
                 bool validRow = true;
                 if (path == patientDataFile)
                 {
                     validRow = int.TryParse(parts[0], out entry.exercise);
-                    int partsIndex = 1;
+                    entry.exerciseName = parts[1];
+                    int partsIndex = 2;
                     for (int i = 0; i < maxAttempts; i++)
                     {
                         int secondIndex = partsIndex + 1;
@@ -165,7 +174,7 @@ public class SavePatientData : MonoBehaviour
                 }
                 else if (path == ciDataFile)
                 {
-                    entry = new PatientDataEntry(index, ciCognitiveLevels);
+                    entry = new PatientDataEntry(index, "", ciCognitiveLevels);
                     validRow = int.TryParse(parts[0], out entry.exercise) &&
                                float.TryParse(parts[1], out entry.attempts[0].time) &&
                                int.TryParse(parts[2], out entry.attempts[0].successes) &&
@@ -264,7 +273,7 @@ public class SavePatientData : MonoBehaviour
 
     private void SaveFile()
     {
-        string patientDataHeader = "Exercise";
+        string patientDataHeader = "Exercise, Exercise Name";
         for (int i = 0; i < maxAttempts; i++)
         {
             patientDataHeader += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
@@ -280,7 +289,7 @@ public class SavePatientData : MonoBehaviour
                     for (int i = 0; i < patientData.Count; i++)
                     {
                         PatientDataEntry entry = patientData[i];
-                        string line = entry.exercise.ToString();
+                        string line = $"{entry.exercise},{entry.exerciseName}";
                         for (int a = 0; a < maxAttempts; a++)
                         {
                             line += $",{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
@@ -337,15 +346,55 @@ public class SavePatientData : MonoBehaviour
         }
     }
 
+    private static void PlatformSafeMessage(string message)
+    {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            //WindowAlert(message);
+        }
+        else
+        {
+            Debug.Log(message);
+        }
+    }
+
+    private string CreateExerciseNameFromExerciseId(int exerciseId)
+    {
+        var (lvl, module, exercise) = GetIndicesFromExcerciseId(exerciseId);
+        return string.Format("{0}.{1}.{2}", lvl, module, exercise);
+    }
+
+    private (int level, int module, int exercise) GetIndicesFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        foreach (var module in moduleMapper.modules)
+        {
+            currentExercise++; // +1 for walk exercise
+            if (excerciseId == currentExercise)
+            {
+                return (module.lvl, module.ModuleNo, 0);
+            }
+            for (int i = 0; i < module.exercises.Count; i++)
+            {
+                currentExercise++;
+                if (excerciseId == currentExercise)
+                {
+                    return (module.lvl, module.ModuleNo, i + 1); // +1 for walk exercise
+                }
+            }
+        }
+        Debug.LogError("Could not find module from exercise id: " + excerciseId);
+        return (0, 0, 0);
+    }
+
+
     public void SaveEntry(int exerciseNum, float time, int successes, int misses)
     {
         time = Mathf.Round(time * 1000f) / 1000f;
-        bool found = false;
         for (int i = 0; i < patientData.Count; i++)
         {
             if (patientData[i].exercise == exerciseNum)
             {
-                found = true;
                 for (int j = 0; j < maxAttempts; j++)
                 {
                     patientData[i].attempts[currentAttempt].time = time;
@@ -421,7 +470,7 @@ public class SavePatientData : MonoBehaviour
 
         }
 
-        return sum / (float)count;
+        return sum / count;
     }
 
     public void UploadPatientData()
@@ -452,7 +501,7 @@ public class SavePatientData : MonoBehaviour
         }
         for (int i = 0; i < lastPlayed.Length; i++)
         {
-            if (lastPlayed[i] < totalExercises)
+            if (lastPlayed[i] < moduleMapper.TotalExercises)
             {
                 return lastPlayed[i];
             }
@@ -460,17 +509,23 @@ public class SavePatientData : MonoBehaviour
         return 0;
     }
 
-
-    private static void PlatformSafeMessage(string message)
+    public int GetModuleIndexLastPlayed()
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
-            //WindowAlert(message);
-        }
-        else
-        {
-            Debug.Log(message);
-        }
+        int lastExercise = LastExercisePlayed();
+        return moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
     }
 
+    public int GetModuleIndexLastCompleted()
+    {
+        int lastExercise = LastExercisePlayed();
+        int moduleIndex = moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
+        var modules = moduleMapper.modules;
+        if (modules[moduleIndex].IsComplete) { return moduleIndex; }
+        for (int i = moduleIndex - 1; i >= 0; i--)
+        {
+            if (!modules[i].IsComplete) { continue; }
+            return i;
+        }
+        return -1;
+    }
 }

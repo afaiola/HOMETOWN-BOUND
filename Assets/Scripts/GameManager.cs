@@ -171,12 +171,12 @@ public class GameManager : MonoBehaviour
     private void LoadModule(bool status)
     {
         bool newGame = Profiler.Instance.currentUser.newGame;
-        FindObjectOfType<SavePatientData>().Initialize(newGame, moduleMapper.TotalExercises);
+        FindObjectOfType<SavePatientData>().Initialize(newGame, moduleMapper);
         IntroScene intro = FindObjectOfType<IntroScene>();
         int lastModulePlayed = 0;
         if (!newGame)
         {
-            lastModulePlayed = GetModuleIndexLastPlayed();
+            lastModulePlayed = SavePatientData.Instance.GetModuleIndexLastPlayed();
             for (int i = lastModulePlayed - 1; i >= 0; i--)
             {
                 moduleMapper.modules[i].IsComplete = true;
@@ -197,26 +197,6 @@ public class GameManager : MonoBehaviour
         {
             moduleMapper.gotos[lastModulePlayed].Go();
         }
-    }
-
-    public int GetModuleIndexLastPlayed()
-    {
-        int lastExercise = SavePatientData.Instance.LastExercisePlayed();
-        return moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
-    }
-
-    public int GetModuleIndexLastCompleted()
-    {
-        int lastExercise = SavePatientData.Instance.LastExercisePlayed();
-        int moduleIndex = moduleMapper.GetModuleIndexFromExcerciseId(lastExercise);
-        var modules = moduleMapper.modules;
-        if (modules[moduleIndex].IsComplete) { return moduleIndex; }
-        for (int i = moduleIndex - 1; i >= 0; i--)
-        {
-            if (!modules[i].IsComplete) { continue; }
-            return i;
-        }
-        return -1;
     }
 
     public void TeleportPlayer(Vector3 location)

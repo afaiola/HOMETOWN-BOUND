@@ -64,7 +64,7 @@ public class Interact : MonoBehaviour
             zone.OneTime = false;
             return;
         }
-        int lastModuleCompletedIndex = GameManager.Instance.GetModuleIndexLastCompleted();
+        int lastModuleCompletedIndex = SavePatientData.Instance.GetModuleIndexLastCompleted();
         int moduleIndex = Array.IndexOf(GameManager.Instance.ModuleMapper.modules, correspondingModule);
         int skippedModuleIndex = lastModuleCompletedIndex + 1;
         var skippedModule = GameManager.Instance.ModuleMapper.modules[skippedModuleIndex];
