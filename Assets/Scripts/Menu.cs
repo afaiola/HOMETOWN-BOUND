@@ -22,7 +22,7 @@ public class Menu : MonoBehaviour
     [SerializeField]
     private AudioClip[] levels;
     [SerializeField]
-    private AudioSource audio;
+    private AudioSource audioSource;
 
 
     private bool playingWarning;
@@ -62,8 +62,8 @@ public class Menu : MonoBehaviour
         playingWarning = true;
         for (int i = 0; i < clips.Count; i++)
         {
-            audio.clip = clips[i];
-            audio.Play();
+            audioSource.clip = clips[i];
+            audioSource.Play();
             yield return new WaitForSeconds(clips[i].length);
         }
         playingWarning = false;
