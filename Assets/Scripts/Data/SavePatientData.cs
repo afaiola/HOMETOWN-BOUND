@@ -21,6 +21,11 @@ public class SavePatientData : MonoBehaviour
         public string exerciseName;
         public PatientAttempt[] attempts;
 
+
+        public static int ItemsPerEntry = 2;
+        public static int ItemsPerAttempt = 4;
+
+
         public PatientDataEntry(int exercise, string exerciseName, int numAttempts = 150)
         {
             this.exercise = exercise;
@@ -100,34 +105,25 @@ public class SavePatientData : MonoBehaviour
     private bool CreateFile(string path, out List<PatientDataEntry> data)
     {
         data = new List<PatientDataEntry>();
-        try
+        if (File.Exists(path))
         {
-            if (File.Exists(path))
+            data = Load(path);
+            return true;
+        }
+
+        if (path == ciDataFile)
+        {
+            data = InitializeCIData();
+        }
+        else
+        {
+            for (int i = 0; i < moduleMapper.TotalExercises; i++)
             {
-                data = Load(path);
-                return true;
-            }
-            else
-            {
-                if (path == ciDataFile)
-                {
-                    data = InitializeCIData();
-                }
-                else if (path == patientDataFile)
-                {
-                    for (int i = 0; i < moduleMapper.TotalExercises; i++)
-                    {
-                        PatientDataEntry entry = new PatientDataEntry(i, CreateExerciseNameFromExerciseId(i));
-                        data.Add(entry);
-                    }
-                }
-                SaveFile();
+                PatientDataEntry entry = new PatientDataEntry(i, CreateExerciseNameFromExerciseId(i));
+                data.Add(entry);
             }
         }
-        catch (Exception e)
-        {
-            PlatformSafeMessage("Failed to Save: " + e.Message);
-        }
+        SaveFile();
         return false;
     }
 
@@ -141,19 +137,23 @@ public class SavePatientData : MonoBehaviour
             string line;
             string[] parts;
             int index = 0;
-
-            while ((line = readFile.ReadLine()) != null && index++ < (moduleMapper.TotalExercises - 1))
+            bool isHeader = true;
+            while ((line = readFile.ReadLine()) != null && index < moduleMapper.TotalExercises)
             {
                 parts = line.Split(',');
-                if (parts == null)
+                if (parts == null) { break; }
+                if (isHeader)
                 {
-                    break;
+                    isHeader = false;
+                    continue;
                 }
-                // Skip first row which in this case is a header with column names
-                if (index == 0) { continue; }
                 PatientDataEntry entry = new PatientDataEntry(index, CreateExerciseNameFromExerciseId(index));
                 bool validRow = true;
-                if (path == patientDataFile)
+
+                if (
+                    path == patientDataFile &&
+                    parts.Length == ((maxAttempts * PatientDataEntry.ItemsPerAttempt) + PatientDataEntry.ItemsPerEntry)
+                )
                 {
                     validRow = int.TryParse(parts[0], out entry.exercise);
                     entry.exerciseName = parts[1];
@@ -172,7 +172,7 @@ public class SavePatientData : MonoBehaviour
                         {
                             break;
                         }
-                        partsIndex = partsIndex + 4;
+                        partsIndex = partsIndex + PatientDataEntry.ItemsPerAttempt;
                     }
                 }
                 else if (path == ciDataFile)
@@ -230,13 +230,12 @@ public class SavePatientData : MonoBehaviour
                 {
                     data.Add(entry);
                 }
-
+                index++;
             }
             if (patientData != null)
             {
                 FindCurrentAttempt();
             }
-            readFile.Close();
         }
 
         // There isn't enough data, so the file must be bad. Get a new one
@@ -300,13 +299,12 @@ public class SavePatientData : MonoBehaviour
                         w.WriteLine(line);
                         w.Flush();
                     }
-                    w.Close();
                 }
             }
         }
         catch (Exception e)
         {
-            Debug.Log("fail write to patient file: " + e.Message);
+            Debug.LogError("Fail write to patient file: " + e.Message);
         }
 
         string ciDataHeader = "Exercise";
@@ -338,7 +336,7 @@ public class SavePatientData : MonoBehaviour
             }
             catch (Exception e)
             {
-                Debug.Log("fail write to CI file: " + e.Message);
+                Debug.LogError("Fail write to CI file: " + e.Message);
             }
         }
 
@@ -346,18 +344,6 @@ public class SavePatientData : MonoBehaviour
         {
             //Debug.Log("syncing files");
             //SyncFiles();
-        }
-    }
-
-    private static void PlatformSafeMessage(string message)
-    {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
-            //WindowAlert(message);
-        }
-        else
-        {
-            Debug.Log(message);
         }
     }
 
@@ -407,7 +393,6 @@ public class SavePatientData : MonoBehaviour
                 }
             }
         }
-
         SaveFile();
     }
 
