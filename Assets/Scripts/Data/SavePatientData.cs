@@ -275,11 +275,12 @@ public class SavePatientData : MonoBehaviour
 
     private void SaveFile()
     {
-        string patientDataHeader = "Exercise, Exercise Name";
+        var patientDataHeaderBuilder = new System.Text.StringBuilder("Exercise, Exercise Name");
         for (int i = 0; i < maxAttempts; i++)
         {
-            patientDataHeader += $",Time Start {i + 1},Time {i + 1},Successes {i + 1},Misses {i + 1}";
+            patientDataHeaderBuilder.Append($",Time Start {i + 1},Time {i + 1},Successes {i + 1},Misses {i + 1}");
         }
+        string patientDataHeader = patientDataHeaderBuilder.ToString();
         try
         {
             using (var w = new StreamWriter(patientDataFile))
@@ -291,11 +292,12 @@ public class SavePatientData : MonoBehaviour
                     for (int i = 0; i < patientData.Count; i++)
                     {
                         PatientDataEntry entry = patientData[i];
-                        string line = $"{entry.exercise},{entry.exerciseName}";
+                        var lineBuilder = new System.Text.StringBuilder($"{entry.exercise},{entry.exerciseName}");
                         for (int a = 0; a < maxAttempts; a++)
                         {
-                            line += $",{entry.attempts[a].timeStart},{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}";
+                            lineBuilder.Append($",{entry.attempts[a].timeStart},{entry.attempts[a].time},{entry.attempts[a].successes},{entry.attempts[a].misses}");
                         }
+                        string line = lineBuilder.ToString();
                         w.WriteLine(line);
                         w.Flush();
                     }
@@ -307,11 +309,12 @@ public class SavePatientData : MonoBehaviour
             Debug.LogError("Fail write to patient file: " + e.Message);
         }
 
-        string ciDataHeader = "Exercise";
+        var ciDataHeaderBuilder = new System.Text.StringBuilder("Exercise");
         for (int i = 0; i < ciCognitiveLevels; i++)
         {
-            ciDataHeader += $",Time {i + 1},Successes {i + 1},Misses {i + 1}";
+            ciDataHeaderBuilder.Append($",Time {i + 1},Successes {i + 1},Misses {i + 1}");
         }
+        string ciDataHeader = ciDataHeaderBuilder.ToString();
         if (ciData != null)
         {
             try

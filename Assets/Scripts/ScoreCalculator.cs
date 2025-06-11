@@ -80,7 +80,7 @@ public class ScoreCalculator
         float compareTime = 10f;
         float compareAcc = 50f;
         float playerAcc = 100f * successes / (successes + misses);
-        if (cientry.attempts[0].time != 0) // TODO : NULL REF at end of game
+        if (cientry.attempts[0].time != 0)
         {
             for (int i = 0; i < 5; i++)
             {

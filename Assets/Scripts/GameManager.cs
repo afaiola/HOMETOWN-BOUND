@@ -138,7 +138,6 @@ public class GameManager : MonoBehaviour
         StorageManager.Instance.StartCSVDownload(Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "patient_data.csv");
 
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
-        StorageManager.Instance.contentDownloadedEvent.AddListener(ContentMapped);
         StorageManager.Instance.StartContentDownload();
 
         IntroScene intro = FindObjectOfType<IntroScene>();
@@ -159,19 +158,16 @@ public class GameManager : MonoBehaviour
         SetCameraClipDist(175f);
     }
 
-    private void ContentMapped()
-    {
-        //SavePatientData.Instance.Initialize(); // ensure patient data is downloaded
-        //StorageManager.Instance.downloadStatusEvent = new UnityEngine.Events.UnityEvent<bool>();
-        //FindObjectOfType<SavePatientData>().Initialize();
-        //LoadModule(true);
-        //StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
-    }
-
     private void LoadModule(bool status)
     {
         bool newGame = Profiler.Instance.currentUser.newGame;
-        FindObjectOfType<SavePatientData>().Initialize(newGame, moduleMapper);
+        var savePatientData = FindObjectOfType<SavePatientData>();
+        if (savePatientData == null)
+        {
+            Debug.LogError("Could not find SavePatientData in scene.");
+            return;
+        }
+        savePatientData.Initialize(newGame, moduleMapper);
         IntroScene intro = FindObjectOfType<IntroScene>();
         int lastModulePlayed = 0;
         if (!newGame)
