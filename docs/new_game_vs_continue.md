@@ -2,7 +2,7 @@
 
 When a returning patient logs into the application, they will see this menu:
 
-![Main Menu](images\main-menu-continue-or-newgame.png)
+![Main Menu](images/main-menu-continue-or-newgame.png)
 
 The *Continue* button allows patients to continue from where they left off meaning it loads the patient in at the last module they did not complete in their latest attempt/round. Using this `patient_data.cs` file as an example:
 
