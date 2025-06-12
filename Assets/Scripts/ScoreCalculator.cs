@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,13 +16,17 @@ public class ScoreCalculator
         }
     }
     public bool exercising;
-    private int totalScore;
     public double totalDuration;
-    private float start;
-    private int impairment;
     public IntEvent activityStart;
     public UnityEvent activityEnd;
+
+
+    private int totalScore;
+    private int impairment;
+    private float start;
+    private DateTimeOffset startTimeStamp;
     private int currentExerciseNo;
+
 
     public void SetImpairmentLevel(int value)
     {
@@ -38,6 +40,7 @@ public class ScoreCalculator
         //Cursor.lockState = CursorLockMode.Confined;
         exercising = true;
         start = Time.time;
+        startTimeStamp = DateTimeOffset.Now;
 
         currentExerciseNo = exerciseID;
         if (activityStart != null)
@@ -61,7 +64,7 @@ public class ScoreCalculator
         totalScore += GetScore(duration, successes, misses, currentExerciseNo);
         if (SavePatientData.Instance)
         {
-            SavePatientData.Instance.SaveEntry(currentExerciseNo, duration, successes, misses);
+            SavePatientData.Instance.SaveEntry(currentExerciseNo, startTimeStamp, duration, successes, misses);
         }
         if (activityEnd != null) { activityEnd.Invoke(); }
     }
@@ -77,7 +80,7 @@ public class ScoreCalculator
         float compareTime = 10f;
         float compareAcc = 50f;
         float playerAcc = 100f * successes / (successes + misses);
-        if (cientry.attempts[0].time != 0)  // TODO : NULL REF at end of game
+        if (cientry.attempts[0].time != 0)
         {
             for (int i = 0; i < 5; i++)
             {
@@ -111,8 +114,6 @@ public class ScoreCalculator
     public int GetStars(int numModules = 7) // TODO : magic number
     {
         int stars = Mathf.CeilToInt((float)totalScore / numModules);
-        //Debug.Log("Total score: " + totalScore);
-        //Debug.Log("Total duration: " + totalDuration);
         if (stars > 5) stars = 5;
 
         totalDuration = 0;
