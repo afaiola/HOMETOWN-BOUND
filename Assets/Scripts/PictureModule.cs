@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class PictureModule : ScavengerModule
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     protected override void RunFirstModule()
     {
         (exercises[0] as PictureExercise).Arrange();
@@ -29,7 +18,7 @@ public class PictureModule : ScavengerModule
             PictureExercise px = (exercises[i] as PictureExercise);
 
             px.picture.ChangePicture(px.leftImage);
-            px.picture.moduleButton.Set(exercises[i], px.leftImage, i==0);
+            px.picture.moduleButton.Set(exercises[i], px.leftImage, i == 0);
             px.AddInteractable(px.picture.gameObject);
             px.picture.GetComponent<Interact>().onSelected = new UnityEngine.Events.UnityEvent<GameObject>();
             px.picture.GetComponent<Interact>().onSelected.AddListener(PictureSelected);
@@ -43,10 +32,10 @@ public class PictureModule : ScavengerModule
         {
             helpText.text = "Find and click on the picture of your " + (exercises[current] as PictureExercise).nameOfObject;
             // set each interactable event return to call select on current exercise
-            for (int i =0; i< exercises.Count; i++)
+            for (int i = 0; i < exercises.Count; i++)
             {
                 PictureExercise px = (exercises[i] as PictureExercise);
-                px.picture.moduleButton.Set(exercises[i], px.leftImage, i==current);
+                px.picture.moduleButton.Set(exercises[i], px.leftImage, i == current);
                 //px.picture.GetComponent<Interact>().onSelected = new UnityEngine.Events.UnityEvent<GameObject>();
                 //px.picture.GetComponent<Interact>().onSelected.AddListener(PictureSelected);
             }

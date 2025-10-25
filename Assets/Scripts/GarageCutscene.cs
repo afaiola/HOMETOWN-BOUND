@@ -4,31 +4,32 @@ using UnityEngine;
 
 public class GarageCutscene : MonoBehaviour
 {
+    [SerializeField]
     public Transform peopleParent;
+    [SerializeField]
     public Door door;
-
+    [SerializeField]
     public ActivatorZone activator;
+    [SerializeField]
     public GameObject garageUI;
-
+    [SerializeField]
     public AudioSource crowdAudio;
-    public AudioClip whispers, cheer;
+    [SerializeField]
+    public AudioClip whispers;
+    [SerializeField]
+    private AudioClip cheer;
+    [SerializeField]
+    private CyclicFlash path;
 
-    public CyclicFlash path;
 
-    // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
-        activator.enterEvent = new UnityEngine.Events.UnityEvent();
-        activator.enterEvent.AddListener(OpenDoor);
+        activator.EnterEvent = new UnityEngine.Events.UnityEvent();
+        activator.EnterEvent.AddListener(OpenDoor);
         garageUI.SetActive(false);
         path.gameObject.SetActive(false);
-        //Activate(); // for testing
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public void Activate()
     {
@@ -68,6 +69,7 @@ public class GarageCutscene : MonoBehaviour
         garageUI.SetActive(false);
         Invoke("EndGame", 7f);
     }
+
 
     private void EndGame()
     {

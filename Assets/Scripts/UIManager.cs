@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,12 +26,6 @@ public class UIManager : MonoBehaviour
     private bool isMovingToPlayer;
     public bool followPlayer = true;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     public void Initialize()
     {
         if (_instance != null && _instance != this)
@@ -57,7 +50,7 @@ public class UIManager : MonoBehaviour
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = worldScale;
-            RectTransform uiRect = GetComponent<RectTransform>();        
+            RectTransform uiRect = GetComponent<RectTransform>();
             uiRect.sizeDelta = new Vector2(1920, 1080) / 2;
         }
 
@@ -232,7 +225,7 @@ public class UIManager : MonoBehaviour
 
         while (timecount < blinktime)
         {
-            blinking = Mathf.Lerp(start, goal, timecount/blinktime);
+            blinking = Mathf.Lerp(start, goal, timecount / blinktime);
             topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, blinking);
             bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, blinking);
             timecount += Time.deltaTime;
@@ -271,7 +264,7 @@ public class UIManager : MonoBehaviour
             MoveToPosition();
     }
 
-    public void MoveToPosition(Transform location=null, bool useOffset=true, bool useScale=false)
+    public void MoveToPosition(Transform location = null, bool useOffset = true, bool useScale = false)
     {
         if (location == null)
         {
