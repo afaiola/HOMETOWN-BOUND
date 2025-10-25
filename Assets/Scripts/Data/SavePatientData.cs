@@ -61,6 +61,23 @@ public class SavePatientData : MonoBehaviour
         
     }
 
+    public static string GetFileName()
+    {
+        char slash = Path.DirectorySeparatorChar;
+        string filename = Application.persistentDataPath + Path.DirectorySeparatorChar + "patient_data.csv";
+        if (Profiler.Instance.currentUser.username != "")
+        {
+            string contentFolder = $"{Application.persistentDataPath}{slash}usercontent{slash}";
+            if (!Directory.Exists(contentFolder))
+                Directory.CreateDirectory(contentFolder);
+            string userFolder = $"{Application.persistentDataPath}{slash}usercontent{slash}{Profiler.Instance.currentUser.username}";
+            if (!Directory.Exists(userFolder))
+                Directory.CreateDirectory(userFolder);
+            filename = $"{Application.persistentDataPath}{slash}usercontent{slash}{Profiler.Instance.currentUser.username}{slash}patient_data.csv";
+        }
+        return filename;
+    }
+
     // set up the save file and format it to hold entries for all exercises
     public void Initialize()
     {
@@ -74,7 +91,7 @@ public class SavePatientData : MonoBehaviour
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
 
-        patientDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "patient_data.csv";
+        patientDataFile = GetFileName();
         ciDataFile = Application.persistentDataPath + Path.DirectorySeparatorChar + "ci_data.csv";
         //if (File.Exists(patientDataFile))
         //    File.Delete(patientDataFile);

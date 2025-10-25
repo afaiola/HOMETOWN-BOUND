@@ -143,7 +143,8 @@ public class GameManager : MonoBehaviour
 
         StorageManager.Instance.downloadStatusEvent = new UnityEvent<bool>();
         StorageManager.Instance.downloadStatusEvent.AddListener(LoadModule);
-        StorageManager.Instance.StartCSVDownload(Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "patient_data.csv");
+        StorageManager.Instance.StartCSVDownload(SavePatientData.GetFileName()) ;
+        //StorageManager.Instance.StartCSVDownload(Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "patient_data.csv");
 
         StorageManager.Instance.contentDownloadedEvent.AddListener(moduleMapper.MapPlayerContent);
         StorageManager.Instance.contentDownloadedEvent.AddListener(ContentMapped);

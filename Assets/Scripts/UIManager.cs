@@ -79,7 +79,7 @@ public class UIManager : MonoBehaviour
                 refocusObj.SetActive(false);
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
-                TankController.Instance.speed = 15f;
+                TankController.Instance.speed = 30f;
                 TankController.Instance.turnSpeed = 180f;
             }
         }
@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        if (GameManager.Instance.useVR)
+        if (GameManager.Instance && GameManager.Instance.useVR)
         {
             if (TankController.Instance == null || !followPlayer) return;
 
