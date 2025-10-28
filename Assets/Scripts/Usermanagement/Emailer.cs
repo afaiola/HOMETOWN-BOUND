@@ -13,6 +13,7 @@ public class Emailer : MonoBehaviour
 
     private string windowsPass = "mzvrbrvanmpvwnqi";
     private string macPass = "wtjyzufrhkddkecg";
+    private string appPass = "qsnsaperwdgmrhgm";
 
     // Start is called before the first frame update
     void Start()
@@ -31,7 +32,7 @@ public class Emailer : MonoBehaviour
         var fromAddress = new MailAddress("hometown.service859@gmail.com", "HomeTown Bound Support");
         var toAddress = new MailAddress(receiver);
         // TODO: add passwords for mobile devices when the time comes
-        string fromPassword = System.Environment.OSVersion.Platform == System.PlatformID.MacOSX ? macPass : windowsPass;
+        string fromPassword = appPass;// System.Environment.OSVersion.Platform == System.PlatformID.MacOSX ? macPass : windowsPass;
         string subject = "HomeTown Bound Personalization";
         string body = "Please use the following link to access a survey that will allow you to personalize your experience while playing HomeTown Bound! "
             + "We highly recommend you fill out the questionaire on your personal device which contains many pictures of your family members.\n\n"
