@@ -1182,7 +1182,7 @@ TextureImporter:
       213: 21300784
     second: Double point
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -1199,10 +1199,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -1241,6 +1243,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1252,6 +1256,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
@@ -1264,6 +1269,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   - serializedVersion: 3
@@ -1276,6 +1282,46 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 1
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 1
   spriteSheet:
@@ -6205,9 +6251,243 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      +1: 21300048
+      +10: 21300568
+      +100: 21300756
+      +15: 21300572
+      +2: 21300052
+      +20: 21300576
+      +25: 21300608
+      +3: 21300056
+      +30: 21300612
+      +35: 21300616
+      +4: 21300060
+      +40: 21300620
+      +45: 21300652
+      +5: 21300564
+      +50: 21300656
+      +55: 21300660
+      +60: 21300664
+      +65: 21300696
+      +70: 21300700
+      +75: 21300704
+      +80: 21300708
+      +85: 21300744
+      +90: 21300748
+      +95: 21300752
+      +Speechbox_Black: 21300418
+      +Speechbox_Universalcolor: 21300686
+      +Speechbubble_1: 21300000
+      +Speechbubble_2: 21300380
+      +Speechbubble_3: 21300560
+      +Speechbubble_4: 21300184
+      +Speechbubble_5: 21300382
+      +Speechbubble_6: 21300562
+      +Speechbubble_7: 21300742
+      +Speechbubble_Infobox: 21300740
+      -1: 21300112
+      -10: 21300584
+      -100: 21300772
+      -15: 21300588
+      -2: 21300116
+      -20: 21300592
+      -25: 21300624
+      -3: 21300120
+      -30: 21300628
+      -35: 21300632
+      -4: 21300124
+      -40: 21300636
+      -45: 21300668
+      -5: 21300580
+      -50: 21300672
+      -55: 21300676
+      -60: 21300680
+      -65: 21300712
+      -70: 21300716
+      -75: 21300720
+      -80: 21300724
+      -85: 21300760
+      -90: 21300764
+      -95: 21300768
+      0: 21300518
+      0-: 21300534
+      1: 21300472
+      1-: 21300488
+      2: 21300474
+      2-: 21300490
+      3: 21300476
+      3-: 21300492
+      4: 21300478
+      4-: 21300494
+      5: 21300480
+      5-: 21300496
+      6: 21300482
+      6-: 21300498
+      7: 21300484
+      7-: 21300500
+      8: 21300486
+      8-: 21300502
+      9: 21300516
+      9-: 21300532
+      A: 21300016
+      A-: 21300032
+      Akzent: 21300198
+      Akzent-: 21300214
+      B: 21300018
+      B-: 21300034
+      C: 21300020
+      C-: 21300036
+      Clip_L: 21300776
+      Clip_L-: 21300780
+      Clip_R: 21300778
+      Clip_R-: 21300782
+      Comma point: 21300192
+      Comma point-: 21300208
+      D: 21300022
+      D-: 21300038
+      Dollar sign: 21300432
+      Dollar sign-: 21300448
+      Double point: 21300784
+      Double point-: 21300210
+      E: 21300024
+      E-: 21300040
+      F: 21300026
+      F-: 21300042
+      G: 21300028
+      G-: 21300044
+      Gravis: 21300398
+      Gravis-: 21300414
+      H: 21300030
+      H-: 21300046
+      I: 21300080
+      I-: 21300096
+      J: 21300082
+      J-: 21300098
+      K: 21300084
+      K-: 21300100
+      L: 21300086
+      L-: 21300102
+      M: 21300088
+      M-: 21300104
+      N: 21300090
+      N-: 21300106
+      O: 21300092
+      O-: 21300108
+      P: 21300094
+      P-: 21300110
+      Point: 21300390
+      Point-: 21300406
+      Q: 21300144
+      Q-: 21300160
+      Question mark: 21300522
+      Question mark-: 21300538
+      R: 21300146
+      R-: 21300162
+      S: 21300148
+      S-: 21300164
+      Section mark: 21300430
+      Section mark-: 21300446
+      T: 21300150
+      T-: 21300166
+      U: 21300152
+      U-: 21300168
+      Underline: 21300196
+      Underline-: 21300212
+      V: 21300154
+      V-: 21300170
+      W: 21300156
+      W-: 21300172
+      X: 21300158
+      X-: 21300174
+      Y: 21300188
+      Y-: 21300204
+      Z: 21300190
+      Z-: 21300206
+      a: 21300248
+      a-: 21300264
+      and: 21300436
+      and-: 21300452
+      arrow_L: 21300528
+      arrow_L-: 21300544
+      arrow_R: 21300530
+      arrow_R-: 21300546
+      asterisk: 21300200
+      asterisk-: 21300216
+      b: 21300250
+      b-: 21300266
+      c: 21300252
+      c-: 21300268
+      call: 21300428
+      call-: 21300444
+      comma: 21300388
+      comma-: 21300404
+      d: 21300254
+      d-: 21300270
+      double quote: 21300202
+      double quote-: 21300218
+      e: 21300256
+      e-: 21300272
+      equals: 21300520
+      equals-: 21300536
+      f: 21300258
+      f-: 21300274
+      g: 21300260
+      g-: 21300276
+      h: 21300262
+      h-: 21300278
+      hash: 21300394
+      hash-: 21300410
+      i: 21300292
+      i-: 21300308
+      j: 21300294
+      j-: 21300310
+      k: 21300296
+      k-: 21300312
+      l: 21300298
+      l-: 21300314
+      m: 21300300
+      m-: 21300316
+      minus: 21300392
+      minus-: 21300408
+      n: 21300302
+      n-: 21300318
+      o: 21300304
+      o-: 21300320
+      p: 21300306
+      p-: 21300322
+      percent: 21300434
+      percent-: 21300450
+      plus: 21300396
+      plus-: 21300412
+      q: 21300336
+      q-: 21300352
+      r: 21300338
+      r-: 21300354
+      s: 21300340
+      s-: 21300356
+      slash_L: 21300526
+      slash_L-: 21300542
+      slash_R: 21300438
+      slash_R-: 21300454
+      t: 21300342
+      t-: 21300358
+      u: 21300344
+      u-: 21300360
+      v: 21300346
+      v-: 21300362
+      w: 21300348
+      w-: 21300364
+      x: 21300350
+      x-: 21300366
+      y: 21300384
+      y-: 21300400
+      z: 21300386
+      z-: 21300402
+      "\xDF": 21300524
+      "\xDF-": 21300540
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

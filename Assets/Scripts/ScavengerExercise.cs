@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,34 +5,18 @@ public class ScavengerExercise : Exercise
 {
     public GameObject goalPrefab, pedestrianPrefab;
     public List<Transform> goalLocations;
-    public string nameOfObject;
     public bool isPedestrian;
 
     protected GameObject goalObj;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     protected override void OnValidate()
     {
-
+        // Empty to override base class
     }
 
     public override bool CheckSuccess
     {
-        get
-        {
-            return true;
-        }
+        get => true;
     }
 
     private GameObject SpawnGoal()

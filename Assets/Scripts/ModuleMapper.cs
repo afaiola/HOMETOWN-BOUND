@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,28 +34,35 @@ public class ModuleMapper : MonoBehaviour
     public Interact[] interactables;
     public GoTo[] gotos;
 
+
+    private int totalExercises = 0;
+
+
+    public int TotalExercises { get => totalExercises; }
+
+
     public void MapModules()
     {
         modules = GameObject.FindObjectsOfType<Module>();
         interactables = GameObject.FindObjectsOfType<Interact>();
-        gotos = GameObject.FindObjectsOfType<GoTo>();
+        gotos = Menu.Instance.GetComponentsInChildren<GoTo>(true);
         Array.Sort(modules, new ModuleComparer());
         Array.Sort(interactables, new InteractableComparer());
         Array.Sort(gotos, new GoToComparer());
-        int id = 0;
+        totalExercises = 0;
         for (int i = 0; i < modules.Length; i++)
         {
-            id++;   // first exercise is walking to the module
+            totalExercises++;   // first exercise is walking to the module
             interactables[i].correspondingModule = modules[i];
             interactables[i].interactEvent = new UnityEngine.Events.UnityEvent();
             interactables[i].interactEvent.AddListener(interactables[i].ModuleInteract);
             gotos[i].module = modules[i];// null ref here
             gotos[i].moduleObject = interactables[i].gameObject;
-            
+
             for (int j = 0; j < modules[i].exercises.Count; j++)
             {
-                modules[i].exercises[j].exerciseID = id;
-                id++;
+                modules[i].exercises[j].exerciseID = totalExercises;
+                totalExercises++;
             }
         }
         gotos[gotos.Length - 1].moduleObject = null;    // allows house cutscene to take control of player
@@ -69,26 +77,23 @@ public class ModuleMapper : MonoBehaviour
         {
             json = r.ReadToEnd();
         }
-        //Debug.Log("length of json content: " + json.Length);
         if (json.Length < 10) return;
         var content_map = JObject.Parse(json);
         // TODO: check if picture is valid before applying it
         foreach (var content in StorageManager.Instance.playerContents)
         {
-            //Debug.Log("trying content: " + content.pictureName);
             if (!content.valid) continue;
             int mod = Mathf.FloorToInt(content.exerciseID / 7);
             int ex = content.exerciseID % 7;
             Exercise exercise = modules[mod].exercises[ex];
             exercise.customContent = true;
 
-            //Debug.Log($"set {content.pictureName} to exercise: {exercise.name}");
-            string contentDetails = ""; 
+            string contentDetails = "";
             if (content_map.ContainsKey(content.pictureName))
             {
                 contentDetails = content_map[content.pictureName].ToString();
             }
-            
+
             if (content == StorageManager.Instance.portraitContent)
             {
                 PortraitExercise portraitExercise = exercise as PortraitExercise;
@@ -99,7 +104,7 @@ public class ModuleMapper : MonoBehaviour
                 {
                     names[i] = char.ToUpper(names[i][0]) + names[i].Substring(1);
                 }
-                
+
                 portraitExercise.leftObject.texture = content.image;
                 portraitExercise.Initialize(names);
             }
@@ -112,7 +117,7 @@ public class ModuleMapper : MonoBehaviour
             string pictureName = content.pictureName;
 
             if (content.pictureName == "other") pictureName = "significant other";
-            
+
             if (pictureName[pictureName.Length - 1] == '1' || pictureName[pictureName.Length - 1] == '2') pictureName = pictureName.Substring(0, pictureName.Length - 1);
 
             if (contentDetails != "")
@@ -128,9 +133,8 @@ public class ModuleMapper : MonoBehaviour
         {
             content.valid = content_map.ContainsKey(content.pictureName);
             if (!content.valid) continue;
-            int mod = Mathf.FloorToInt(content.exerciseID / 7);
-            int ex = content.exerciseID % 7;
-            Exercise exercise = modules[mod].exercises[ex];
+            var (moduleIndex, exerciseIndex) = GetModuleAndExerciseIndexFromExcerciseId(content.exerciseID);
+            Exercise exercise = modules[moduleIndex].exercises[exerciseIndex];
             exercise.customContent = true;
             int optionSelected = int.Parse(content_map[content.pictureName].ToString());
             content.details = optionSelected.ToString();
@@ -157,13 +161,52 @@ public class ModuleMapper : MonoBehaviour
 
     public void ResetModule(Module module)
     {
-        int modIdx = (module.lvl - 1) * 5 + module.ModuleNo-1;
-        interactables[modIdx].Reset();
+        int moduleIndex = Array.IndexOf(modules, module);
+        interactables[moduleIndex].Reset();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SkipModules(int skipID) // module with skipID should not be skipped
     {
-        
+        for (int i = 0; i < skipID; i++)
+        {
+            if (interactables[i])
+            {
+                interactables[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public int GetModuleIndexFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        for (int i = 0; i < modules.Length; i++)
+        {
+            currentExercise++; // +1 for walk exercise
+            currentExercise += modules[i].exercises.Count;
+            if (excerciseId <= currentExercise)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
+    private (int, int) GetModuleAndExerciseIndexFromExcerciseId(int excerciseId)
+    {
+        int currentExercise = -1;
+        for (int i = 0; i < modules.Length; i++)
+        {
+            currentExercise++; // +1 for walk exercise
+            for (int j = 0; j < modules[i].exercises.Count; j++)
+            {
+                if (excerciseId == currentExercise)
+                {
+                    return (i, j);
+                }
+                currentExercise++;
+            }
+        }
+        return (0, 0);
     }
 }

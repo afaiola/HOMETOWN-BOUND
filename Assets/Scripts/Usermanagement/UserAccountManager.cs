@@ -9,12 +9,22 @@ using Text = TMPro.TextMeshProUGUI;
 using Firebase.Auth;
 using Firebase.Firestore;
 
+
 public class UserAccountManager : MonoBehaviour
 {
-    public UserInputPanel signInPanel, registerPanel;
-    public GameObject loadingBar, newGamePanel;
-    public Emailer emailPanel;
-    public UnityEvent loginSuccessEvent = new UnityEvent();
+    [SerializeField]
+    private UserInputPanel signInPanel;
+    [SerializeField]
+    private UserInputPanel registerPanel;
+    [SerializeField]
+    private GameObject loadingBar;
+    [SerializeField]
+    private GameObject newGamePanel;
+    [SerializeField]
+    private Emailer emailPanel;
+    [SerializeField]
+    private UnityEvent loginSuccessEvent = new UnityEvent();
+
 
     // user option keys
     private string k_email = "email";
@@ -32,9 +42,12 @@ public class UserAccountManager : MonoBehaviour
 
     // firestore keys
     private string k_user_collection = "users";
+    private string secret = "AaBb1!2@";
+    private string adminUser = "hometown.service859@gmail.com";
+    private string adminPass = "hometown B0UND$";
 
-    // Start is called before the first frame update
-    void Start()
+
+    protected void Start()
     {
         signInPanel.submitAction = new UnityEvent<Dictionary<string, string>>();
         signInPanel.submitAction.AddListener(StartSignIn);
@@ -51,17 +64,27 @@ public class UserAccountManager : MonoBehaviour
         newGamePanel.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void StartSignIn(Dictionary<string, string> userOptions)
     {
-        Debug.Log("signing in");
         StartCoroutine(SignIn(userOptions));
     }
+
+    public void StartRegistration(Dictionary<string, string> userOptions)
+    {
+        StartCoroutine(Register(userOptions));
+    }
+
+    public void StartNewGame(bool newGame)
+    {
+        Profiler.Instance.currentUser.newGame = newGame;
+        signInPanel.gameObject.SetActive(false);
+        registerPanel.gameObject.SetActive(false);
+        newGamePanel.SetActive(false);
+        loadingBar.SetActive(true);
+        loginSuccessEvent.Invoke();
+    }
+
 
     // Using WaitUntils rather than the task.ContinueWith becuase that was causing the function to terminate 
     // after the task completed which caused chained coroutines to not execute.
@@ -72,6 +95,8 @@ public class UserAccountManager : MonoBehaviour
         string username = userOptions[k_email];   // retreive the username from firestore if not provided 
         string password = userOptions[k_pass];
 
+        DateTime legacySigninDate = new DateTime(2024, 3, 9);
+
         var db = FirebaseFirestore.DefaultInstance;
         if (!email.Contains("@"))
         {
@@ -80,32 +105,51 @@ public class UserAccountManager : MonoBehaviour
         }
         else
         {
+            // temporairly sign in for this?
             var auth = FirebaseAuth.DefaultInstance;
-            var task = auth.SignInWithEmailAndPasswordAsync(email, password);
+            var task = auth.SignInWithEmailAndPasswordAsync(adminUser, adminPass);
             yield return new WaitUntil(() => task.IsCompleted);
+            Dictionary<string, object> user = null;
 
-            if (task.IsCanceled)
+            if (task.Exception != null)
             {
-                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                Debug.LogWarning("could not log into admin account to get user list");
+                password += secret;
+                // assume we are good?
             }
-            if (task.IsFaulted)
-            {
-                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-            }
-
-            if (task.Exception == null)
+            else
             {
                 var userRef = db.Collection(k_user_collection).Document(email);
                 var snapshotTask = userRef.GetSnapshotAsync();
                 yield return new WaitUntil(() => snapshotTask.IsCompleted);
 
-                var user = snapshotTask.Result.ToDictionary();
+                Debug.Log($"printing result: {snapshotTask.Result.ToString()}");
+                if (!snapshotTask.Result.Exists)
+                {
+                    Debug.LogWarning($"{email} document doesn't exist");
+                }
+                user = snapshotTask.Result.ToDictionary();
+                if (user != null)
+                {
+                    DateTime createDate = DateTime.Now;
+                    if (user.ContainsKey(k_start_date)) createDate = DateTime.Parse(user[k_start_date].ToString());
+                    if (createDate > legacySigninDate)    // yeah no date needs to be from the account itself
+                        password += secret;
+                }
+            }
+            auth.SignOut();
 
+            //var auth = FirebaseAuth.DefaultInstance;
+            task = auth.SignInWithEmailAndPasswordAsync(email, password);
+            yield return new WaitUntil(() => task.IsCompleted);
+
+            if (task.Exception == null)
+            {
                 if (user != null)
                 {
                     string uname = "";
                     int ci = 0;
-                    int skin = 0;
+                    int skin = 3;   // 3 is yellow
                     int login_ct = 0;
                     double playTime = 0;
                     DateTime startDate = DateTime.Today;
@@ -133,40 +177,48 @@ public class UserAccountManager : MonoBehaviour
                     {
                         newGamePanel.SetActive(true);
                     }
-
                 }
             }
             else
             {
-                signInPanel.SubmitFail(task.Exception.Message);
+                string helpfulMessage = task.Exception.InnerExceptions[task.Exception.InnerExceptions.Count - 1].InnerException.Message;
+
+                foreach (var e in task.Exception.Flatten().InnerExceptions)
+                {
+                    Debug.Log(e);
+                }
+                signInPanel.SubmitFail(helpfulMessage);
                 // need to find where the useful content is in the exception
             }
         }
-    }
-
-    public void StartRegistration(Dictionary<string, string> userOptions)
-    {
-        StartCoroutine(Register(userOptions));
     }
 
     private IEnumerator Register(Dictionary<string, string> userOptions)
     {
         // TODO: protect from retreiving invalid keys
         string email = userOptions[k_email];
-        string password = userOptions[k_pass];
+        string password = userOptions[k_pass] + secret;
         string username = userOptions[k_user];
         int ci = 0;
-        int skin = int.Parse(userOptions[k_skin]);
+        int skin = 3;
+        //int.TryParse(userOptions[k_skin], out skin);
 
         string message = "";
         bool success = true;
         var db = FirebaseFirestore.DefaultInstance;
+
+        // I think I need to sign into the admin acct before I can check if the email exists
+        var auth = FirebaseAuth.DefaultInstance;
+        var task = auth.SignInWithEmailAndPasswordAsync(adminUser, adminPass);
+        yield return new WaitUntil(() => task.IsCompleted);
+
         // Query for the new email already existing
         var usersRef = db.Collection(k_user_collection);
         Query query = usersRef.WhereEqualTo(k_email, email);
         var queryTask = query.GetSnapshotAsync();
         yield return new WaitUntil(() => queryTask.IsCompleted);
 
+        // TODO : need this? if (queryTask.IsCanceled)
         foreach (var doc in queryTask.Result.Documents)
         {
             Dictionary<string, object> user = doc.ToDictionary();
@@ -177,10 +229,12 @@ public class UserAccountManager : MonoBehaviour
             }
         }
 
+        auth.SignOut();
+
         if (success)
         {
-            var auth = FirebaseAuth.DefaultInstance;
-            var task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
+            auth = FirebaseAuth.DefaultInstance;
+            task = auth.CreateUserWithEmailAndPasswordAsync(email, password);
             yield return new WaitUntil(() => task.IsCompleted);
 
             if (task.IsCanceled)
@@ -223,7 +277,6 @@ public class UserAccountManager : MonoBehaviour
             userRef.SetAsync(user);
             Profiler.Instance.UserSignedIn(email, ci, skin, 0, 0, date, date, 0, username);
 
-            //loginSuccessEvent.Invoke();
             registerPanel.gameObject.SetActive(false);
             emailPanel.gameObject.SetActive(true);
             emailPanel.SendEmail(email);
@@ -234,14 +287,5 @@ public class UserAccountManager : MonoBehaviour
             registerPanel.SubmitFail(message);
             // TODO: Update the proper helper messages on fail ie: username unavailable
         }
-    }
-    
-    public void StartNewGame(bool newGame)
-    {
-        Profiler.Instance.currentUser.newGame = newGame;
-        signInPanel.gameObject.SetActive(false);
-        registerPanel.gameObject.SetActive(false);
-        loadingBar.SetActive(true);
-        loginSuccessEvent.Invoke();
     }
 }

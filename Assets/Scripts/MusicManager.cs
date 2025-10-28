@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    public static MusicManager Instance { get { return _instance; } } 
+    public static MusicManager Instance { get { return _instance; } }
     private static MusicManager _instance;
     public AudioSource musicSource, ambienceSource;
 
@@ -20,11 +20,12 @@ public class MusicManager : MonoBehaviour
     private MusicZone[] musicZones;
     private AmbienceZone[] ambienceZones;
 
-    // Start is called before the first frame update
-    void Start()
+
+    protected void Start()
     {
         Initialize();
     }
+
 
     public void Initialize()
     {
@@ -47,13 +48,13 @@ public class MusicManager : MonoBehaviour
         {
             if (zone.level == Levels.DOWN)
             {
-                zone.enterEvent = new UnityEngine.Events.UnityEvent();
-                zone.enterEvent.AddListener(PlayCityMusic);
+                zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+                zone.EnterEvent.AddListener(PlayCityMusic);
             }
             else if (zone.level == Levels.HOME)
             {
-                zone.enterEvent = new UnityEngine.Events.UnityEvent();
-                zone.enterEvent.AddListener(PlayHomelandMusic);
+                zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+                zone.EnterEvent.AddListener(PlayHomelandMusic);
             }
         }
 
@@ -61,24 +62,18 @@ public class MusicManager : MonoBehaviour
         {
             if (zone.level == Levels.DOWN)
             {
-                zone.enterEvent = new UnityEngine.Events.UnityEvent();
-                zone.enterEvent.AddListener(PlayCityAmbience);
+                zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+                zone.EnterEvent.AddListener(PlayCityAmbience);
             }
             else if (zone.level == Levels.HOME)
             {
-                zone.enterEvent = new UnityEngine.Events.UnityEvent();
-                zone.enterEvent.AddListener(PlaySuburbAmbience);
+                zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+                zone.EnterEvent.AddListener(PlaySuburbAmbience);
             }
         }
 
         musicSource.clip = null;
         ambienceSource.clip = null;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void PauseMusic()
@@ -123,14 +118,14 @@ public class MusicManager : MonoBehaviour
     }
 
 
-    private void PlayNewClip(AudioSource source, AudioClip clip, float volume, float delay=0f)
+    private void PlayNewClip(AudioSource source, AudioClip clip, float volume, float delay = 0f)
     {
         if (clip == null)
         {
             source.Stop();
             return;
         }
-        if (source.clip == clip) return;    // if already playing, don't restart
+        if (source.clip == clip) { return; }
         source.Stop();
         source.volume = volume;
         source.clip = clip;

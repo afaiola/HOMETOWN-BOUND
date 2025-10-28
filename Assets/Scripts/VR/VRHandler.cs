@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.XR;
 using UnityEngine.XR.Management;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.UI;
 
 public class VRHandler : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class VRHandler : MonoBehaviour
     [SerializeField] VRManager vrRig;
     [SerializeField] Transform worldUILocaiton;
     [SerializeField] private XRLoader[] loaders;
+
+    public TankController vrPlayer;
 
     public bool vrActive;
 
@@ -114,10 +117,13 @@ public class VRHandler : MonoBehaviour
             Destroy(vrRig.gameObject);
             return;
         }
+        VRSettings vrSet = GameObject.FindObjectOfType<VRSettings>();
+        if (vrSet)
+            vrSet.Initialize();
 
-        TankController tankController = GameObject.FindObjectOfType<TankController>();
-        if (tankController)
-            tankController.Initialize();
+        if (vrPlayer == null)
+            vrPlayer = GameObject.FindObjectOfType<TankController>();
+        vrPlayer.Initialize();
         vrRig.Initialize();
         //vrRig.DisableMovement();
 
@@ -192,6 +198,12 @@ public class VRHandler : MonoBehaviour
             canvas.transform.position = worldUILocaiton.position;
             canvas.transform.rotation = worldUILocaiton.rotation;
             canvas.transform.localScale = worldUILocaiton.localScale;
+            TMPro.TMP_InputField[] inputFields = canvas.GetComponentsInChildren<TMPro.TMP_InputField>(true);
+            foreach (var input in inputFields)
+            {
+                input.shouldHideSoftKeyboard = true;
+                input.shouldHideMobileInput = true;
+            }
         }
     }
 

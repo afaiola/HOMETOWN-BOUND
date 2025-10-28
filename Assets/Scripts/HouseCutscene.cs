@@ -13,20 +13,14 @@ public class HouseCutscene : MonoBehaviour
     private float doorOpenTime = 2f;
     private float playerMoveTime = 5f;
 
+    public InitializeTeleportArea houseTpArea;
+
     // Start is called before the first frame update
     void Start()
     {
         // play on start in the house scene
         Play();
-        if (VRManager.Instance)
-        {
-            var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
-            foreach (var tpArea in crossSceneTPAreas)
-            {
-                tpArea.interactionManager = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
-                tpArea.teleportationProvider = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
-            }
-        }
+        
     }
 
     // Update is called once per frame
@@ -85,8 +79,8 @@ public class HouseCutscene : MonoBehaviour
             timecount += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        if (MusicManager.Instance)
-            MusicManager.Instance.PlayHouseMusic();
+        //if (MusicManager.Instance)
+        //    MusicManager.Instance.PlayHouseMusic();
 
         //yield return new WaitForSecondsRealtime(0.5f);
 
@@ -95,6 +89,19 @@ public class HouseCutscene : MonoBehaviour
         TankController.Instance.EnableMovement();
         UIManager.Instance.inCutscene = false;
         instructions.Play();
+
+        if (GameManager.Instance.useVR)
+        {
+            houseTpArea.Activate();
+            
+            var crossSceneTPAreas = GameObject.FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
+            //foreach (var tpArea in crossSceneTPAreas)
+            //{
+           //     tpArea.interactionManager = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRInteractionManager>(true);
+           //     tpArea.teleportationProvider = VRManager.Instance.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.TeleportationProvider>();
+           // }
+            
+        }
 
     }
 }

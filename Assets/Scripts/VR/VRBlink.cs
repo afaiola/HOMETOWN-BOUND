@@ -7,9 +7,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class VRBlink : MonoBehaviour
 {
 
-    private MeshRenderer m_MeshRender;
-    MeshFilter m_MeshFilter;
-    Material m_SharedMaterial;
+    [SerializeField] MeshRenderer m_MeshRender;
+    [SerializeField] MeshFilter m_MeshFilter;
+    [SerializeField] Material m_SharedMaterial;
 
     MaterialPropertyBlock m_VignettePropertyBlock;
     VignetteParameters m_CurrentParameters;
@@ -27,23 +27,40 @@ public class VRBlink : MonoBehaviour
     public void Initialize()
     {
         m_CurrentParameters = new VignetteParameters();
+        //TrySetUpMaterial();
         SetAperatureSize(0);
     }
 
     bool TrySetUpMaterial()
     {
+        // NULL REF SOMEWHERE IN HERE
+        if (this == null || gameObject == null || enabled == false)
+        {
+            return false;
+        }
+
         if (m_MeshRender == null)
+        {
             m_MeshRender = GetComponent<MeshRenderer>();
+        }
         if (m_MeshRender == null)
-            m_MeshRender = gameObject.AddComponent<MeshRenderer>();
+        {
+            m_MeshRender = gameObject.AddComponent<MeshRenderer>();       
+        }
 
         if (m_VignettePropertyBlock == null)
+        {
             m_VignettePropertyBlock = new MaterialPropertyBlock();
+        }
 
         if (m_MeshFilter == null)
+        {
             m_MeshFilter = GetComponent<MeshFilter>();
+        }
         if (m_MeshFilter == null)
+        {
             m_MeshFilter = gameObject.AddComponent<MeshFilter>();
+        }
 
         if (m_MeshFilter.sharedMesh == null)
         {
@@ -106,6 +123,8 @@ public class VRBlink : MonoBehaviour
 
     public void SetAperatureSize(float value)
     {
+        if (this == null || gameObject == null) return;
+        if (m_CurrentParameters == null) m_CurrentParameters = new VignetteParameters();
         m_CurrentParameters.apertureSize = value;
         m_CurrentParameters.featheringEffect = value;
         UpdateTunnelingVignette(m_CurrentParameters);

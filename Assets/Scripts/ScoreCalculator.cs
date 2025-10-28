@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,16 +16,21 @@ public class ScoreCalculator
         }
     }
     public bool exercising;
-    private int totalScore;
     public double totalDuration;
-    private float start;
-    private int impairment;
     public IntEvent activityStart;
     public UnityEvent activityEnd;
+
+
+    private int totalScore;
+    private int impairment;
+    private float start;
+    private DateTimeOffset startTimeStamp;
     private int currentExerciseNo;
+
 
     public void SetImpairmentLevel(int value)
     {
+        if (value == 0) value = 14;
         impairment = value;
     }
 
@@ -37,6 +40,7 @@ public class ScoreCalculator
         //Cursor.lockState = CursorLockMode.Confined;
         exercising = true;
         start = Time.time;
+        startTimeStamp = DateTimeOffset.Now;
 
         currentExerciseNo = exerciseID;
         if (activityStart != null)
@@ -47,7 +51,7 @@ public class ScoreCalculator
     {
         exercising = false;
         //module numbers start from 1
-        if(start < 0)
+        if (start < 0)
         {
             Debug.LogWarning("EndActivity was called without Starting it");
             return;
@@ -57,12 +61,12 @@ public class ScoreCalculator
         start = Time.time;
 
         // Score exercise based on comparison to expected CI times
-        //float[] times = new float[5];
         totalScore += GetScore(duration, successes, misses, currentExerciseNo);
         if (SavePatientData.Instance)
-            SavePatientData.Instance.SaveEntry(currentExerciseNo, duration, successes, misses);
-        if (activityEnd != null)
-            activityEnd.Invoke();
+        {
+            SavePatientData.Instance.SaveEntry(currentExerciseNo, startTimeStamp, duration, successes, misses);
+        }
+        if (activityEnd != null) { activityEnd.Invoke(); }
     }
 
     // Gets the point value for an exercise. Points correlate to stars for a particular exercise
@@ -76,14 +80,16 @@ public class ScoreCalculator
         float compareTime = 10f;
         float compareAcc = 50f;
         float playerAcc = 100f * successes / (successes + misses);
-        if (cientry.attempts[0].time != 0)  // NULL REF at end of game
+        if (cientry.attempts[0].time != 0)
         {
             for (int i = 0; i < 5; i++)
             {
-                if (impairment + i < cientry.attempts.Length)
+                int ciIdx = impairment + i;
+                ciIdx = Mathf.Clamp(ciIdx, 0, cientry.attempts.Length);
+                if (ciIdx < cientry.attempts.Length)
                 {
-                    compareTime = cientry.attempts[impairment + i].time;
-                    compareAcc = 100f * cientry.attempts[impairment + i].successes / (cientry.attempts[impairment + i].successes + cientry.attempts[impairment + i].misses);
+                    compareTime = cientry.attempts[ciIdx].time;
+                    compareAcc = 100f * cientry.attempts[ciIdx].successes / (cientry.attempts[ciIdx].successes + cientry.attempts[ciIdx].misses);
                     compareAcc -= 5f;   // tolerance
                 }
                 else
@@ -105,11 +111,9 @@ public class ScoreCalculator
     }
 
     // Calculates the stars awareded based on the points earned on an entire module.
-    public int GetStars(int numModules=7)
+    public int GetStars(int numModules = 7) // TODO : magic number
     {
         int stars = Mathf.CeilToInt((float)totalScore / numModules);
-        //Debug.Log("Total score: " + totalScore);
-        //Debug.Log("Total duration: " + totalDuration);
         if (stars > 5) stars = 5;
 
         totalDuration = 0;

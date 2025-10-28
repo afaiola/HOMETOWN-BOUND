@@ -14,6 +14,7 @@ public class TutorialManager : MonoBehaviour
 
     public void BeginTutorial()
     {
+        Debug.Log("start tutorial");
         currSequence = -1;
         //foreach (var goal in GameObject.FindObjectsOfType<TutorialPositionGoal>())
         //    goal.gameObject.SetActive(false);

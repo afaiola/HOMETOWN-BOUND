@@ -12,6 +12,7 @@ public class FloatingOrigin : MonoBehaviour
     private Vector3 totalOffset;
     private List<RootObjectOffsets> rootGos = new List<RootObjectOffsets>();
 
+    [System.Serializable]
     public struct RootObjectOffsets
     {
         public GameObject go;
@@ -26,12 +27,18 @@ public class FloatingOrigin : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    public void Initialize()
+    {
         rootGos = new List<RootObjectOffsets>();
         foreach (var go in nonSceneObjects)
         {
             RootObjectOffsets offset = new RootObjectOffsets(go);
             rootGos.Add(offset);
         }
+
     }
 
     private bool RootContainsGameObject(GameObject go)
@@ -73,6 +80,8 @@ public class FloatingOrigin : MonoBehaviour
                 }
             }
 
+            
+
             foreach (var go in rootGos)
             {
                 if (go.go != null)
@@ -88,6 +97,9 @@ public class FloatingOrigin : MonoBehaviour
             WaypointCharacterController[] waypointers = GameObject.FindObjectsOfType<WaypointCharacterController>();
             foreach (var character in waypointers)
                 character.SetOffset(-pos);
+
+            if (GameManager.Instance.useVR)
+                UIManager.Instance.MoveToPosition();
 
             //Debug.Log($"Recentering origin by {pos} affecting {rootGos.Count} objects");
         }

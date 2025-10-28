@@ -26,7 +26,7 @@ public class TankController : MonoBehaviour
     private AudioSource m_AudioSource;
     private FloatingOrigin floatingOrigin;
 
-    public Material[] skinColors;
+    //public Material[] skinColors;
 
     private float timeSinceLastMove = 0;
 
@@ -39,6 +39,7 @@ public class TankController : MonoBehaviour
     {
         if (_instance != null && _instance != this)
         {
+            Debug.LogWarning("Destroy player");
             Destroy(gameObject);
             return;
         }
@@ -60,13 +61,11 @@ public class TankController : MonoBehaviour
 
     public void SetHandModel()
     {
-        int skinID = skinColors.Length-1;// Random.Range(0, skinColors.Length);
+        int skinID = 0;// Random.Range(0, skinColors.Length);
         if (Profiler.Instance)
             skinID = Profiler.Instance.currentUser.skin_id;
-        foreach (var rend in GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            rend.sharedMaterial = skinColors[skinID];
-        }
+        var skin = GetComponent<SkinColor>();
+        skin.skin = skinID;
     }
 
     private void Update()
@@ -84,13 +83,21 @@ public class TankController : MonoBehaviour
             timeSinceLastMove = Time.time;
         }
 
-        //var y = Input.GetAxis("Mouse Y");
-        RotateCharacterUpDown(Input.GetAxis("Mouse Y"));
-        MoveCharacterForwardBack(Input.GetAxis("Mouse ScrollWheel") * 10f);
-        RotateCharacterLeftRight(Input.GetAxis("Mouse X"));
+        if (SystemInfo.deviceType != DeviceType.Handheld)
+        { 
+            //var y = Input.GetAxis("Mouse Y");
+            RotateCharacterUpDown(Input.GetAxis("Mouse Y"));
+            MoveCharacterForwardBack(Input.GetAxis("Mouse ScrollWheel") * 10f);
+            RotateCharacterLeftRight(Input.GetAxis("Mouse X"));
+        }
 
-        MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.5f);
-        MoveCharacterLeftRight(Input.GetAxisRaw("Horizontal") * 0.35f);
+        MoveCharacterForwardBack(Input.GetAxis("Vertical") * 0.3f);
+        float horiz = Input.GetAxisRaw("Horizontal") * 0.35f;
+        if (Input.anyKey)
+            MoveCharacterLeftRight(horiz);
+        else
+            RotateCharacterLeftRight(horiz);
+
         //Fall();
         /*var movDir = transform.forward * Input.GetAxis("Mouse ScrollWheel") * speed * 10;
         if (movDir == Vector3.zero)

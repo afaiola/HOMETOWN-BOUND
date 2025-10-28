@@ -8,9 +8,10 @@ public class SceneLoader : MonoBehaviour
     public static SceneLoader Instance { get { return _instance; } }
     private static SceneLoader _instance;
 
+
     public ActivatorZone candylandDeactivator, cityDeactivator;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         if (_instance == null)
@@ -25,15 +26,10 @@ public class SceneLoader : MonoBehaviour
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
 
-        candylandDeactivator.enterEvent.AddListener(UnloadCandyland);
-        cityDeactivator.enterEvent.AddListener(UnloadCity);
+        candylandDeactivator.EnterEvent.AddListener(UnloadCandyland);
+        cityDeactivator.EnterEvent.AddListener(UnloadCity);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void UnloadCandyland()
     {
@@ -63,6 +59,7 @@ public class SceneLoader : MonoBehaviour
     {
         //GameManager.Instance.LevelLoaded(3);
         UIManager.Instance.CloseEyes();
+        UIManager.Instance.followPlayer = false;
         SceneManager.LoadSceneAsync("House", LoadSceneMode.Additive);
     }
 
@@ -84,8 +81,6 @@ public class SceneLoader : MonoBehaviour
         Destroy(MusicManager.Instance.gameObject);
         Destroy(TankController.Instance.gameObject);
         Destroy(LightController.Instance.gameObject);
-        // destroy modules,
-        // ui
         Destroy(StatisticsManager.Instance.gameObject);
         Destroy(SoundManager.Instance.gameObject);
         Destroy(SavePatientData.Instance.gameObject);

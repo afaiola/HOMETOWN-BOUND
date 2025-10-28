@@ -10,30 +10,22 @@ public class SkinColor : MonoBehaviour
         {
             foreach (var item in GetComponentsInChildren<SkinnedMeshRenderer>())
             {
-                var color = 0;
                 if (value > 0 && value < skinColors.Length)
-                    color = value;
-                item.material = skinColors[color];
+                {
+                    item.material = skinColors[value];
+                }
             }
-            
+
         }
     }
-    [SerializeField] Material[] skinColors;
-    // Start is called before the first frame update
+
+    [SerializeField]
+    Material[] skinColors;
+
 
     void Awake()
     {
         skin = 0;
-    }
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
 }

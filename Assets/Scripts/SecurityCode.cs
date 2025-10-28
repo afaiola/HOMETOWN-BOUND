@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Text = TMPro.TextMeshProUGUI;
+using InputField = TMPro.TMP_InputField;
 
 public class SecurityEvent : UnityEvent<bool> { }
 
@@ -12,7 +13,7 @@ public class SecurityCode : MonoBehaviour
     public static SecurityCode Instance { get { return _instance; } }
     private static SecurityCode _instance;
 
-    private InputField input;
+    [SerializeField] private InputField inputField;
     [SerializeField] private GameObject canvas;
     [SerializeField] private Text title;
     [SerializeField] private Button submitButton;
@@ -32,18 +33,19 @@ public class SecurityCode : MonoBehaviour
 
     public void Initialize()
     {
-        if (_instance == null)
+        if (_instance != null && _instance != this)
         {
-            _instance = this;
-        }
-        else
-        {
+            Debug.LogWarning("Destroy security code");
             Destroy(gameObject);
+            return;
+            
         }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
 
-        input = GetComponentInChildren<InputField>();
+        if (inputField == null)
+            inputField = GetComponentInChildren<InputField>();
         submitButton.onClick.AddListener(CheckCode);
         closebutton.onClick.AddListener(Stop);
         clearButton.onClick.AddListener(ClearCode);
@@ -53,6 +55,12 @@ public class SecurityCode : MonoBehaviour
         {
             keypadNumbers[i].Setup(i);
             keypadNumbers[i].sendIntEvent.AddListener(EnterNumber);
+        }
+
+        if (SystemInfo.deviceType == DeviceType.Handheld)
+        {
+            inputField.shouldHideMobileInput = false;
+            inputField.shouldHideSoftKeyboard = false;
         }
     }
 
@@ -67,17 +75,17 @@ public class SecurityCode : MonoBehaviour
 
     private void EnterNumber(int value)
     {
-        input.text += value.ToString();
+        inputField.text += value.ToString();
     }
 
     private void ClearCode()
     {
-        input.text = "";
+        inputField.text = "";
     }
 
     private void CheckCode()
     {
-        if (input.text == code)
+        if (inputField.text == code)
         {
             StartCoroutine(ValidResponse());
         }
@@ -112,7 +120,7 @@ public class SecurityCode : MonoBehaviour
         title.text = "Security Code";
         //buttonImage.color = buttonColor;
         title.color = textColor;
-        input.text = "";
+        inputField.text = "";
         Stop();
     }
 
@@ -138,7 +146,7 @@ public class SecurityCode : MonoBehaviour
         title.text = "Security Code";
         //buttonImage.color = buttonColor;
         title.color = textColor;
-        input.text = "";
+        inputField.text = "";
     }
 
     private void Stop()
@@ -149,5 +157,6 @@ public class SecurityCode : MonoBehaviour
     public void Show()
     {
         canvas.SetActive(true);
+        inputField.SetTextWithoutNotify("");
     }
 }

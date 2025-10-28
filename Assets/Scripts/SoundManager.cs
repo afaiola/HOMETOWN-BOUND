@@ -76,7 +76,7 @@ public class SoundManager : MonoBehaviour
                 float randZ = Random.Range(1f, spawnRadius);
                 Vector3 location = new Vector3(randX, randY, randZ);
                 GameObject distractionObj = new GameObject();
-                distractionObj.transform.position = player.transform.position + location;
+                distractionObj.transform.position = TankController.Instance.transform.position + location;
                 AudioSource source = distractionObj.AddComponent<AudioSource>();
                 source.outputAudioMixerGroup = distractionMixer;
                 source.maxDistance = spawnRadius;

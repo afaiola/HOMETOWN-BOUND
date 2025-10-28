@@ -57,7 +57,7 @@ public class Profiler : MonoBehaviour
 
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
-        currentUser = new Profile("player", 0, 0, 0, 0, DateTime.Now, DateTime.Now, 0, "Player");
+        currentUser = new Profile("player", 0, 3, 0, 0, DateTime.Now, DateTime.Now, 0, "Player");
     }
 
     public void UserSignedIn(string _username, int _ci, int _skin, int login_ct, double playTime, DateTime startDate, DateTime lastLogin, int consecDays, string firstName)
@@ -98,5 +98,7 @@ public class Profiler : MonoBehaviour
                 { "consecutiveLogins", currentUser.consecutiveDays }
             };
         userRef.SetAsync(user);
+        //PlayerPrefs.SetString("USERNAME", auth.CurrentUser.Email);
+        //PlayerPrefs.Save();
     }
 }

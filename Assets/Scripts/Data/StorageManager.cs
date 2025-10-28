@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Storage;
-using Firebase.Auth;
 using System.IO;
 using System;
 using UnityEngine.Events;
@@ -15,17 +13,18 @@ public class StorageManager : MonoBehaviour
     public static StorageManager Instance { get => _instance; }
     private static StorageManager _instance;
 
-    [System.NonSerialized] public UnityEvent<bool> downloadStatusEvent = new UnityEvent<bool>();
 
+    [NonSerialized] public UnityEvent<bool> downloadStatusEvent = new UnityEvent<bool>();
     public PlayerContent[] playerContents, dropdownContents;
     public PlayerContent portraitContent;
     public UnityEvent contentDownloadedEvent = new UnityEvent();
 
+
     private string contentDir;
     private int totalFiles, filesDownloaded;
-    
-    // Start is called before the first frame update
-    void Start()
+
+
+    protected void Start()
     {
         Initialize();
     }
@@ -41,12 +40,6 @@ public class StorageManager : MonoBehaviour
         _instance = this;
         transform.parent = null;
         DontDestroyOnLoad(gameObject);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void StartContentDownload()
@@ -70,17 +63,30 @@ public class StorageManager : MonoBehaviour
             //var download_task = content_ref.GetFileAsync(localPath);    // may want to check if file already exists
             const long maxDownloadSize = 1024 * 1024 * 16;      // 16MB (form limit is 10MB)
             var download_task = content_ref.GetBytesAsync(maxDownloadSize);    // may want to check if file already exists
-            yield return new WaitUntil(() => download_task.IsCompleted);
+            float timeout = 3f;
+            while (!download_task.IsCompleted && timeout > 0)
+            {
+                timeout -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            //yield return new WaitUntil(() => download_task.IsCompleted);
 
-            if (download_task.Exception != null)
+            if (timeout < 0)
+            {
+                Debug.LogWarning("download timeout : " + firebasePath);
+            }
+            else if (download_task.Exception != null)
             {
                 Debug.LogWarning($"ERROR downloading {firebasePath}: {download_task.Exception}");
                 File.WriteAllBytes(localPath, file_contents);   // creates file to prevent errors later
             }
             else
             {
-                //Debug.Log($"Downloaded file {firebasePath} size: {download_task.Result.Length}");
-                File.WriteAllBytes(localPath, download_task.Result);
+                Debug.Log($"Downloaded file {firebasePath} size: {download_task.Result.Length}");
+                if (download_task.Result.Length > 0)
+                {
+                    File.WriteAllBytes(localPath, download_task.Result);
+                }
                 file_contents = download_task.Result;
             }
         }
@@ -94,11 +100,16 @@ public class StorageManager : MonoBehaviour
         totalFiles = playerContents.Length + 1;
         var storage = FirebaseStorage.DefaultInstance;
 
+        // waiting for csv to download
+        while (SavePatientData.Instance == null)
+            yield return new WaitForEndOfFrame();
+
         string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/content_map";
         string localPath = $"{contentDir}{Path.DirectorySeparatorChar}content_map.json";
 
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
+
         // delete the json string
         // parse the json
         // save the json
@@ -129,7 +140,6 @@ public class StorageManager : MonoBehaviour
             float downloadPercent = 10000f * (float)filesDownloaded / (float)totalFiles / 100f;
             //Debug.Log($"Download progress: {downloadPercent}%");
         }
-        //Debug.Log("extern data download complete");
         contentDownloadedEvent.Invoke();
     }
 
@@ -137,7 +147,7 @@ public class StorageManager : MonoBehaviour
     private IEnumerator DownloadPictures()
     {
         //var storage = FirebaseStorage.DefaultInstance;
- 
+
         foreach (var content in playerContents)
         {
             string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/{content.pictureName}";
@@ -148,7 +158,7 @@ public class StorageManager : MonoBehaviour
             CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
             yield return cd.coroutine;
             content.image.LoadImage((byte[])cd.result);
-            content.image.Apply(); 
+            content.image.Apply();
         }
         contentDownloadedEvent.Invoke();
     }
@@ -176,32 +186,20 @@ public class StorageManager : MonoBehaviour
             yield break;
         }
         else
+        {
             Debug.Log($"{Profiler.Instance.currentUser.username}/{filename} uploaded with status witout exception");
+        }
     }
 
-    /// <summary>
-    /// function originally written by Surya Prakash https://suryaprakash.net/2011/09/17/convert-csv-file-data-into-byte-array/
-    /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
     private byte[] ReadByteArrayFromFile(string fileName)
     {
-        // declare byte array variable
-        byte[] buff = null;
-
-        // open the file with read access by declaring FileStream object
-        FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-
-        // pass FileStream object to BinaryReader
-        BinaryReader br = new BinaryReader(fs);
-
-        // get the file length
-        long numBytes = new FileInfo(fileName).Length;
-
-        // convert binary reader object data to ByteArray, using following statement
-        buff = br.ReadBytes((int)numBytes);
-
-        // return byte array object
+        byte[] buff;
+        using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+        using (BinaryReader br = new BinaryReader(fs))
+        {
+            long numBytes = new FileInfo(fileName).Length;
+            buff = br.ReadBytes((int)numBytes);
+        }
         return buff;
     }
 
@@ -212,71 +210,39 @@ public class StorageManager : MonoBehaviour
 
     private IEnumerator DownloadCSV(string localPath)
     {
-        var storage = FirebaseStorage.DefaultInstance;
-        //var csv_reference = storage.GetReference($"/data/{Profiler.Instance.currentUser.username}/patient_data.csv");
         string firebasePath = $"/data/{Profiler.Instance.currentUser.username}/patient_data.csv";
-
-        // dowload the file
-        /*
-        const long maxDownloadSize = 1024 * 1024;
-        var downloadTask = csv_reference.GetBytesAsync(maxDownloadSize);
-        yield return new WaitUntil(() => downloadTask.IsCompleted);
-
-        bool status = true;
-        if (downloadTask.Exception != null)
+        if (File.Exists(localPath))
         {
-            Debug.LogError($"CSV Download failed: {downloadTask.Exception}");
-            status = false;
+            File.Delete(localPath);
         }
-        else
-        {
-            // save csv locally
-            byte[] fileContents = downloadTask.Result;
-            status = writeByteArrayToFile(fileContents, filename);
-        }*/
         CoroutineWithData cd = new CoroutineWithData(this, DownloadFile(firebasePath, localPath));
         yield return cd.coroutine;
-        File.Delete(localPath);
-        bool status = writeByteArrayToFile((byte[])cd.result, localPath);
+        bool status = false;
+        var data = (byte[])cd.result;
+        if (data.Length > 1)
+        {
+            status = WriteByteArrayToFile(data, localPath);
+        }
+        Debug.Log($"csv download complete. fb path: {firebasePath} write status? {status} file bytes: {((byte[])cd.result).Length}");
         downloadStatusEvent.Invoke(status);
     }
 
-    /// <summary>
-    /// function originally written by Surya Prakash https://suryaprakash.net/2011/09/17/convert-csv-file-data-into-byte-array/
-    /// </summary>
-    /// <param name="fileName"></param>
-    /// <returns></returns>
-    public bool writeByteArrayToFile(byte[] buff, string fileName)
+    public bool WriteByteArrayToFile(byte[] buff, string fileName)
     {
-        // define bool flag to identify success or failure of operation
-        bool response = false;
-
         try
         {
-            // define filestream object for new filename with readwrite properties
-            FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite);
-
-            // define binary write object from file stream object
-            BinaryWriter bw = new BinaryWriter(fs);
-
-            // write byte array content using BinaryWriter object
-            bw.Write(buff);
-
-            // close binary writer object
-            bw.Close();
-
-            // set status flag as true
-            response = true;
+            using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite))
+            using (BinaryWriter bw = new BinaryWriter(fs))
+            {
+                bw.Write(buff);
+            }
+            return true;
         }
         catch (Exception ex)
         {
             Debug.LogWarning(ex.Message);
-            // set status as false, if operation fails at any point
-            response = false;
-
+            return false;
         }
-
-        return response;
     }
 
     public float GetDownloadProgress()

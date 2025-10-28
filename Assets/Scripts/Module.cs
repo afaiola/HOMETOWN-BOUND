@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// This represents a module that manages its 6 children (excercises)
+/// This represents a module that manages its children (excercises)
 /// </summary>
 public class Module : MonoBehaviour
 {
@@ -39,11 +39,19 @@ public class Module : MonoBehaviour
     [SerializeField] Button closeButton;
     protected AudioSource helpAudio;
 
+
     private QuantumTek.QuantumUI.QUI_Bar progressBar;
+    private bool isComplete = false;
+
+
+    public bool IsComplete { get => isComplete; set => isComplete = value; }
+
+
     public virtual void OnValidate()
     {
         exercises = GetComponentsInChildren<Exercise>(true).ToList();
     }
+
     protected void Start()
     {
         closeButton.onClick.AddListener(ShowSecurity);
@@ -90,7 +98,7 @@ public class Module : MonoBehaviour
             ScoreCalculator.instance.StartActivity(exercises[current].exerciseID);
             Menu.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
         }
-        
+
         //Cursor.visible = true;
         //Cursor.lockState = CursorLockMode.Confined;
     }
@@ -101,7 +109,7 @@ public class Module : MonoBehaviour
     /// <returns></returns>
     public IEnumerator Wrap()
     {
-        yield return new WaitForSeconds(Debug.isDebugBuild ? 0.5f : 4f );
+        yield return new WaitForSeconds(Debug.isDebugBuild ? 0.5f : 4f);
         Wrap2();
     }
 
@@ -110,13 +118,22 @@ public class Module : MonoBehaviour
         gameObject.SetActive(false);
         TankController.Instance.EnableMovement();
         //walking to the next module
-        ScoreCalculator.instance.StartActivity(exercises[exercises.Count-1].exerciseID+1);
+        ScoreCalculator.instance.StartActivity(exercises[exercises.Count - 1].exerciseID + 1);
         End();
         open = false;
     }
 
     public virtual void End()
     {
+        GameManager.Instance.inModule = false;
+        isComplete = true;
+
+        if (GameManager.Instance.useVR)
+        {
+            VRManager.Instance.moveMultiplier = 1;
+            VRManager.Instance.ApplySettings();
+        }
+
         UIManager.Instance.PromptGameWindowFocus();
         // Destroy all goal objects if they exist
         foreach (var ex in exercises)
@@ -141,11 +158,17 @@ public class Module : MonoBehaviour
     /// </summary>
     public virtual void Play()
     {
+        GameManager.Instance.inModule = true;
         open = true;
         UIManager.Instance.UpdateModuleName(string.Format("Level {0} - Module {1} - Exercise {2}", lvl, ModuleNo, current + 1));
-        if (TankController.Instance)
+        if (!GameManager.Instance.useVR)
             TankController.Instance.DisableMovement();
-
+        else
+        {
+            TankController.Instance.EnableMovement();
+            VRManager.Instance.moveMultiplier = 0.5f;
+            VRManager.Instance.ApplySettings();
+        }
         transform.GetChild(0).gameObject.SetActive(true);
         foreach (var layoutGroup in this.GetComponentsInChildren<LayoutGroup>())
         {
@@ -158,8 +181,7 @@ public class Module : MonoBehaviour
         progressBar.SetFill((float)current / exercises.Count);
 
         //reached the module in time
-        if (current == 0)
-            ScoreCalculator.instance.EndActivity(1, 0);
+        if (current == 0) { ScoreCalculator.instance.EndActivity(1, 0); }
         if (exercises.Count > 0)
         {
             RunFirstModule();
@@ -170,9 +192,8 @@ public class Module : MonoBehaviour
         {
             StartCoroutine(Wrap());
         }
-        
-        if (VRManager.Instance)
-            MoveVRCanvas();
+
+        if (GameManager.Instance.useVR) { MoveVRCanvas(); }
     }
 
     protected virtual void MoveVRCanvas()
@@ -202,7 +223,6 @@ public class Module : MonoBehaviour
     {
         ScoreCalculator.instance.EndActivity(0, 0);
         TankController.Instance.EnableMovement();
-        //gameObject.SetActive(false);
         foreach (var ex in exercises) ex.gameObject.SetActive(false);
         gameObject.SetActive(false);
         End();

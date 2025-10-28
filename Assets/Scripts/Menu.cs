@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;   
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
@@ -10,36 +10,34 @@ public class Menu : MonoBehaviour
 
     public Text moduleName;
     public GameObject gotoMenu;
-
     public Toggle gotoButton;
+    [SerializeField]
+    private AudioClip clip_missedModule;
+    [SerializeField]
+    private AudioClip clip_in;
+    [SerializeField]
+    private AudioClip clip_goBack;
+    [SerializeField]
+    private AudioClip[] numbers;
+    [SerializeField]
+    private AudioClip[] levels;
+    [SerializeField]
+    private AudioSource audioSource;
 
-    private AudioSource audio;
-    [SerializeField] AudioClip clip_missedModule, clip_in, clip_goBack;
-    [SerializeField] AudioClip[] numbers, levels;
 
     private bool playingWarning;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void Initialize()
     {
-        if (_instance != null)
+        if (_instance != null && _instance != this)
         {
+            Debug.LogWarning("Destroy menu");
             Destroy(gameObject);
+            return;
         }
         _instance = this;
-        audio = GetComponent<AudioSource>();
         //DontDestroyOnLoad(gameObject);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void UpdateModuleName(string str)
@@ -55,17 +53,17 @@ public class Menu : MonoBehaviour
         warningClips.Add(clip_in);
         warningClips.Add(levels[(int)level]);
         warningClips.Add(clip_goBack);
-        if (!playingWarning)
-            StartCoroutine(AudioSequence(warningClips));
+        if (!playingWarning) { StartCoroutine(AudioSequence(warningClips)); }
     }
+
 
     private IEnumerator AudioSequence(List<AudioClip> clips)
     {
         playingWarning = true;
         for (int i = 0; i < clips.Count; i++)
         {
-            audio.clip = clips[i];
-            audio.Play();
+            audioSource.clip = clips[i];
+            audioSource.Play();
             yield return new WaitForSeconds(clips[i].length);
         }
         playingWarning = false;

@@ -39,7 +39,7 @@ public class Load : MonoBehaviour
 
     protected IEnumerator LoadSceneAsync()
     {
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSecondsRealtime(.2f);
 
         //AsyncOperation candylandLoad = SceneManager.LoadSceneAsync("Candyland", LoadSceneMode.Additive);
         AsyncOperation cityLoad = SceneManager.LoadSceneAsync("City", LoadSceneMode.Additive);

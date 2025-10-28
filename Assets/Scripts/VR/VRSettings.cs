@@ -41,8 +41,9 @@ public class VRSettings : MonoBehaviour
 
     // TODO: open the settings with a button
 
-    public void LoadSettings()
+    public void Initialize()
     {
+        Debug.Log("init vr settings");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -50,6 +51,11 @@ public class VRSettings : MonoBehaviour
         }
 
         _instance = this;
+    }
+    public void LoadSettings()
+    {
+        if (_instance == null)
+            Initialize();
         useTeleportMovement = PlayerPrefs.GetInt(movementSaveKey, 0) == 1;
         useIncrementalRotate = PlayerPrefs.GetInt(rotateSaveKey, 0) == 1;
         isLeftHanded = PlayerPrefs.GetInt(handednessSaveKey, 0) == 1;
@@ -89,5 +95,10 @@ public class VRSettings : MonoBehaviour
         PlayerPrefs.SetInt(rotateSaveKey, PrimaryHand);
         if (onHandednessChange != null)
             onHandednessChange.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        //Debug.LogError("WHY DID YOU KILL ME YOU BITCH");
     }
 }

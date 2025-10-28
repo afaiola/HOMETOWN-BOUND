@@ -7,27 +7,37 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037886328035:ios:cf653b2840c6e9917649d6",
+        "mobilesdk_app_id": "1:1037886328035:android:5a706c2e3a263c697649d6",
         "android_client_info": {
           "package_name": "com.UniversityofKentucky.HometownBound"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1037886328035-m4ca5g68u1hgjvr7rb74uj7uhuql4b80.apps.googleusercontent.com"
+          "client_id": "1037886328035-ledtv7knn5mvhgh7cggchab1pog3mg60.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCH765u9zi8LT31sZTxYDE2VkG6XeXgTTg"
+          "current_key": "AIzaSyCQs0twmZgt-vJcEC1YY0JiGrNQos2GDzE"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 0
-        },
         "appinvite_service": {
-          "status": 1
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037886328035-ledtv7knn5mvhgh7cggchab1pog3mg60.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037886328035-esrolc1kqg52s15ok5n3cqs11k4ffkvl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.universityofkentycky.hometown"
+              }
+            }
+          ]
         }
       }
     }

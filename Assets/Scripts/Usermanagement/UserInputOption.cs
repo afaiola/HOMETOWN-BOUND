@@ -50,11 +50,13 @@ public class UserInputOption : MonoBehaviour
 
     protected void SetStatusIcon()
     {
+        bool valid = GetIfInputValid();
         if (statusImage)
-            statusImage.sprite = GetIfInputValid() ? validIcon : invalidIcon;
+            statusImage.sprite = valid ? validIcon : invalidIcon;
+        Highlight(valid);
     }
 
-    public void Highlight(bool on)
+    public virtual void Highlight(bool on)
     {
         if (helper)
             helper.SetActive(on);

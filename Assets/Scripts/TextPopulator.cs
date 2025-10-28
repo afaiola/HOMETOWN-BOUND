@@ -7,6 +7,7 @@ public class TextPopulator : MonoBehaviour
 {
     string uName;
     public void PopulateUsername(){
+        
         uName = PlayerPrefs.GetString("USERNAME");
         GetComponent<TMPro.TMP_InputField>().text = uName;
       

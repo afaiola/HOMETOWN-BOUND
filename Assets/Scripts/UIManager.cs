@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,24 +21,21 @@ public class UIManager : MonoBehaviour
     bool prevVisible;
 
     public Vector3 vrOffset;    // 30.57 - 29.93 = 0.55
-    public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);  
+    public Vector3 worldScale = new Vector3(0.002f, 0.002f, 0.002f);
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    private bool isMovingToPlayer;
+    public bool followPlayer = true;
 
     public void Initialize()
     {
-        if (_instance == null)
+        if (_instance != null && _instance != this)
         {
-            _instance = this;
-        }
-        else
-        {
+            Debug.LogWarning("Destroy ui man");
+
             Destroy(gameObject);
+            return;
         }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
         if (refocusObj)
@@ -54,6 +50,8 @@ public class UIManager : MonoBehaviour
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             transform.localScale = worldScale;
+            RectTransform uiRect = GetComponent<RectTransform>();
+            uiRect.sizeDelta = new Vector2(1920, 1080) / 2;
         }
 
         // start with eyes closed
@@ -74,12 +72,12 @@ public class UIManager : MonoBehaviour
                 refocusObj.SetActive(false);
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
-                TankController.Instance.speed = 15f;
+                TankController.Instance.speed = 30f;
                 TankController.Instance.turnSpeed = 180f;
             }
         }
         if (inCutscene) return;
-        if (Input.GetMouseButtonUp(1) || Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!paused && !requestRefocus)
             {
@@ -89,6 +87,32 @@ public class UIManager : MonoBehaviour
             {
                 //Resume();
                 // when button is pressed down, resume, lock cursor on release
+            }
+        }
+
+        if (GameManager.Instance && GameManager.Instance.useVR)
+        {
+            if (TankController.Instance == null || !followPlayer) return;
+
+            // rotate to face the player
+            Vector3 playerPos = TankController.Instance.transform.position;
+            playerPos.y = transform.position.y;
+            transform.LookAt(playerPos);
+            transform.eulerAngles += Vector3.up * 180;  // to face the correct dir
+            Vector3 goalPos = playerPos + TankController.Instance.transform.forward * vrOffset.z;
+
+            // should also follow the player around
+            float dist = Vector3.Distance(goalPos, transform.position);
+            if (dist > 10)
+            {
+                isMovingToPlayer = true;
+            }
+
+            if (isMovingToPlayer)
+            {
+                if (dist < vrOffset.z)
+                    isMovingToPlayer = false;
+                transform.position = Vector3.Lerp(transform.position, goalPos, Time.deltaTime * 2f);
             }
         }
     }
@@ -188,7 +212,7 @@ public class UIManager : MonoBehaviour
 
     public void OpenEyes()
     {
-        StartCoroutine(Blink(Screen.height / 2, 0));
+        StartCoroutine(Blink(Screen.height / 2, 0));    // this should be working but still it is too short
     }
 
     private IEnumerator Blink(int start, int goal)
@@ -201,7 +225,7 @@ public class UIManager : MonoBehaviour
 
         while (timecount < blinktime)
         {
-            blinking = Mathf.Lerp(start, goal, timecount/blinktime);
+            blinking = Mathf.Lerp(start, goal, timecount / blinktime);
             topLid.sizeDelta = new Vector2(topLid.sizeDelta.x, blinking);
             bottomLid.sizeDelta = new Vector2(bottomLid.sizeDelta.x, blinking);
             timecount += Time.deltaTime;
@@ -240,7 +264,7 @@ public class UIManager : MonoBehaviour
             MoveToPosition();
     }
 
-    public void MoveToPosition(Transform location=null, bool useOffset=true, bool useScale=false)
+    public void MoveToPosition(Transform location = null, bool useOffset = true, bool useScale = false)
     {
         if (location == null)
         {

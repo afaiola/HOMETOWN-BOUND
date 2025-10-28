@@ -9,27 +9,12 @@ public class WalkExercise : Exercise
     public string nameOfLocation;
     public ActivatorZone zone;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    protected override void OnValidate()
-    {
-
-    }
 
     public override void Arrange()
     {
         zone.enabled = true;
-        zone.enterEvent = new UnityEngine.Events.UnityEvent();
-        zone.enterEvent.AddListener(EnterArea);
+        zone.EnterEvent = new UnityEngine.Events.UnityEvent();
+        zone.EnterEvent.AddListener(EnterArea);
     }
 
     public override bool CheckSuccess
@@ -67,7 +52,7 @@ public class WalkExercise : Exercise
             if (Mathf.Abs(pitch) < 179f)
             {
                 float direction = pitch < 0 ? -0.1f : 0.1f;
-                Debug.Log($"pitch: {pitch} dir: {direction}");
+                //Debug.Log($"pitch: {pitch} dir: {direction}");
 
                 //camTransform.localEulerAngles = new Vector3(pitch - (direction), 0, 0);
                 TankController.Instance.RotateCharacterUpDown(direction);
@@ -78,6 +63,4 @@ public class WalkExercise : Exercise
         _correctCount++;
         Success();
     }
-
-
 }

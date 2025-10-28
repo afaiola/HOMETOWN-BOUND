@@ -70,6 +70,8 @@ public class IntroScene : MonoBehaviour
     {
         SetDialogue(firstTime); 
         activeCoroutine = Cutscene();
+        //if (!firstTime)
+        //    activeCoroutine = CloseEyesAndLoad();
         StartCoroutine(activeCoroutine);
     }
 
@@ -128,6 +130,37 @@ public class IntroScene : MonoBehaviour
             floatingOrigin.canUpdate = true;
         if (onComplete != null)
             onComplete.Invoke();
+    }
+
+    private IEnumerator CloseEyesAndLoad()
+    {
+        yield return new WaitForSecondsRealtime(2f);
+
+        TankController.Instance.enabled = true;
+        TankController.Instance.EnableMovement();
+        TankController.Instance.transform.position = start.position;
+        TankController.Instance.transform.rotation = start.rotation;
+        UIManager.Instance.inCutscene = false;
+
+        FloatingOrigin floatingOrigin = GameObject.FindObjectOfType<FloatingOrigin>();
+        if (floatingOrigin)
+            floatingOrigin.canUpdate = true;
+        if (onComplete != null)
+            onComplete.Invoke();
+        if (VRManager.Instance)
+            VRManager.Instance.SetCameraStanding();
+
+        yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
+        UIManager.Instance.OpenEyes();
+        yield return new WaitForSecondsRealtime(UIManager.Instance.blinktime);
+
+
+        //UIManager.Instance.canPause = true;
+        UIManager.Instance.PromptGameWindowFocus();
+        Menu.Instance.UpdateModuleName(nextActionMessage);
+
+        skipped = true;
+
     }
 
     public void Interrupt()
